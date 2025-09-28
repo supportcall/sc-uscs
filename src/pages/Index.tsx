@@ -1,15 +1,9 @@
-import Hero from "@/components/Hero";
-import Features from "@/components/Features";
-import Architecture from "@/components/Architecture";
-import TechnicalSpecs from "@/components/TechnicalSpecs";
+import ScriptGenerator from "@/components/ScriptGenerator";
 
 const Index = () => {
   return (
     <main className="min-h-screen">
-      <Hero />
-      <Features />
-      <Architecture />
-      <TechnicalSpecs />
+      <ScriptGenerator />
     </main>
   );
 };
