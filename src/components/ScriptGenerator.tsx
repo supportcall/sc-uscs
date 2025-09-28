@@ -447,11 +447,37 @@ REM Description: ${func.description}`
 ).join('\n')}
 
 REM =============================================================================
-REM STAGE 0: SYSTEM PREPARATION AND SAFETY CHECKS
+REM STAGE 0: MANDATORY SYSTEM PREPARATION AND SAFETY CHECKS
 REM =============================================================================
-echo [Stage 0] System Preparation and Safety Checks...
-echo Creating system restore point...
-powershell -Command "Checkpoint-Computer -Description 'SC-USCS-Pre-Run' -RestorePointType 'MODIFY_SETTINGS'" 2>nul
+echo [Stage 0] MANDATORY System Preparation and Safety Checks...
+echo.
+echo *** CREATING SYSTEM RESTORE POINT - DO NOT INTERRUPT ***
+echo This is REQUIRED before any system modifications begin.
+echo.
+
+REM Enable System Restore if disabled
+echo Enabling System Restore service...
+powershell -Command "Enable-ComputerRestore -Drive 'C:\\'"
+sc config "VSS" start= auto
+net start "VSS"
+sc config "swprv" start= auto  
+net start "swprv"
+vssadmin resize shadowstorage /for=C: /on=C: /maxsize=10%%
+
+REM Create mandatory restore point with error checking
+echo Creating System Restore Point: SC-USCS-Pre-Run...
+powershell -Command "$result = Checkpoint-Computer -Description 'SC-USCS-Pre-Run-Mandatory' -RestorePointType 'MODIFY_SETTINGS' -Verbose; if ($result -eq $null) { Write-Host 'SUCCESS: System Restore Point Created' -ForegroundColor Green } else { Write-Host 'WARNING: Restore Point Creation Status Unknown' -ForegroundColor Yellow }"
+
+REM Verify restore point was created
+echo Verifying restore point creation...
+powershell -Command "Get-ComputerRestorePoint | Sort-Object CreationTime -Descending | Select-Object -First 1 | Format-Table CreationTime, Description, RestorePointType"
+
+echo.
+echo *** SYSTEM RESTORE POINT CREATION COMPLETE ***
+echo IMPORTANT: If restore point creation failed, press CTRL+C to abort!
+echo Otherwise, press any key to continue with system modifications...
+pause
+echo.
 
 REM =============================================================================
 REM STAGE 1: SYSTEM CLEANING AND REPAIR FUNCTIONS  
