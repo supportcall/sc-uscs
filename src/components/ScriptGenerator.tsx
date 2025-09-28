@@ -403,7 +403,7 @@ const ScriptGenerator = () => {
     
     return `@echo off
 REM =============================================================================
-REM SupportCALL - Ultimate Secure Clean Script (SC-USCS) v2.5
+REM SupportCALL - Ultimate Secure Clean Script (SC-USCS) v4.1
 REM Professional Windows Remediation Engine (UWIRE)
 REM Generated: ${new Date().toLocaleString()}
 REM Functions Selected: ${selectedFunctionData.length} of ${functions.length}
@@ -411,7 +411,7 @@ REM Compatibility: Windows 10, Windows 11
 REM =============================================================================
 
 setlocal EnableDelayedExpansion
-title SupportCALL - SC-USCS v2.5 - Professional Edition
+title SupportCALL - SC-USCS v4.1 - Professional Edition
 
 REM Check for Administrator privileges
 net session >nul 2>&1
@@ -428,7 +428,7 @@ set "STARTTIME=%TIME%"
 mkdir "%LOGPATH%" 2>nul
 
 echo =============================================================================
-echo  SupportCALL - Ultimate Secure Clean Script v2.5
+echo  SupportCALL - Ultimate Secure Clean Script v4.1
 echo  Professional Windows Remediation Engine
 echo =============================================================================
 echo.
@@ -622,14 +622,14 @@ exit /b 0`;
                 SupportCALL - Ultimate Secure Clean Script
               </h1>
               <div className="text-lg md:text-xl font-semibold text-muted-foreground">
-                v2.5 - Professional Edition
+                v4.1 - Professional Edition
               </div>
             </div>
             <CardDescription className="text-base md:text-lg max-w-3xl mx-auto leading-relaxed">
               The Ultimate Self-Contained Windows Remediation Engine (UWIRE) - Professional System Cleaning, Security Enhancement & Optimization Tool for Windows 10/11
             </CardDescription>
             <div className="flex justify-center gap-2 md:gap-4 flex-wrap">
-              <Badge variant="default" className="px-3 py-1 text-sm">SC-USCS v2.5</Badge>
+              <Badge variant="default" className="px-3 py-1 text-sm">SC-USCS v4.1</Badge>
               <Badge variant="secondary" className="px-3 py-1 text-sm">Safety: 98%</Badge>
               <Badge variant="outline" className="px-3 py-1 text-sm">Effectiveness: 95%</Badge>
               <Badge variant="outline" className="px-3 py-1 text-sm">Win 10/11 Compatible</Badge>
