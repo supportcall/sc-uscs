@@ -655,33 +655,75 @@ exit /b 0`;
           </Alert>
         </div>
 
-        {/* Professional Pre-Run Checklist */}
-        <Card className="mb-8 border-amber-200 bg-gradient-to-r from-amber-50/50 to-yellow-50/50 shadow-lg">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-amber-800">
-              <FileText className="h-5 w-5" />
-              Professional Pre-Execution Checklist
+        {/* Professional Pre-Run Checklist - ENHANCED */}
+        <Card className="mb-8 border-2 border-amber-400 bg-gradient-to-br from-amber-50 via-yellow-50 to-orange-50 shadow-2xl relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-r from-amber-400/20 to-orange-400/20 animate-pulse"></div>
+          <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-amber-500 via-yellow-500 to-orange-500"></div>
+          
+          <CardHeader className="relative z-10 text-center pb-4">
+            <CardTitle className="flex items-center justify-center gap-3 text-2xl md:text-3xl font-black text-amber-900">
+              <div className="p-3 bg-amber-500 text-white rounded-full animate-bounce">
+                <FileText className="h-6 w-6" />
+              </div>
+              🚨 MANDATORY PRE-EXECUTION CHECKLIST 🚨
+              <div className="p-3 bg-amber-500 text-white rounded-full animate-bounce">
+                <AlertTriangle className="h-6 w-6" />
+              </div>
             </CardTitle>
+            <div className="text-lg font-bold text-amber-800 mt-2 animate-pulse">
+              ⚠️ COMPLETE ALL ITEMS BEFORE RUNNING SCRIPT ⚠️
+            </div>
           </CardHeader>
-          <CardContent>
-            <div className="grid gap-4 md:grid-cols-2">
-              <div className="space-y-2">
-                <h4 className="font-semibold text-amber-800">System Preparation:</h4>
-                <ul className="space-y-1 text-sm text-amber-700">
-                  <li>✓ Full system backup to external drive</li>
-                  <li>✓ Windows System Restore Point created</li>
-                  <li>✓ Administrator account access confirmed</li>
-                  <li>✓ All critical applications closed</li>
+          
+          <CardContent className="relative z-10">
+            <div className="grid gap-6 md:grid-cols-2">
+              <div className="space-y-3 p-4 bg-white/60 rounded-lg border border-amber-300">
+                <h4 className="font-black text-xl text-amber-900 flex items-center gap-2">
+                  <span className="text-2xl">🛡️</span>
+                  CRITICAL SYSTEM PREPARATION
+                </h4>
+                <ul className="space-y-2">
+                  {[
+                    "✅ Full system backup to EXTERNAL drive",
+                    "✅ Windows System Restore Point created", 
+                    "✅ Administrator account access CONFIRMED",
+                    "✅ ALL critical applications CLOSED"
+                  ].map((item, index) => (
+                    <li key={index} className="flex items-center gap-2 text-amber-800 font-semibold text-sm bg-amber-100/50 p-2 rounded border border-amber-200">
+                      <span className="text-lg">{item.split(' ')[0]}</span>
+                      <span>{item.substring(item.indexOf(' ') + 1)}</span>
+                    </li>
+                  ))}
                 </ul>
               </div>
-              <div className="space-y-2">
-                <h4 className="font-semibold text-amber-800">Environment Setup:</h4>
-                <ul className="space-y-1 text-sm text-amber-700">
-                  <li>✓ Device connected to power source</li>
-                  <li>✓ Stable internet connection available</li>
-                  <li>✓ Minimum 2GB free disk space</li>
-                  <li>✓ No competing security scans running</li>
+              
+              <div className="space-y-3 p-4 bg-white/60 rounded-lg border border-amber-300">
+                <h4 className="font-black text-xl text-amber-900 flex items-center gap-2">
+                  <span className="text-2xl">⚡</span>
+                  ENVIRONMENT REQUIREMENTS
+                </h4>
+                <ul className="space-y-2">
+                  {[
+                    "✅ Device connected to POWER source",
+                    "✅ Stable internet connection ACTIVE", 
+                    "✅ Minimum 5GB free disk space",
+                    "✅ NO competing security scans running"
+                  ].map((item, index) => (
+                    <li key={index} className="flex items-center gap-2 text-amber-800 font-semibold text-sm bg-amber-100/50 p-2 rounded border border-amber-200">
+                      <span className="text-lg">{item.split(' ')[0]}</span>
+                      <span>{item.substring(item.indexOf(' ') + 1)}</span>
+                    </li>
+                  ))}
                 </ul>
+              </div>
+            </div>
+            
+            <div className="mt-6 p-4 bg-red-100 border-2 border-red-400 rounded-lg">
+              <div className="text-center text-red-900 font-black text-lg">
+                🔥 FAILURE TO COMPLETE CHECKLIST MAY RESULT IN SYSTEM DAMAGE 🔥
+              </div>
+              <div className="text-center text-red-800 font-bold mt-2">
+                SupportCALL is NOT responsible for damage caused by improper preparation
               </div>
             </div>
           </CardContent>
