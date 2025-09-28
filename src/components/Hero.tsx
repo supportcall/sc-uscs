@@ -1,0 +1,67 @@
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Download, Shield, Zap, Terminal } from "lucide-react";
+
+const Hero = () => {
+  return (
+    <section className="relative min-h-screen flex items-center justify-center bg-gradient-hero overflow-hidden">
+      {/* Animated background elements */}
+      <div className="absolute inset-0">
+        <div className="absolute top-20 left-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent/5 rounded-full blur-3xl animate-pulse delay-1000"></div>
+      </div>
+      
+      <div className="relative z-10 text-center max-w-6xl mx-auto px-6">
+        <Badge variant="outline" className="mb-6 border-primary/30 text-primary bg-primary/10">
+          <Terminal className="w-4 h-4 mr-2" />
+          Ultimate Windows Remediation Engine
+        </Badge>
+        
+        <h1 className="text-6xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-foreground via-primary-glow to-accent bg-clip-text text-transparent">
+          SupportCALL
+        </h1>
+        
+        <p className="text-xl md:text-2xl font-semibold mb-4 text-primary-glow">
+          UWIRE - Ultimate Secure Clean Script
+        </p>
+        
+        <p className="text-lg text-muted-foreground mb-8 max-w-3xl mx-auto leading-relaxed">
+          Professional-grade Windows remediation engine featuring autonomous multi-stage cleanup, 
+          malware removal, system repair, and performance optimization. Built with modern PowerShell 
+          for enterprise reliability.
+        </p>
+        
+        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
+          <Button size="lg" className="bg-gradient-primary hover:shadow-glow transition-all duration-300">
+            <Download className="w-5 h-5 mr-2" />
+            Download UWIRE v1.0
+          </Button>
+          
+          <Button variant="outline" size="lg" className="border-primary/30 hover:border-primary hover:shadow-elegant transition-all duration-300">
+            <Shield className="w-5 h-5 mr-2" />
+            View Documentation
+          </Button>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+          <div className="flex items-center justify-center space-x-3 text-muted-foreground">
+            <Shield className="w-6 h-6 text-accent" />
+            <span className="font-medium">Enterprise Security</span>
+          </div>
+          
+          <div className="flex items-center justify-center space-x-3 text-muted-foreground">
+            <Zap className="w-6 h-6 text-primary" />
+            <span className="font-medium">Autonomous Operation</span>
+          </div>
+          
+          <div className="flex items-center justify-center space-x-3 text-muted-foreground">
+            <Terminal className="w-6 h-6 text-primary-glow" />
+            <span className="font-medium">Modern PowerShell</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default Hero;
