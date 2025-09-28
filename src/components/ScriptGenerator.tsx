@@ -665,13 +665,13 @@ exit /b 0`;
               <div className="p-3 bg-amber-500 text-white rounded-full animate-bounce">
                 <FileText className="h-6 w-6" />
               </div>
-              🚨 MANDATORY PRE-EXECUTION CHECKLIST 🚨
+              MANDATORY PRE-EXECUTION CHECKLIST
               <div className="p-3 bg-amber-500 text-white rounded-full animate-bounce">
                 <AlertTriangle className="h-6 w-6" />
               </div>
             </CardTitle>
             <div className="text-lg font-bold text-amber-800 mt-2 animate-pulse">
-              ⚠️ COMPLETE ALL ITEMS BEFORE RUNNING SCRIPT ⚠️
+              COMPLETE ALL ITEMS BEFORE RUNNING SCRIPT
             </div>
           </CardHeader>
           
