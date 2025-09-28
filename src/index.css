@@ -28,6 +28,7 @@
     --muted: 210 13% 22%;
     --muted-foreground: 210 20% 70%;
 
+    /* Accent - Green for safety indicators */
     --accent: 150 70% 55%;
     --accent-foreground: 210 11% 15%;
 

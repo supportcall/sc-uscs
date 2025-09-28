@@ -593,33 +593,34 @@ exit /b 0`;
 
   const getSafetyColor = (safety: string) => {
     switch (safety) {
-      case "High Safety": return "bg-green-500/10 text-green-600 border-green-500/20";
-      case "Medium Safety": return "bg-yellow-500/10 text-yellow-600 border-yellow-500/20";
-      case "Low Safety": return "bg-red-500/10 text-red-600 border-red-500/20";
-      default: return "bg-gray-500/10 text-gray-600 border-gray-500/20";
+      case "High Safety": return "bg-accent/10 text-accent border-accent/20";
+      case "Medium Safety": return "bg-secondary/20 text-secondary-foreground border-secondary/40";
+      case "Low Safety": return "bg-destructive/10 text-destructive border-destructive/20";
+      default: return "bg-muted/20 text-muted-foreground border-muted/40";
     }
   };
 
   const getRecommendationColor = (recommendation: string) => {
     switch (recommendation) {
-      case "Recommended": return "bg-blue-500/10 text-blue-600 border-blue-500/20";
-      case "Optional": return "bg-gray-500/10 text-gray-600 border-gray-500/20";
-      case "Advanced": return "bg-purple-500/10 text-purple-600 border-purple-500/20";
-      case "Development": return "bg-orange-500/10 text-orange-600 border-orange-500/20";
-      default: return "bg-gray-500/10 text-gray-600 border-gray-500/20";
+      case "Recommended": return "bg-primary/10 text-primary border-primary/20";
+      case "Optional": return "bg-muted/20 text-muted-foreground border-muted/40";
+      case "Advanced": return "bg-card/60 text-card-foreground border-border";
+      case "Development": return "bg-secondary/30 text-secondary-foreground border-secondary/50";
+      default: return "bg-muted/20 text-muted-foreground border-muted/40";
     }
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/5 to-secondary/10 dark:from-background dark:to-muted/20">
       <div className="container mx-auto px-4 py-6 max-w-7xl">
+        <header role="banner">
         {/* Header */}
         <Card className="mb-6 border-0 shadow-2xl bg-gradient-to-r from-primary/10 to-secondary/10 backdrop-blur-xl">
           <CardHeader className="text-center space-y-4 py-8">
             <div className="space-y-2">
-              <CardTitle className="text-3xl md:text-5xl font-black bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+              <h1 className="text-3xl md:text-5xl font-black bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
                 SupportCALL - Ultimate Secure Clean Script
-              </CardTitle>
+              </h1>
               <div className="text-lg md:text-xl font-semibold text-muted-foreground">
                 v2.5 - Professional Edition
               </div>
@@ -635,9 +636,13 @@ exit /b 0`;
             </div>
           </CardHeader>
         </Card>
+        </header>
+
+        <main role="main">
 
         {/* Critical Warnings */}
-        <div className="grid gap-4 mb-8 lg:grid-cols-2">
+        <section aria-labelledby="critical-warnings" className="grid gap-4 mb-8 lg:grid-cols-2">
+          <h2 id="critical-warnings" className="sr-only">Critical System Warnings</h2>
            <Alert className="border-destructive/50 bg-destructive/5 shadow-lg">
              <AlertDescription className="font-medium">
                <strong className="text-destructive">ADMINISTRATOR REQUIRED:</strong> This script must run with full Administrator privileges. 
@@ -651,17 +656,18 @@ exit /b 0`;
                While extensively tested, system modifications carry inherent risks.
              </AlertDescription>
            </Alert>
-        </div>
+        </section>
 
         {/* Professional Pre-Run Checklist - ENHANCED */}
+        <section aria-labelledby="pre-execution-checklist">
         <Card className="mb-8 border-2 border-amber-400 bg-gradient-to-br from-amber-50 via-yellow-50 to-orange-50 shadow-2xl relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-r from-amber-400/20 to-orange-400/20 animate-pulse"></div>
           <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-amber-500 via-yellow-500 to-orange-500"></div>
           
           <CardHeader className="relative z-10 text-center pb-4">
-            <CardTitle className="flex items-center justify-center gap-3 text-2xl md:text-3xl font-black text-amber-900">
+            <h2 id="pre-execution-checklist" className="flex items-center justify-center gap-3 text-2xl md:text-3xl font-black text-amber-900">
               MANDATORY PRE-EXECUTION CHECKLIST
-            </CardTitle>
+            </h2>
             <div className="text-lg font-bold text-amber-800 mt-2 animate-pulse">
               COMPLETE ALL ITEMS BEFORE RUNNING SCRIPT
             </div>
@@ -718,6 +724,7 @@ exit /b 0`;
             </div>
           </CardContent>
         </Card>
+        </section>
 
         {/* Quick Action Toolbar */}
         <Card className="mb-8 shadow-lg">
@@ -742,13 +749,14 @@ exit /b 0`;
         </Card>
 
         {/* Function Categories - Responsive Grid */}
-        <div className="space-y-12 mb-12">
+        <section aria-labelledby="function-categories" className="space-y-12 mb-12">
+          <h2 id="function-categories" className="sr-only">Available System Functions</h2>
           {categories.map(category => (
             <div key={category} className="scroll-mt-20" id={category.toLowerCase().replace(/\s+/g, '-')}>
               <div className="sticky top-4 z-10 mb-6">
-                <h2 className="text-xl md:text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-2">
+                <h3 className="text-xl md:text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-2">
                   {category}
-                </h2>
+                </h3>
                 <div className="h-1 bg-gradient-to-r from-primary to-secondary rounded-full w-full"></div>
               </div>
               
@@ -771,6 +779,7 @@ exit /b 0`;
                             checked={selectedFunctions.includes(func.id)}
                             onChange={() => handleFunctionToggle(func.id)}
                             className="mt-1 scale-110"
+                            aria-label={`Select ${func.name} function`}
                           />
                           <div className="flex-1 min-w-0">
                             <CardTitle className="text-base md:text-lg font-bold leading-tight group-hover:text-primary transition-colors">
@@ -803,15 +812,16 @@ exit /b 0`;
               </div>
             </div>
           ))}
-        </div>
+        </section>
 
         {/* Script Generation Panel - Enhanced */}
+        <section aria-labelledby="script-generation" className="mb-8">
         <Card className="shadow-2xl border-0 bg-gradient-to-br from-background to-muted/20 backdrop-blur-xl sticky bottom-4 z-20">
           <CardContent className="p-6 md:p-8">
             <div className="space-y-6">
               {/* Generation Stats */}
               <div className="text-center space-y-2">
-                <h3 className="text-xl md:text-2xl font-bold">Ready to Generate Your Custom Script</h3>
+                <h2 id="script-generation" className="text-xl md:text-2xl font-bold">Ready to Generate Your Custom Script</h2>
                 <div className="flex justify-center gap-4 text-sm text-muted-foreground">
                   <span>Functions Selected: <strong className="text-primary">{selectedFunctions.length}</strong></span>
                   <span>•</span>
@@ -855,6 +865,8 @@ exit /b 0`;
             </div>
           </CardContent>
         </Card>
+        </section>
+        </main>
       </div>
     </div>
   );
