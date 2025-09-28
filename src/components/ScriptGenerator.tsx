@@ -662,13 +662,7 @@ exit /b 0`;
           
           <CardHeader className="relative z-10 text-center pb-4">
             <CardTitle className="flex items-center justify-center gap-3 text-2xl md:text-3xl font-black text-amber-900">
-              <div className="p-3 bg-amber-500 text-white rounded-full animate-bounce">
-                <FileText className="h-6 w-6" />
-              </div>
               MANDATORY PRE-EXECUTION CHECKLIST
-              <div className="p-3 bg-amber-500 text-white rounded-full animate-bounce">
-                <AlertTriangle className="h-6 w-6" />
-              </div>
             </CardTitle>
             <div className="text-lg font-bold text-amber-800 mt-2 animate-pulse">
               COMPLETE ALL ITEMS BEFORE RUNNING SCRIPT
