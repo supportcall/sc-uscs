@@ -672,10 +672,9 @@ exit /b 0`;
           <CardContent className="relative z-10">
             <div className="grid gap-6 md:grid-cols-2">
               <div className="space-y-3 p-4 bg-white/60 rounded-lg border border-amber-300">
-                <h4 className="font-black text-xl text-amber-900 flex items-center gap-2">
-                  <span className="text-2xl">🛡️</span>
-                  CRITICAL SYSTEM PREPARATION
-                </h4>
+                 <h4 className="font-black text-xl text-amber-900 flex items-center gap-2">
+                   CRITICAL SYSTEM PREPARATION
+                 </h4>
                 <ul className="space-y-2">
                   {[
                     "✅ Full system backup to EXTERNAL drive",
@@ -692,10 +691,9 @@ exit /b 0`;
               </div>
               
               <div className="space-y-3 p-4 bg-white/60 rounded-lg border border-amber-300">
-                <h4 className="font-black text-xl text-amber-900 flex items-center gap-2">
-                  <span className="text-2xl">⚡</span>
-                  ENVIRONMENT REQUIREMENTS
-                </h4>
+                 <h4 className="font-black text-xl text-amber-900 flex items-center gap-2">
+                   ENVIRONMENT REQUIREMENTS
+                 </h4>
                 <ul className="space-y-2">
                   {[
                     "✅ Device connected to POWER source",
