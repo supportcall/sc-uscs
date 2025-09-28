@@ -753,7 +753,7 @@ exit /b 0`;
           <h2 id="function-categories" className="sr-only">Available System Functions</h2>
           {categories.map(category => (
             <div key={category} className="scroll-mt-20" id={category.toLowerCase().replace(/\s+/g, '-')}>
-              <div className="sticky top-4 z-10 mb-6">
+              <div className="sticky top-4 z-10 mb-6 bg-background/95 backdrop-blur-sm py-2 -mx-2 px-2 rounded-lg">
                 <h3 className="text-xl md:text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-2">
                   {category}
                 </h3>
