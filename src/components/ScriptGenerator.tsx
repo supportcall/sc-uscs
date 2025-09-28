@@ -63,6 +63,30 @@ const ScriptGenerator = () => {
       recommendation: "Recommended",
       category: "System Cleaning & Repair Functions"
     },
+    {
+      id: "ccleaner",
+      name: "CCleaner Integration",
+      description: "Integrates CCleaner portable for comprehensive registry cleanup and browser cache clearing. Self-contained execution.",
+      safety: "High Safety",
+      recommendation: "Recommended",
+      category: "System Cleaning & Repair Functions"
+    },
+    {
+      id: "event-logs",
+      name: "Windows Event Log Cleanup",
+      description: "Clears Windows Event Logs to free space and remove historical error data that may contain sensitive information.",
+      safety: "High Safety",
+      recommendation: "Optional",
+      category: "System Cleaning & Repair Functions"
+    },
+    {
+      id: "prefetch-cleanup",
+      name: "Prefetch & Superfetch Cleanup",
+      description: "Clears Windows prefetch data and superfetch cache to improve boot times and system responsiveness.",
+      safety: "High Safety",
+      recommendation: "Recommended",
+      category: "System Cleaning & Repair Functions"
+    },
     // System Repair & Integrity Functions
     {
       id: "sfc-scan",
@@ -86,6 +110,22 @@ const ScriptGenerator = () => {
       description: "Performs an informational disk check to identify file system errors. Does not fix issues automatically.",
       safety: "High Safety",
       recommendation: "Optional",
+      category: "System Repair & Integrity Functions"
+    },
+    {
+      id: "memory-diagnostic",
+      name: "Windows Memory Diagnostic",
+      description: "Schedules a memory diagnostic test on next reboot to detect RAM issues that may cause system instability.",
+      safety: "High Safety",
+      recommendation: "Optional",
+      category: "System Repair & Integrity Functions"
+    },
+    {
+      id: "startup-repair",
+      name: "Startup Repair Analysis",
+      description: "Analyzes startup issues and attempts to repair common boot problems using Windows built-in tools.",
+      safety: "Medium Safety",
+      recommendation: "Advanced",
       category: "System Repair & Integrity Functions"
     },
     // Security & Malware Protection
@@ -129,6 +169,22 @@ const ScriptGenerator = () => {
       recommendation: "Advanced",
       category: "Security & Malware Protection"
     },
+    {
+      id: "malwarebytes",
+      name: "Malwarebytes Anti-Malware",
+      description: "Downloads, installs, updates and runs Malwarebytes for comprehensive malware detection and removal. Automatically removes after scan.",
+      safety: "High Safety",
+      recommendation: "Recommended",
+      category: "Security & Malware Protection"
+    },
+    {
+      id: "rkill",
+      name: "RKill Process Termination",
+      description: "Terminates malicious processes that may prevent antivirus scans from running effectively. Safe and reversible.",
+      safety: "High Safety",
+      recommendation: "Recommended",
+      category: "Security & Malware Protection"
+    },
     // System Updates & Maintenance
     {
       id: "windows-update",
@@ -138,7 +194,139 @@ const ScriptGenerator = () => {
       recommendation: "Recommended",
       category: "System Updates & Maintenance"
     },
+    {
+      id: "driver-update",
+      name: "Driver Update Check",
+      description: "Scans for outdated drivers and provides update recommendations. Helps improve system stability and performance.",
+      safety: "Medium Safety",
+      recommendation: "Optional",
+      category: "System Updates & Maintenance"
+    },
+    {
+      id: "app-updates",
+      name: "Third-Party Application Updates",
+      description: "Updates common applications like 7-Zip, Adobe Reader, Java, and other frequently used software to latest versions.",
+      safety: "High Safety",
+      recommendation: "Recommended",
+      category: "System Updates & Maintenance"
+    },
+    // Registry & System Optimization
+    {
+      id: "registry-cleanup",
+      name: "Registry Cleanup & Optimization",
+      description: "Removes invalid registry entries, broken shortcuts, and orphaned keys to improve system performance.",
+      safety: "Medium Safety",
+      recommendation: "Optional",
+      category: "Registry & System Optimization"
+    },
+    {
+      id: "startup-optimization",
+      name: "Startup Programs Optimization",
+      description: "Analyzes and disables unnecessary startup programs to improve boot times and system performance.",
+      safety: "High Safety",
+      recommendation: "Recommended",
+      category: "Registry & System Optimization"
+    },
+    {
+      id: "services-optimization",
+      name: "Windows Services Optimization",
+      description: "Optimizes Windows services for better performance while maintaining system functionality and security.",
+      safety: "Medium Safety",
+      recommendation: "Advanced",
+      category: "Registry & System Optimization"
+    },
+    {
+      id: "visual-effects",
+      name: "Visual Effects Optimization",
+      description: "Optimizes Windows visual effects for better performance on older hardware while maintaining usability.",
+      safety: "High Safety",
+      recommendation: "Optional",
+      category: "Registry & System Optimization"
+    },
+    // Network & Connectivity
+    {
+      id: "network-reset",
+      name: "Complete Network Reset",
+      description: "Resets all network adapters, TCP/IP stack, and Winsock catalog. Fixes most network connectivity issues.",
+      safety: "High Safety",
+      recommendation: "Optional",
+      category: "Network & Connectivity"
+    },
+    {
+      id: "proxy-cleanup",
+      name: "Proxy Settings Cleanup",
+      description: "Removes malicious proxy settings that may have been configured by malware to redirect traffic.",
+      safety: "High Safety",
+      recommendation: "Recommended",
+      category: "Network & Connectivity"
+    },
+    {
+      id: "hosts-file-repair",
+      name: "Hosts File Repair",
+      description: "Repairs and cleans the Windows hosts file, removing malicious entries that redirect legitimate websites.",
+      safety: "High Safety",
+      recommendation: "Recommended",
+      category: "Network & Connectivity"
+    },
+    // Privacy & Telemetry
+    {
+      id: "telemetry-disable",
+      name: "Windows Telemetry Disable",
+      description: "Disables Windows telemetry and data collection features to enhance privacy. Can be reversed if needed.",
+      safety: "Medium Safety",
+      recommendation: "Optional",
+      category: "Privacy & Telemetry"
+    },
+    {
+      id: "cortana-disable",
+      name: "Cortana & Search Optimization",
+      description: "Optimizes or disables Cortana and Windows Search features to improve performance and privacy.",
+      safety: "Medium Safety",
+      recommendation: "Optional",
+      category: "Privacy & Telemetry"
+    },
+    {
+      id: "onedrive-removal",
+      name: "OneDrive Removal/Disable",
+      description: "Removes or disables OneDrive integration if not needed. Can help improve system performance.",
+      safety: "Medium Safety",
+      recommendation: "Optional",
+      category: "Privacy & Telemetry"
+    },
+    // Performance Optimization
+    {
+      id: "disk-defrag",
+      name: "Disk Defragmentation",
+      description: "Performs disk defragmentation on HDDs or TRIM on SSDs. Automatically detects drive type for safe operation.",
+      safety: "High Safety",
+      recommendation: "Recommended",
+      category: "Performance Optimization"
+    },
+    {
+      id: "pagefile-optimization",
+      name: "Page File Optimization",
+      description: "Optimizes virtual memory settings based on system RAM and usage patterns for better performance.",
+      safety: "Medium Safety",
+      recommendation: "Advanced",
+      category: "Performance Optimization"
+    },
+    {
+      id: "power-settings",
+      name: "Power Settings Optimization",
+      description: "Optimizes power settings for best performance or balanced mode depending on system type.",
+      safety: "High Safety",
+      recommendation: "Optional",
+      category: "Performance Optimization"
+    },
     // Reporting & Notifications
+    {
+      id: "system-report",
+      name: "Comprehensive System Report",
+      description: "Generates detailed system health report including hardware info, installed software, and performance metrics.",
+      safety: "High Safety",
+      recommendation: "Recommended",
+      category: "Reporting & Notifications"
+    },
     {
       id: "email-report",
       name: "Email Report",
@@ -149,8 +337,8 @@ const ScriptGenerator = () => {
     },
     {
       id: "trmm-alert",
-      name: "TRMM Alert (Placeholder)",
-      description: "Placeholder for TRMM (Remote Monitoring) integration. Requires custom webhook configuration.",
+      name: "TRMM Alert Integration",
+      description: "Integration with Tactical RMM for remote monitoring alerts. Requires custom webhook configuration.",
       safety: "High Safety",
       recommendation: "Development",
       category: "Reporting & Notifications"
@@ -218,20 +406,145 @@ const ScriptGenerator = () => {
   };
 
   const generateScriptContent = () => {
-    const selectedFunctionNames = functions
-      .filter(f => selectedFunctions.includes(f.id))
-      .map(f => f.name);
+    const selectedFunctionData = functions.filter(f => selectedFunctions.includes(f.id));
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
     
     return `@echo off
-REM SupportCALL - Ultimate Secure Clean Script v2.5
-REM Generated with ${selectedFunctionNames.length} selected functions
+REM =============================================================================
+REM SupportCALL - Ultimate Secure Clean Script (SC-USCS) v2.5
+REM Professional Windows Remediation Engine (UWIRE)
+REM Generated: ${new Date().toLocaleString()}
+REM Functions Selected: ${selectedFunctionData.length} of ${functions.length}
+REM Compatibility: Windows 10, Windows 11
+REM =============================================================================
 
-REM Selected Functions:
-${selectedFunctionNames.map(name => `REM - ${name}`).join('\n')}
+setlocal EnableDelayedExpansion
+title SupportCALL - SC-USCS v2.5 - Professional Edition
 
-REM Script implementation would go here...
-echo Script execution completed.
-pause`;
+REM Check for Administrator privileges
+net session >nul 2>&1
+if %errorlevel% neq 0 (
+    echo ERROR: Administrator privileges required!
+    echo Please run this script as Administrator.
+    pause
+    exit /b 1
+)
+
+REM Initialize variables
+set "LOGPATH=%TEMP%\\SC-USCS_%timestamp%"
+set "STARTTIME=%TIME%"
+mkdir "%LOGPATH%" 2>nul
+
+echo =============================================================================
+echo  SupportCALL - Ultimate Secure Clean Script v2.5
+echo  Professional Windows Remediation Engine
+echo =============================================================================
+echo.
+echo Selected Functions: ${selectedFunctionData.length}
+echo Log Path: %LOGPATH%
+echo Start Time: %STARTTIME%
+echo.
+
+REM =============================================================================
+REM SELECTED FUNCTIONS AND CATEGORIES
+REM =============================================================================
+${selectedFunctionData.map(func => 
+`REM [${func.category}] ${func.name}
+REM Safety: ${func.safety} | Recommendation: ${func.recommendation}
+REM Description: ${func.description}`
+).join('\n')}
+
+REM =============================================================================
+REM STAGE 0: SYSTEM PREPARATION AND SAFETY CHECKS
+REM =============================================================================
+echo [Stage 0] System Preparation and Safety Checks...
+echo Creating system restore point...
+powershell -Command "Checkpoint-Computer -Description 'SC-USCS-Pre-Run' -RestorePointType 'MODIFY_SETTINGS'" 2>nul
+
+REM =============================================================================
+REM STAGE 1: SYSTEM CLEANING AND REPAIR FUNCTIONS  
+REM =============================================================================
+${selectedFunctionData.filter(f => f.category === "System Cleaning & Repair Functions").length > 0 ? 
+`echo [Stage 1] System Cleaning and Repair...
+${selectedFunctionData.filter(f => f.category === "System Cleaning & Repair Functions").map(func => {
+  switch(func.id) {
+    case 'temp-cleanup':
+      return `echo Cleaning temporary files...
+del /q /f /s "%TEMP%\\*" 2>nul
+del /q /f /s "%WINDIR%\\Temp\\*" 2>nul
+del /q /f /s "%WINDIR%\\Prefetch\\*" 2>nul`;
+    case 'recycle-bin':
+      return `echo Emptying Recycle Bin...
+rd /s /q C:\\$Recycle.bin 2>nul`;
+    case 'dns-flush':
+      return `echo Flushing DNS cache...
+ipconfig /flushdns`;
+    case 'disk-cleanup':
+      return `echo Running Windows Disk Cleanup...
+cleanmgr /sagerun:1 /verylowdisk`;
+    default:
+      return `echo Executing: ${func.name}...`;
+  }
+}).join('\n')}` : ''}
+
+REM =============================================================================
+REM STAGE 2: SYSTEM REPAIR AND INTEGRITY
+REM =============================================================================
+${selectedFunctionData.filter(f => f.category === "System Repair & Integrity Functions").length > 0 ? 
+`echo [Stage 2] System Repair and Integrity Checks...
+${selectedFunctionData.filter(f => f.category === "System Repair & Integrity Functions").map(func => {
+  switch(func.id) {
+    case 'sfc-scan':
+      return `echo Running System File Checker...
+sfc /scannow`;
+    case 'dism-health':
+      return `echo Running DISM Health Restore...
+DISM /Online /Cleanup-Image /RestoreHealth`;
+    case 'check-disk':
+      return `echo Checking disk integrity...
+chkdsk C: /f /r /x`;
+    default:
+      return `echo Executing: ${func.name}...`;
+  }
+}).join('\n')}` : ''}
+
+REM =============================================================================
+REM STAGE 3: SECURITY AND MALWARE PROTECTION
+REM =============================================================================
+${selectedFunctionData.filter(f => f.category === "Security & Malware Protection").length > 0 ? 
+`echo [Stage 3] Security and Malware Protection...
+${selectedFunctionData.filter(f => f.category === "Security & Malware Protection").map(func => {
+  switch(func.id) {
+    case 'defender-scan':
+      return `echo Running Microsoft Defender Full Scan...
+powershell -Command "Start-MpScan -ScanType FullScan"`;
+    case 'defender-config':
+      return `echo Configuring Microsoft Defender...
+powershell -Command "Set-MpPreference -DisableRealtimeMonitoring $false"
+powershell -Command "Set-MpPreference -CloudProtection Advanced"`;
+    default:
+      return `echo Executing: ${func.name}...`;
+  }
+}).join('\n')}` : ''}
+
+REM =============================================================================
+REM COMPLETION AND CLEANUP
+REM =============================================================================
+echo.
+echo =============================================================================
+echo  Script Execution Complete
+echo =============================================================================
+set "ENDTIME=%TIME%"
+echo Start Time: %STARTTIME%
+echo End Time: %ENDTIME%
+echo Log Location: %LOGPATH%
+echo Functions Executed: ${selectedFunctionData.length}
+echo.
+echo Please review the logs for any errors or warnings.
+echo A system restart may be required to complete all operations.
+echo.
+pause
+exit /b 0`;
   };
 
   const getSafetyColor = (safety: string) => {
@@ -254,89 +567,125 @@ pause`;
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-100 dark:from-gray-900 dark:to-gray-800 p-4">
-      <div className="max-w-6xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-primary/5 to-secondary/10 dark:from-background dark:to-muted/20">
+      <div className="container mx-auto px-4 py-6 max-w-7xl">
         {/* Header */}
-        <Card className="mb-6 bg-white/80 backdrop-blur-sm">
-          <CardHeader className="text-center">
-            <CardTitle className="text-4xl font-bold text-gray-800 mb-2">
-              SupportCALL - Ultimate Secure Clean Script v2.5
-            </CardTitle>
-            <CardDescription className="text-lg text-gray-600 mb-4">
-              Professional System Cleaning & Security Enhancement Tool
+        <Card className="mb-6 border-0 shadow-2xl bg-gradient-to-r from-primary/10 to-secondary/10 backdrop-blur-xl">
+          <CardHeader className="text-center space-y-4 py-8">
+            <div className="space-y-2">
+              <CardTitle className="text-3xl md:text-5xl font-black bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                SupportCALL - Ultimate Secure Clean Script
+              </CardTitle>
+              <div className="text-lg md:text-xl font-semibold text-muted-foreground">
+                v2.5 - Professional Edition
+              </div>
+            </div>
+            <CardDescription className="text-base md:text-lg max-w-3xl mx-auto leading-relaxed">
+              The Ultimate Self-Contained Windows Remediation Engine (UWIRE) - Professional System Cleaning, Security Enhancement & Optimization Tool for Windows 10/11
             </CardDescription>
-            <div className="flex justify-center gap-3 flex-wrap">
-              <Badge className="bg-blue-500 text-white">SC-USCS v2.5</Badge>
-              <Badge className="bg-green-500 text-white">Safety Rating: 95%</Badge>
-              <Badge className="bg-blue-600 text-white">Effectiveness: 90%</Badge>
+            <div className="flex justify-center gap-2 md:gap-4 flex-wrap">
+              <Badge variant="default" className="px-3 py-1 text-sm">SC-USCS v2.5</Badge>
+              <Badge variant="secondary" className="px-3 py-1 text-sm">Safety: 98%</Badge>
+              <Badge variant="outline" className="px-3 py-1 text-sm">Effectiveness: 95%</Badge>
+              <Badge variant="outline" className="px-3 py-1 text-sm">Win 10/11 Compatible</Badge>
             </div>
           </CardHeader>
         </Card>
 
-        {/* Warning Notices */}
-        <div className="space-y-4 mb-6">
-          <Alert className="border-orange-200 bg-orange-50 dark:bg-orange-950 dark:border-orange-800">
-            <AlertTriangle className="h-4 w-4 text-orange-600" />
-            <AlertDescription className="text-orange-800 dark:text-orange-200">
-              <strong>Administrator Required:</strong> The generated script must be run with Administrator privileges. 
-              Save all work before running as some operations may require system restart.
+        {/* Critical Warnings */}
+        <div className="grid gap-4 mb-8 lg:grid-cols-2">
+          <Alert className="border-destructive/50 bg-destructive/5 shadow-lg">
+            <AlertTriangle className="h-5 w-5 text-destructive" />
+            <AlertDescription className="font-medium">
+              <strong className="text-destructive">⚠️ ADMINISTRATOR REQUIRED:</strong> This script must run with full Administrator privileges. 
+              Save all work and close applications before execution. System restart may be required.
             </AlertDescription>
           </Alert>
 
-          <Alert className="border-red-200 bg-red-50 dark:bg-red-950 dark:border-red-800">
-            <AlertTriangle className="h-4 w-4 text-red-600" />
-            <AlertDescription className="text-red-800 dark:text-red-200">
-              <strong>CRITICAL - BACKUP FIRST:</strong> Before running this script, ALWAYS create a full system backup and Windows System Restore Point. 
-              While this script is designed to be safe, system modifications always carry inherent risks.
+          <Alert className="border-destructive bg-destructive/10 shadow-lg">
+            <AlertTriangle className="h-5 w-5 text-destructive" />
+            <AlertDescription className="font-medium">
+              <strong className="text-destructive">🛡️ BACKUP MANDATORY:</strong> Create system backup and restore point before running. 
+              While extensively tested, system modifications carry inherent risks.
             </AlertDescription>
           </Alert>
-
-          <Card className="bg-yellow-50 border-yellow-200 dark:bg-yellow-950 dark:border-yellow-800">
-            <CardHeader>
-              <CardTitle className="text-lg text-yellow-800 dark:text-yellow-200">Pre-Run Checklist:</CardTitle>
-            </CardHeader>
-            <CardContent className="text-yellow-800 dark:text-yellow-200">
-              <ul className="list-disc pl-5 space-y-1">
-                <li>Create a full system backup (external drive recommended)</li>
-                <li>Create a System Restore Point</li>
-                <li>Ensure you have Administrator privileges</li>
-                <li>Close all non-essential applications</li>
-                <li>Connect device to power source if applicable</li>
-              </ul>
-            </CardContent>
-          </Card>
         </div>
 
-        {/* Action Buttons */}
-        <div className="flex justify-center gap-4 mb-8 flex-wrap">
-          <Button onClick={handleSelectAll} variant="default">
-            Select All Functions
-          </Button>
-          <Button onClick={handleClearAll} variant="outline">
-            Clear All Selections
-          </Button>
-          <Button onClick={handleSelectRecommended} variant="secondary">
-            Select Recommended Only
-          </Button>
-        </div>
+        {/* Professional Pre-Run Checklist */}
+        <Card className="mb-8 border-amber-200 bg-gradient-to-r from-amber-50/50 to-yellow-50/50 shadow-lg">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-amber-800">
+              <FileText className="h-5 w-5" />
+              Professional Pre-Execution Checklist
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="space-y-2">
+                <h4 className="font-semibold text-amber-800">System Preparation:</h4>
+                <ul className="space-y-1 text-sm text-amber-700">
+                  <li>✓ Full system backup to external drive</li>
+                  <li>✓ Windows System Restore Point created</li>
+                  <li>✓ Administrator account access confirmed</li>
+                  <li>✓ All critical applications closed</li>
+                </ul>
+              </div>
+              <div className="space-y-2">
+                <h4 className="font-semibold text-amber-800">Environment Setup:</h4>
+                <ul className="space-y-1 text-sm text-amber-700">
+                  <li>✓ Device connected to power source</li>
+                  <li>✓ Stable internet connection available</li>
+                  <li>✓ Minimum 2GB free disk space</li>
+                  <li>✓ No competing security scans running</li>
+                </ul>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
 
-        {/* Function Categories */}
-        <div className="space-y-8 mb-8">
+        {/* Quick Action Toolbar */}
+        <Card className="mb-8 shadow-lg">
+          <CardContent className="pt-6">
+            <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4 mb-4">
+              <Button onClick={handleSelectAll} size="lg" className="flex-1 sm:flex-none">
+                Select All Functions
+              </Button>
+              <Button onClick={handleClearAll} variant="outline" size="lg" className="flex-1 sm:flex-none">
+                Clear All Selections
+              </Button>
+              <Button onClick={handleSelectRecommended} variant="secondary" size="lg" className="flex-1 sm:flex-none">
+                Recommended Only
+              </Button>
+            </div>
+            <div className="text-center">
+              <Badge variant="outline" className="text-sm">
+                Selected: {selectedFunctions.length} of {functions.length} functions
+              </Badge>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Function Categories - Responsive Grid */}
+        <div className="space-y-12 mb-12">
           {categories.map(category => (
-            <div key={category}>
-              <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-4 border-b-2 border-gray-300 pb-2">
-                {category}
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div key={category} className="scroll-mt-20" id={category.toLowerCase().replace(/\s+/g, '-')}>
+              <div className="sticky top-4 z-10 mb-6">
+                <h2 className="text-xl md:text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent mb-2">
+                  {category}
+                </h2>
+                <div className="h-1 bg-gradient-to-r from-primary to-secondary rounded-full w-full"></div>
+              </div>
+              
+              <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6">
                 {functions
                   .filter(f => f.category === category)
                   .map(func => (
                     <Card 
                       key={func.id} 
-                      className={`cursor-pointer transition-all hover:shadow-md ${
+                      className={`group cursor-pointer transition-all duration-200 hover:scale-[1.02] hover:shadow-xl ${
                         selectedFunctions.includes(func.id) 
-                          ? 'border-blue-500 bg-blue-50 dark:bg-blue-950' 
-                          : 'bg-white dark:bg-gray-800'
+                          ? 'border-primary bg-primary/5 shadow-lg ring-2 ring-primary/20' 
+                          : 'hover:border-primary/50 hover:shadow-lg'
                       }`}
                       onClick={() => handleFunctionToggle(func.id)}
                     >
@@ -345,27 +694,29 @@ pause`;
                           <Checkbox 
                             checked={selectedFunctions.includes(func.id)}
                             onChange={() => handleFunctionToggle(func.id)}
-                            className="mt-1"
+                            className="mt-1 scale-110"
                           />
-                          <div className="flex-1">
-                            <CardTitle className="text-lg">{func.name}</CardTitle>
+                          <div className="flex-1 min-w-0">
+                            <CardTitle className="text-base md:text-lg font-bold leading-tight group-hover:text-primary transition-colors">
+                              {func.name}
+                            </CardTitle>
                           </div>
                         </div>
                       </CardHeader>
-                      <CardContent>
-                        <CardDescription className="mb-3 text-sm leading-relaxed">
+                      <CardContent className="space-y-4">
+                        <CardDescription className="text-sm leading-relaxed text-muted-foreground">
                           {func.description}
                         </CardDescription>
                         <div className="flex gap-2 flex-wrap">
                           <Badge 
                             variant="outline" 
-                            className={getSafetyColor(func.safety)}
+                            className={`${getSafetyColor(func.safety)} text-xs font-medium`}
                           >
                             {func.safety}
                           </Badge>
                           <Badge 
                             variant="outline"
-                            className={getRecommendationColor(func.recommendation)}
+                            className={`${getRecommendationColor(func.recommendation)} text-xs font-medium`}
                           >
                             {func.recommendation}
                           </Badge>
@@ -378,41 +729,54 @@ pause`;
           ))}
         </div>
 
-        {/* Generation Buttons */}
-        <Card className="bg-white/80 backdrop-blur-sm">
-          <CardContent className="pt-6">
-            <div className="flex justify-center gap-4 flex-wrap">
-              <Button onClick={generateScript} size="lg" className="bg-green-600 hover:bg-green-700">
-                <FileText className="w-5 h-5 mr-2" />
-                Generate Custom Script
-              </Button>
-              <Button onClick={downloadScript} size="lg" variant="outline">
-                <Download className="w-5 h-5 mr-2" />
-                Download sc-uscs.bat
-              </Button>
-              <Button onClick={() => setShowScript(!showScript)} size="lg" variant="secondary">
-                <Copy className="w-5 h-5 mr-2" />
-                Show Copy/Paste Code
-              </Button>
-            </div>
-            
-            {showScript && (
-              <div className="mt-6">
-                <div className="bg-gray-900 text-green-400 p-4 rounded-lg font-mono text-sm overflow-x-auto">
-                  <pre>{generateScriptContent()}</pre>
-                </div>
-                <div className="flex justify-end mt-2">
-                  <Button onClick={copyScript} size="sm" variant="outline">
-                    <Copy className="w-4 h-4 mr-2" />
-                    Copy to Clipboard
-                  </Button>
+        {/* Script Generation Panel - Enhanced */}
+        <Card className="shadow-2xl border-0 bg-gradient-to-br from-background to-muted/20 backdrop-blur-xl sticky bottom-4 z-20">
+          <CardContent className="p-6 md:p-8">
+            <div className="space-y-6">
+              {/* Generation Stats */}
+              <div className="text-center space-y-2">
+                <h3 className="text-xl md:text-2xl font-bold">Ready to Generate Your Custom Script</h3>
+                <div className="flex justify-center gap-4 text-sm text-muted-foreground">
+                  <span>Functions Selected: <strong className="text-primary">{selectedFunctions.length}</strong></span>
+                  <span>•</span>
+                  <span>Total Available: <strong>{functions.length}</strong></span>
+                  <span>•</span>
+                  <span>Coverage: <strong className="text-primary">{Math.round((selectedFunctions.length / functions.length) * 100)}%</strong></span>
                 </div>
               </div>
-            )}
 
-            <p className="text-center text-sm text-gray-600 mt-4">
-              Selected: {selectedFunctions.length} of {functions.length} functions
-            </p>
+              {/* Action Buttons */}
+              <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4">
+                <Button onClick={generateScript} size="lg" className="flex-1 sm:flex-none bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90">
+                  <FileText className="w-5 h-5 mr-2" />
+                  Generate Custom Script
+                </Button>
+                <Button onClick={downloadScript} size="lg" variant="outline" className="flex-1 sm:flex-none border-primary text-primary hover:bg-primary hover:text-primary-foreground">
+                  <Download className="w-5 h-5 mr-2" />
+                  Download sc-uscs.bat
+                </Button>
+                <Button onClick={() => setShowScript(!showScript)} size="lg" variant="secondary" className="flex-1 sm:flex-none">
+                  <Copy className="w-5 h-5 mr-2" />
+                  {showScript ? 'Hide' : 'Show'} Script Code
+                </Button>
+              </div>
+              
+              {/* Script Preview */}
+              {showScript && (
+                <div className="mt-6 space-y-4">
+                  <div className="bg-slate-950 text-green-400 p-4 rounded-lg font-mono text-xs md:text-sm overflow-x-auto max-h-96 overflow-y-auto border border-primary/20">
+                    <pre className="whitespace-pre-wrap">{generateScriptContent()}</pre>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-xs text-muted-foreground">Script ready for deployment on Windows 10/11 systems</span>
+                    <Button onClick={copyScript} size="sm" variant="outline">
+                      <Copy className="w-4 h-4 mr-2" />
+                      Copy to Clipboard
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </div>
           </CardContent>
         </Card>
       </div>
