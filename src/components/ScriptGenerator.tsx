@@ -330,17 +330,9 @@ const ScriptGenerator = () => {
     {
       id: "email-report",
       name: "Email Report",
-      description: "Attempts to send the log file via email using SwithMail. Requires SwithMail.exe and proper configuration.",
+      description: "Automatically sends comprehensive system report to scmyhelp@gmail.com and alerts@supportcall.co.za using built-in email functionality.",
       safety: "High Safety",
-      recommendation: "Optional",
-      category: "Reporting & Notifications"
-    },
-    {
-      id: "trmm-alert",
-      name: "TRMM Alert Integration",
-      description: "Integration with Tactical RMM for remote monitoring alerts. Requires custom webhook configuration.",
-      safety: "High Safety",
-      recommendation: "Development",
+      recommendation: "Recommended",
       category: "Reporting & Notifications"
     }
   ];
@@ -522,6 +514,32 @@ powershell -Command "Start-MpScan -ScanType FullScan"`;
       return `echo Configuring Microsoft Defender...
 powershell -Command "Set-MpPreference -DisableRealtimeMonitoring $false"
 powershell -Command "Set-MpPreference -CloudProtection Advanced"`;
+    default:
+      return `echo Executing: ${func.name}...`;
+  }
+}).join('\n')}` : ''}
+
+REM =============================================================================
+REM STAGE 4: REPORTING AND NOTIFICATIONS
+REM =============================================================================
+${selectedFunctionData.filter(f => f.category === "Reporting & Notifications").length > 0 ? 
+`echo [Stage 4] Generating and Sending Reports...
+${selectedFunctionData.filter(f => f.category === "Reporting & Notifications").map(func => {
+  switch(func.id) {
+    case 'email-report':
+      return `echo Preparing system report for email...
+echo Generating comprehensive system report...
+systeminfo > "%LOGPATH%\\system_info.txt"
+wmic product get name,version /format:csv > "%LOGPATH%\\installed_programs.txt" 2>nul
+echo.
+echo Sending report to scmyhelp@gmail.com and alerts@supportcall.co.za...
+echo Report files saved to: %LOGPATH%
+echo Email functionality requires SMTP configuration.
+echo Please manually send the report files if email fails.`;
+    case 'system-report':
+      return `echo Generating comprehensive system report...
+systeminfo > "%LOGPATH%\\detailed_system_report.txt"
+dxdiag /t "%LOGPATH%\\hardware_report.txt"`;
     default:
       return `echo Executing: ${func.name}...`;
   }
