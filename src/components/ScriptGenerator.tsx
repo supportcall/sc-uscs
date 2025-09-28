@@ -638,21 +638,19 @@ exit /b 0`;
 
         {/* Critical Warnings */}
         <div className="grid gap-4 mb-8 lg:grid-cols-2">
-          <Alert className="border-destructive/50 bg-destructive/5 shadow-lg">
-            <AlertTriangle className="h-5 w-5 text-destructive" />
-            <AlertDescription className="font-medium">
-              <strong className="text-destructive">⚠️ ADMINISTRATOR REQUIRED:</strong> This script must run with full Administrator privileges. 
-              Save all work and close applications before execution. System restart may be required.
-            </AlertDescription>
-          </Alert>
+           <Alert className="border-destructive/50 bg-destructive/5 shadow-lg">
+             <AlertDescription className="font-medium">
+               <strong className="text-destructive">ADMINISTRATOR REQUIRED:</strong> This script must run with full Administrator privileges. 
+               Save all work and close applications before execution. System restart may be required.
+             </AlertDescription>
+           </Alert>
 
-          <Alert className="border-destructive bg-destructive/10 shadow-lg">
-            <AlertTriangle className="h-5 w-5 text-destructive" />
-            <AlertDescription className="font-medium">
-              <strong className="text-destructive">🛡️ BACKUP MANDATORY:</strong> Create system backup and restore point before running. 
-              While extensively tested, system modifications carry inherent risks.
-            </AlertDescription>
-          </Alert>
+           <Alert className="border-destructive bg-destructive/10 shadow-lg">
+             <AlertDescription className="font-medium">
+               <strong className="text-destructive">BACKUP MANDATORY:</strong> Create system backup and restore point before running. 
+               While extensively tested, system modifications carry inherent risks.
+             </AlertDescription>
+           </Alert>
         </div>
 
         {/* Professional Pre-Run Checklist - ENHANCED */}
