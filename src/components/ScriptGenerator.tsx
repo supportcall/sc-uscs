@@ -433,8 +433,9 @@ if %errorlevel% neq 0 (
 )
 
 REM Initialize variables
-set "LOGPATH=%TEMP%\\SC-USCS_%timestamp%"
+set "LOGPATH=%USERPROFILE%\\Desktop\\SC-USCS\\SC-USCS_%timestamp%"
 set "STARTTIME=%TIME%"
+mkdir "%USERPROFILE%\\Desktop\\SC-USCS" 2>nul
 mkdir "%LOGPATH%" 2>nul
 
 echo =============================================================================
