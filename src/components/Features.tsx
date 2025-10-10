@@ -85,7 +85,7 @@ const Features = () => {
             Enterprise-Grade Features
           </h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            UWIRE delivers comprehensive Windows remediation through a modernized, 
+            SC-UWIRE delivers comprehensive Windows remediation through a modernized, 
             autonomous architecture designed for IT professionals.
           </p>
         </div>

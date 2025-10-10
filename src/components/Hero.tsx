@@ -22,7 +22,7 @@ const Hero = () => {
         </h1>
         
         <p className="text-xl md:text-2xl font-semibold mb-4 text-primary-glow">
-          UWIRE - Ultimate Secure Clean Script
+          SC-UWIRE - Ultimate Windows Remediation Engine
         </p>
         
         <p className="text-lg text-muted-foreground mb-8 max-w-3xl mx-auto leading-relaxed">
@@ -49,7 +49,7 @@ const Hero = () => {
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
           <Button size="lg" className="bg-gradient-primary hover:shadow-glow transition-all duration-300">
             <Download className="w-5 h-5 mr-2" />
-            Download UWIRE v2.6
+            Download SC-UWIRE v2.6
           </Button>
           
           <Button variant="outline" size="lg" className="border-primary/30 hover:border-primary hover:shadow-elegant transition-all duration-300">

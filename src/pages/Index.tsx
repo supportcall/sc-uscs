@@ -9,7 +9,7 @@ const Index = () => {
   return (
     <>
       <Helmet>
-        <title>SupportCALL - UWIRE | Ultimate Windows Remediation Engine</title>
+        <title>SupportCALL - SC-UWIRE | Ultimate Windows Remediation Engine</title>
         <meta name="description" content="Professional Windows remediation tool featuring autonomous malware removal, system repair, and optimization. Enterprise-grade PowerShell architecture for IT professionals." />
       </Helmet>
       <main className="min-h-screen">

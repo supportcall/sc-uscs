@@ -951,7 +951,7 @@ ${cat.functions.map((func, funcIndex) => generateFunctionImplementation(func, st
     return `@echo off
 REM =============================================================================
 REM SupportCALL - Ultimate Secure Clean Script (SC-USCS) v2.6
-REM Professional Windows Remediation Engine (UWIRE)
+REM Professional Windows Remediation Engine (SC-UWIRE)
 REM Generated: ${new Date().toLocaleString()}
 REM Functions Selected: ${selectedFunctionData.length} of ${functions.length}
 REM Compatibility: Windows 10, Windows 11
@@ -1091,7 +1091,7 @@ exit /b 0`;
               </div>
             </div>
             <CardDescription className="text-base md:text-lg max-w-3xl mx-auto leading-relaxed">
-              The Ultimate Self-Contained Windows Remediation Engine (UWIRE) - Professional System Cleaning, Security Enhancement & Optimization Tool for Windows 10/11
+              SupportCALL - Ultimate Windows Remediation Engine (SC-UWIRE) - Professional System Cleaning, Security Enhancement & Optimization Tool for Windows 10/11
             </CardDescription>
             <div className="flex justify-center gap-2 md:gap-4 flex-wrap">
               <Badge variant="default" className="px-3 py-1 text-sm">SC-USCS v2.6</Badge>
