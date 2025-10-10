@@ -1287,12 +1287,56 @@ exit /b 0`;
               {/* Generation Stats */}
               <div className="text-center space-y-2">
                 <h2 id="script-generation" className="text-xl md:text-2xl font-bold">Ready to Generate Your Custom Script</h2>
-                <div className="flex justify-center gap-4 text-sm text-muted-foreground">
+                <div className="flex justify-center gap-4 text-sm text-muted-foreground flex-wrap">
                   <span>Functions Selected: <strong className="text-primary">{selectedFunctions.length}</strong></span>
                   <span>•</span>
                   <span>Total Available: <strong>{functions.length}</strong></span>
                   <span>•</span>
                   <span>Coverage: <strong className="text-primary">{Math.round((selectedFunctions.length / functions.length) * 100)}%</strong></span>
+                  {selectedFunctions.length > 0 && (() => {
+                    const selectedFuncs = functions.filter(f => selectedFunctions.includes(f.id));
+                    const recommendationCounts = {
+                      Recommended: selectedFuncs.filter(f => f.recommendation === "Recommended").length,
+                      Optional: selectedFuncs.filter(f => f.recommendation === "Optional").length,
+                      Advanced: selectedFuncs.filter(f => f.recommendation === "Advanced").length,
+                      Development: selectedFuncs.filter(f => f.recommendation === "Development").length
+                    };
+                    const dominantRec = Object.entries(recommendationCounts).sort((a, b) => b[1] - a[1])[0][0];
+                    const safetyCounts = {
+                      High: selectedFuncs.filter(f => f.safety === "High Safety").length,
+                      Medium: selectedFuncs.filter(f => f.safety === "Medium Safety").length,
+                      Low: selectedFuncs.filter(f => f.safety === "Low Safety").length
+                    };
+                    const dominantSafety = Object.entries(safetyCounts).sort((a, b) => b[1] - a[1])[0][0];
+                    
+                    return (
+                      <>
+                        <span>•</span>
+                        <span className="flex items-center gap-2">
+                          Safety Level: 
+                          <Badge variant="outline" className={
+                            dominantSafety === "High" ? "bg-green-500/10 text-green-600 border-green-500/20" :
+                            dominantSafety === "Medium" ? "bg-yellow-500/10 text-yellow-600 border-yellow-500/20" :
+                            "bg-red-500/10 text-red-600 border-red-500/20"
+                          }>
+                            {dominantSafety}
+                          </Badge>
+                        </span>
+                        <span>•</span>
+                        <span className="flex items-center gap-2">
+                          Level: 
+                          <Badge variant="outline" className={
+                            dominantRec === "Recommended" ? "bg-blue-500/10 text-blue-600 border-blue-500/20" :
+                            dominantRec === "Optional" ? "bg-slate-100 text-slate-600 border-slate-300 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-600" :
+                            dominantRec === "Advanced" ? "bg-red-100 text-red-600 border-red-300 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800" :
+                            "bg-purple-500/10 text-purple-600 border-purple-500/20"
+                          }>
+                            {dominantRec}
+                          </Badge>
+                        </span>
+                      </>
+                    );
+                  })()}
                 </div>
               </div>
 
