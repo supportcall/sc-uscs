@@ -47,12 +47,31 @@ const Hero = () => {
           </div>
         </div>
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
-          <Button size="lg" className="bg-gradient-primary hover:shadow-glow transition-all duration-300">
-            <Download className="w-5 h-5 mr-2" />
-            Download SC-UWIRE v2.6
+          <Button 
+            size="lg" 
+            className="bg-gradient-primary hover:shadow-glow transition-all duration-300"
+            asChild
+          >
+            <a href="https://github.com/supportcall/sc-uwire/releases/latest" target="_blank" rel="noopener noreferrer">
+              <Download className="w-5 h-5 mr-2" />
+              Download SC-UWIRE v2.6
+            </a>
           </Button>
           
-          <Button variant="outline" size="lg" className="border-primary/30 hover:border-primary hover:shadow-elegant transition-all duration-300">
+          <Button 
+            variant="outline" 
+            size="lg" 
+            className="border-primary/30 hover:border-primary hover:shadow-elegant transition-all duration-300"
+            onClick={() => {
+              const element = document.getElementById('sc-uwire');
+              if (element) {
+                const architectureSection = element.querySelector('[id*="architecture"], section');
+                if (architectureSection) {
+                  architectureSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+              }
+            }}
+          >
             <Shield className="w-5 h-5 mr-2" />
             View Documentation
           </Button>
