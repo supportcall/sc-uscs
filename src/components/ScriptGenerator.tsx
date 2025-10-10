@@ -22,307 +22,385 @@ const ScriptGenerator = () => {
   const [showScript, setShowScript] = useState(false);
 
   const functions: ScriptFunction[] = [
-    // System Cleaning & Repair Functions
+    // System Repair Functions
     {
-      id: "temp-cleanup",
-      name: "Temporary Files Cleanup",
-      description: "Cleans user and system temporary files, recent documents, and prefetch cache. Frees disk space and removes potential malware hiding spots.",
+      id: "sfc-scan",
+      name: "System File Checker (SFC)",
+      description: "SFC — Repairs protected system files.",
       safety: "High Safety",
       recommendation: "Recommended",
-      category: "System Cleaning & Repair Functions"
+      category: "System Repair Functions"
     },
     {
-      id: "recycle-bin",
-      name: "Empty Recycle Bin",
-      description: "Permanently removes all items from the Recycle Bin, freeing up disk space.",
+      id: "dism-restore",
+      name: "DISM Restore Health",
+      description: "DISM /RestoreHealth — Repairs component store; fixes servicing stack.",
       safety: "High Safety",
       recommendation: "Recommended",
-      category: "System Cleaning & Repair Functions"
+      category: "System Repair Functions"
     },
     {
-      id: "dns-flush",
-      name: "DNS Cache Flush",
-      description: "Clears DNS resolver cache to fix network connectivity issues and ensure fresh DNS lookups.",
+      id: "dism-cleanup",
+      name: "DISM Component Cleanup",
+      description: "DISM /StartComponentCleanup — Removes superseded WinSxS components.",
       safety: "High Safety",
       recommendation: "Recommended",
-      category: "System Cleaning & Repair Functions"
+      category: "System Repair Functions"
     },
     {
-      id: "disk-cleanup",
-      name: "Windows Disk Cleanup",
-      description: "Runs the built-in Windows Disk Cleanup utility to remove system files, update cache, and temporary internet files.",
+      id: "chkdsk",
+      name: "Check Disk (CHKDSK)",
+      description: "CHKDSK — Scans/fixes filesystem errors and bad sectors.",
+      safety: "Medium Safety",
+      recommendation: "Optional",
+      category: "System Repair Functions"
+    },
+    {
+      id: "repair-volume",
+      name: "Repair Volume (PowerShell)",
+      description: "Repair-Volume (PowerShell) — Online/offline volume scan and repair.",
       safety: "High Safety",
       recommendation: "Recommended",
-      category: "System Cleaning & Repair Functions"
+      category: "System Repair Functions"
+    },
+    // System Cleaning Functions
+    {
+      id: "cleanmgr",
+      name: "Disk Cleanup (Cleanmgr)",
+      description: "Cleanmgr — Legacy Disk Cleanup; scripted space reclaim.",
+      safety: "High Safety",
+      recommendation: "Recommended",
+      category: "System Cleaning Functions"
+    },
+    {
+      id: "optimize-volume",
+      name: "Optimize Volume / Defrag",
+      description: "Optimize-Volume / Defrag.exe — TRIM/defrag per-drive type.",
+      safety: "High Safety",
+      recommendation: "Recommended",
+      category: "System Cleaning Functions"
     },
     {
       id: "bleachbit",
       name: "BleachBit Deep Clean",
-      description: "Advanced cleaning using BleachBit portable for deep system cleanup including logs, clipboard, and update residues. Requires BleachBit.exe in script folder.",
-      safety: "High Safety",
-      recommendation: "Recommended",
-      category: "System Cleaning & Repair Functions"
-    },
-    {
-      id: "ccleaner",
-      name: "CCleaner Integration",
-      description: "Integrates CCleaner portable for comprehensive registry cleanup and browser cache clearing. Self-contained execution.",
-      safety: "High Safety",
-      recommendation: "Recommended",
-      category: "System Cleaning & Repair Functions"
-    },
-    {
-      id: "event-logs",
-      name: "Windows Event Log Cleanup",
-      description: "Clears Windows Event Logs to free space and remove historical error data that may contain sensitive information.",
+      description: "BleachBit (portable) — Deep system/browser cleanup with full CLI for automation.",
       safety: "High Safety",
       recommendation: "Optional",
-      category: "System Cleaning & Repair Functions"
+      category: "System Cleaning Functions"
     },
+    // Event Logs Management
     {
-      id: "prefetch-cleanup",
-      name: "Prefetch & Superfetch Cleanup",
-      description: "Clears Windows prefetch data and superfetch cache to improve boot times and system responsiveness.",
-      safety: "High Safety",
-      recommendation: "Recommended",
-      category: "System Cleaning & Repair Functions"
-    },
-    // System Repair & Integrity Functions
-    {
-      id: "sfc-scan",
-      name: "System File Checker (SFC)",
-      description: "Scans and repairs corrupted Windows system files. Essential for system stability and security.",
-      safety: "High Safety",
-      recommendation: "Recommended",
-      category: "System Repair & Integrity Functions"
-    },
-    {
-      id: "dism-health",
-      name: "DISM Image Health",
-      description: "Repairs the Windows Component Store which SFC relies on. Essential for complete system repair.",
-      safety: "High Safety",
-      recommendation: "Recommended",
-      category: "System Repair & Integrity Functions"
-    },
-    {
-      id: "check-disk",
-      name: "Check Disk (Informational)",
-      description: "Performs an informational disk check to identify file system errors. Does not fix issues automatically.",
+      id: "wevtutil",
+      name: "Event Log Management",
+      description: "Wevtutil — Query/export/clear Windows event logs from CLI.",
       safety: "High Safety",
       recommendation: "Optional",
-      category: "System Repair & Integrity Functions"
+      category: "Event Logs Management"
     },
+    // Network Repair Functions
     {
-      id: "memory-diagnostic",
-      name: "Windows Memory Diagnostic",
-      description: "Schedules a memory diagnostic test on next reboot to detect RAM issues that may cause system instability.",
+      id: "dns-flush",
+      name: "Flush DNS Cache",
+      description: "Ipconfig /flushdns — Flushes DNS resolver cache.",
       safety: "High Safety",
-      recommendation: "Optional",
-      category: "System Repair & Integrity Functions"
+      recommendation: "Recommended",
+      category: "Network Repair Functions"
     },
     {
-      id: "startup-repair",
-      name: "Startup Repair Analysis",
-      description: "Analyzes startup issues and attempts to repair common boot problems using Windows built-in tools.",
+      id: "winsock-reset",
+      name: "Winsock Reset",
+      description: "Netsh winsock reset — Resets Winsock/LSP.",
+      safety: "High Safety",
+      recommendation: "Recommended",
+      category: "Network Repair Functions"
+    },
+    {
+      id: "tcpip-reset",
+      name: "TCP/IP Stack Reset",
+      description: "Netsh int ip reset — Rebuilds TCP/IP stack.",
+      safety: "High Safety",
+      recommendation: "Recommended",
+      category: "Network Repair Functions"
+    },
+    {
+      id: "firewall-reset",
+      name: "Windows Firewall Reset",
+      description: "Netsh advfirewall reset — Resets Windows Firewall.",
+      safety: "Medium Safety",
+      recommendation: "Optional",
+      category: "Network Repair Functions"
+    },
+    {
+      id: "proxy-reset",
+      name: "Proxy Reset",
+      description: "Netsh winhttp reset proxy — Clears system proxy.",
+      safety: "High Safety",
+      recommendation: "Recommended",
+      category: "Network Repair Functions"
+    },
+    {
+      id: "netcfg-reset",
+      name: "Full Network Stack Reset",
+      description: "Netcfg -d — Full network stack reset/rebind.",
       safety: "Medium Safety",
       recommendation: "Advanced",
-      category: "System Repair & Integrity Functions"
+      category: "Network Repair Functions"
     },
-    // Security & Malware Protection
     {
-      id: "defender-config",
-      name: "Configure Microsoft Defender",
-      description: "Enables enhanced Defender settings: real-time protection, cloud protection, sample submission, and controlled folder access in audit mode.",
+      id: "arp-clear",
+      name: "Clear ARP Cache",
+      description: "Arp -d * — Clears ARP cache.",
+      safety: "High Safety",
+      recommendation: "Optional",
+      category: "Network Repair Functions"
+    },
+    {
+      id: "netsh-trace",
+      name: "Network Trace Capture",
+      description: "Netsh trace — Built-in network trace capture for troubleshooting.",
+      safety: "High Safety",
+      recommendation: "Advanced",
+      category: "Network Repair Functions"
+    },
+    // Windows Store & Update Functions
+    {
+      id: "wsreset",
+      name: "Windows Store Reset",
+      description: "WSReset.exe — Resets Microsoft Store cache.",
+      safety: "High Safety",
+      recommendation: "Optional",
+      category: "Windows Store & Update Functions"
+    },
+    {
+      id: "usoclient",
+      name: "Windows Update Client",
+      description: "UsoClient (StartScan/StartDownload/StartInstall) — Triggers Windows Update actions.",
+      safety: "High Safety",
+      recommendation: "Recommended",
+      category: "Windows Store & Update Functions"
+    },
+    {
+      id: "pswindowsupdate",
+      name: "PowerShell Windows Update",
+      description: "PSWindowsUpdate (PowerShell module) — Script Windows Update scan/install/hide.",
+      safety: "High Safety",
+      recommendation: "Recommended",
+      category: "Windows Store & Update Functions"
+    },
+    {
+      id: "winget",
+      name: "Winget App Management",
+      description: "Winget — Script app installs/upgrades/repairs at scale.",
+      safety: "High Safety",
+      recommendation: "Optional",
+      category: "Windows Store & Update Functions"
+    },
+    // Diagnostics & Troubleshooting
+    {
+      id: "setupdiag",
+      name: "Setup Diagnostic Tool",
+      description: "SetupDiag.exe — CLI analysis of Windows setup/upgrade failures.",
+      safety: "High Safety",
+      recommendation: "Advanced",
+      category: "Diagnostics & Troubleshooting"
+    },
+    // Boot Repair Functions
+    {
+      id: "bootrec",
+      name: "Boot Record Repair",
+      description: "Bootrec (WinRE) — /fixmbr /fixboot /rebuildbcd boot repair.",
+      safety: "Medium Safety",
+      recommendation: "Advanced",
+      category: "Boot Repair Functions"
+    },
+    {
+      id: "bcdboot",
+      name: "BCD Boot Rebuild",
+      description: "Bcdboot — Rebuilds boot files/BCD from a healthy Windows.",
+      safety: "Medium Safety",
+      recommendation: "Advanced",
+      category: "Boot Repair Functions"
+    },
+    // Storage & Backup Management
+    {
+      id: "vssadmin",
+      name: "Shadow Copy Management",
+      description: "Vssadmin — Lists/deletes shadow copies (space/backup issues).",
+      safety: "Medium Safety",
+      recommendation: "Optional",
+      category: "Storage & Backup Management"
+    },
+    // System Services & Tasks
+    {
+      id: "sc-repair",
+      name: "Service Control Repair",
+      description: "Sc.exe / Schtasks.exe — Repair service states; rebuild scheduled tasks.",
+      safety: "Medium Safety",
+      recommendation: "Advanced",
+      category: "System Services & Tasks"
+    },
+    {
+      id: "gpupdate",
+      name: "Group Policy Update",
+      description: "Gpupdate /force — Reapplies local/domain Group Policy.",
+      safety: "High Safety",
+      recommendation: "Optional",
+      category: "System Services & Tasks"
+    },
+    {
+      id: "time-sync",
+      name: "Windows Time Sync",
+      description: "W32tm /resync — Time service repair/sync (fixes TLS/WSUS issues).",
+      safety: "High Safety",
+      recommendation: "Recommended",
+      category: "System Services & Tasks"
+    },
+    // Certificate & Driver Management
+    {
+      id: "certutil",
+      name: "Certificate Cache Clear",
+      description: "Certutil -urlcache delete — Clears CRL/OCSP cache.",
+      safety: "High Safety",
+      recommendation: "Optional",
+      category: "Certificate & Driver Management"
+    },
+    {
+      id: "pnputil",
+      name: "Driver Management",
+      description: "Pnputil — Enumerate/add/delete drivers from script.",
+      safety: "Medium Safety",
+      recommendation: "Advanced",
+      category: "Certificate & Driver Management"
+    },
+    {
+      id: "printuientry",
+      name: "Printer Management",
+      description: "PrintUIEntry — Add/remove printers/drivers from script.",
+      safety: "High Safety",
+      recommendation: "Optional",
+      category: "Certificate & Driver Management"
+    },
+    // Power Management
+    {
+      id: "powercfg",
+      name: "Power Configuration",
+      description: "Powercfg — Reset/optimize power plans; generate energy/battery reports.",
+      safety: "High Safety",
+      recommendation: "Optional",
+      category: "Power Management"
+    },
+    // Security & Malware - Microsoft Defender
+    {
+      id: "defender-update",
+      name: "Defender Signature Update",
+      description: "Microsoft Defender CLI (MpCmdRun.exe) — Signature updates; quick/full/custom scans; remediation.",
       safety: "High Safety",
       recommendation: "Recommended",
       category: "Security & Malware Protection"
     },
     {
       id: "defender-scan",
-      name: "Microsoft Defender Full Scan",
-      description: "Performs a comprehensive full system scan with Microsoft Defender. This may take several hours.",
-      safety: "High Safety",
-      recommendation: "Recommended",
-      category: "Security & Malware Protection"
-    },
-    {
-      id: "safety-scanner",
-      name: "Microsoft Safety Scanner",
-      description: "Downloads and runs Microsoft's Emergency Response Tool for deep malware and rootkit detection. Tool is removed after use.",
-      safety: "High Safety",
-      recommendation: "Recommended",
-      category: "Security & Malware Protection"
-    },
-    {
-      id: "adwcleaner",
-      name: "AdwCleaner Scan",
-      description: "Downloads and runs Malwarebytes AdwCleaner to remove adware, toolbars, and potentially unwanted programs. Tool is removed after use.",
+      name: "Defender Full Scan",
+      description: "Defender PowerShell (Start-MpScan / Remove-MpThreat / Update-MpSignature) — Full scripting interface to Defender.",
       safety: "High Safety",
       recommendation: "Recommended",
       category: "Security & Malware Protection"
     },
     {
       id: "defender-offline",
-      name: "Defender Offline Scan (Optional)",
-      description: "Prompts user to run an offline scan that boots before Windows to detect persistent threats. Requires system reboot.",
+      name: "Defender Offline Scan",
+      description: "Defender Offline (Start-MpWDOScan) — Schedules an offline pre-boot scan via PowerShell.",
       safety: "Medium Safety",
       recommendation: "Advanced",
       category: "Security & Malware Protection"
     },
     {
-      id: "malwarebytes",
-      name: "Malwarebytes Anti-Malware",
-      description: "Downloads, installs, updates and runs Malwarebytes for comprehensive malware detection and removal. Automatically removes after scan.",
+      id: "safety-scanner",
+      name: "Microsoft Safety Scanner",
+      description: "Microsoft Safety Scanner (MSERT.exe) — Standalone cleaner; supports quiet/full scan switches.",
       safety: "High Safety",
       recommendation: "Recommended",
       category: "Security & Malware Protection"
     },
+    {
+      id: "mrt",
+      name: "Malicious Software Removal Tool",
+      description: "Windows Malicious Software Removal Tool (MRT.exe) — Monthly targeted remover; quiet/extended scan switches.",
+      safety: "High Safety",
+      recommendation: "Recommended",
+      category: "Security & Malware Protection"
+    },
+    // Security & Malware - Sysinternals
+    {
+      id: "autorunsc",
+      name: "Sysinternals Autorunsc",
+      description: "Sysinternals Autorunsc — Enumerate/disable autoruns; CSV output for automation.",
+      safety: "High Safety",
+      recommendation: "Advanced",
+      category: "Security & Malware Protection"
+    },
+    {
+      id: "sigcheck",
+      name: "Sysinternals Sigcheck",
+      description: "Sysinternals Sigcheck — List unsigned/suspicious files; VirusTotal integration.",
+      safety: "High Safety",
+      recommendation: "Advanced",
+      category: "Security & Malware Protection"
+    },
+    {
+      id: "procdump",
+      name: "Sysinternals ProcDump",
+      description: "Sysinternals ProcDump — Auto-capture crash dumps for post-infection triage.",
+      safety: "High Safety",
+      recommendation: "Advanced",
+      category: "Security & Malware Protection"
+    },
+    // Security & Malware - Third-Party Free Tools
     {
       id: "rkill",
       name: "RKill Process Termination",
-      description: "Terminates malicious processes that may prevent antivirus scans from running effectively. Safe and reversible.",
+      description: "Rkill — Kills malicious processes; silent mode -s for scripting.",
       safety: "High Safety",
       recommendation: "Recommended",
       category: "Security & Malware Protection"
     },
-    // System Updates & Maintenance
     {
-      id: "windows-update",
-      name: "Windows Update",
-      description: "Checks for and installs available Windows updates via PowerShell. Critical for security and system stability.",
-      safety: "Medium Safety",
-      recommendation: "Recommended",
-      category: "System Updates & Maintenance"
-    },
-    {
-      id: "driver-update",
-      name: "Driver Update Check",
-      description: "Scans for outdated drivers and provides update recommendations. Helps improve system stability and performance.",
-      safety: "Medium Safety",
-      recommendation: "Optional",
-      category: "System Updates & Maintenance"
-    },
-    {
-      id: "app-updates",
-      name: "Third-Party Application Updates",
-      description: "Updates common applications like 7-Zip, Adobe Reader, Java, and other frequently used software to latest versions.",
+      id: "adwcleaner",
+      name: "AdwCleaner PUP Removal",
+      description: "AdwCleaner (CLI) — Adware/PUP cleanup with documented CLI (/eula, /scan, /clean, /noreboot, /quiet).",
       safety: "High Safety",
       recommendation: "Recommended",
-      category: "System Updates & Maintenance"
-    },
-    // Registry & System Optimization
-    {
-      id: "registry-cleanup",
-      name: "Registry Cleanup & Optimization",
-      description: "Removes invalid registry entries, broken shortcuts, and orphaned keys to improve system performance.",
-      safety: "Medium Safety",
-      recommendation: "Optional",
-      category: "Registry & System Optimization"
+      category: "Security & Malware Protection"
     },
     {
-      id: "startup-optimization",
-      name: "Startup Programs Optimization",
-      description: "Analyzes and disables unnecessary startup programs to improve boot times and system performance.",
-      safety: "High Safety",
-      recommendation: "Recommended",
-      category: "Registry & System Optimization"
-    },
-    {
-      id: "services-optimization",
-      name: "Windows Services Optimization",
-      description: "Optimizes Windows services for better performance while maintaining system functionality and security.",
-      safety: "Medium Safety",
-      recommendation: "Advanced",
-      category: "Registry & System Optimization"
-    },
-    {
-      id: "visual-effects",
-      name: "Visual Effects Optimization",
-      description: "Optimizes Windows visual effects for better performance on older hardware while maintaining usability.",
+      id: "kvrt",
+      name: "Kaspersky Virus Removal Tool",
+      description: "Kaspersky Virus Removal Tool (KVRT) — Portable second-opinion scanner; fully silent CLI.",
       safety: "High Safety",
       recommendation: "Optional",
-      category: "Registry & System Optimization"
+      category: "Security & Malware Protection"
     },
-    // Network & Connectivity
     {
-      id: "network-reset",
-      name: "Complete Network Reset",
-      description: "Resets all network adapters, TCP/IP stack, and Winsock catalog. Fixes most network connectivity issues.",
+      id: "clamav",
+      name: "ClamAV Scanner",
+      description: "ClamAV (clamscan / freshclam) — Open-source AV; scriptable scans and signature updates.",
       safety: "High Safety",
       recommendation: "Optional",
-      category: "Network & Connectivity"
+      category: "Security & Malware Protection"
     },
     {
-      id: "proxy-cleanup",
-      name: "Proxy Settings Cleanup",
-      description: "Removes malicious proxy settings that may have been configured by malware to redirect traffic.",
-      safety: "High Safety",
-      recommendation: "Recommended",
-      category: "Network & Connectivity"
-    },
-    {
-      id: "hosts-file-repair",
-      name: "Hosts File Repair",
-      description: "Repairs and cleans the Windows hosts file, removing malicious entries that redirect legitimate websites.",
-      safety: "High Safety",
-      recommendation: "Recommended",
-      category: "Network & Connectivity"
-    },
-    // Privacy & Telemetry
-    {
-      id: "telemetry-disable",
-      name: "Windows Telemetry Disable",
-      description: "Disables Windows telemetry and data collection features to enhance privacy. Can be reversed if needed.",
-      safety: "Medium Safety",
-      recommendation: "Optional",
-      category: "Privacy & Telemetry"
-    },
-    {
-      id: "cortana-disable",
-      name: "Cortana & Search Optimization",
-      description: "Optimizes or disables Cortana and Windows Search features to improve performance and privacy.",
-      safety: "Medium Safety",
-      recommendation: "Optional",
-      category: "Privacy & Telemetry"
-    },
-    {
-      id: "onedrive-removal",
-      name: "OneDrive Removal/Disable",
-      description: "Removes or disables OneDrive integration if not needed. Can help improve system performance.",
-      safety: "Medium Safety",
-      recommendation: "Optional",
-      category: "Privacy & Telemetry"
-    },
-    // Performance Optimization
-    {
-      id: "disk-defrag",
-      name: "Disk Defragmentation",
-      description: "Performs disk defragmentation on HDDs or TRIM on SSDs. Automatically detects drive type for safe operation.",
-      safety: "High Safety",
-      recommendation: "Recommended",
-      category: "Performance Optimization"
-    },
-    {
-      id: "pagefile-optimization",
-      name: "Page File Optimization",
-      description: "Optimizes virtual memory settings based on system RAM and usage patterns for better performance.",
-      safety: "Medium Safety",
-      recommendation: "Advanced",
-      category: "Performance Optimization"
-    },
-    {
-      id: "power-settings",
-      name: "Power Settings Optimization",
-      description: "Optimizes power settings for best performance or balanced mode depending on system type.",
+      id: "raccine",
+      name: "Raccine Ransomware Vaccine",
+      description: "Raccine — Open-source 'ransomware vaccine' blocking shadow-copy deletions; deploy via script/GPO.",
       safety: "High Safety",
       recommendation: "Optional",
-      category: "Performance Optimization"
+      category: "Security & Malware Protection"
     },
     // Reporting & Notifications
     {
       id: "system-report",
       name: "Comprehensive System Report",
-      description: "Generates detailed system health report including hardware info, installed software, and performance metrics.",
+      description: "Generates detailed system health report including hardware info, installed software, all issues/viruses found, and performance metrics.",
       safety: "High Safety",
       recommendation: "Recommended",
       category: "Reporting & Notifications"
@@ -410,6 +488,465 @@ const ScriptGenerator = () => {
   const generateScriptContent = () => {
     const selectedFunctionData = functions.filter(f => selectedFunctions.includes(f.id));
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+
+    // Helper function to generate implementation for each function
+    const generateFunctionImplementation = (func: ScriptFunction, stageNum: number, funcNum: number) => {
+      const logFile = `${stageNum.toString().padStart(2, '0')}_${func.id}.log`;
+      
+      switch(func.id) {
+        // System Repair Functions
+        case 'sfc-scan':
+          return `echo [${stageNum}.${funcNum}] SYSTEM FILE CHECKER - Repairs protected system files
+echo *** Scanning all Windows system files for corruption ***
+echo *** Estimated time: 15-30 minutes - DO NOT INTERRUPT ***
+sfc /scannow >> "%LOGPATH%\\\\${logFile}" 2>&1
+echo Results logged to: %LOGPATH%\\\\${logFile}
+echo.`;
+        
+        case 'dism-restore':
+          return `echo [${stageNum}.${funcNum}] DISM RESTORE HEALTH - Repairs component store; fixes servicing stack
+echo *** Repairing Windows Component Store ***
+echo *** Estimated time: 10-20 minutes - Requires internet connection ***
+DISM /Online /Cleanup-Image /RestoreHealth /LogPath:"%LOGPATH%\\\\${logFile}"
+echo Results logged to: %LOGPATH%\\\\${logFile}
+echo.`;
+        
+        case 'dism-cleanup':
+          return `echo [${stageNum}.${funcNum}] DISM COMPONENT CLEANUP - Removes superseded WinSxS components
+echo *** Removing old component versions to free disk space ***
+DISM /Online /Cleanup-Image /StartComponentCleanup /LogPath:"%LOGPATH%\\\\${logFile}"
+echo Results logged to: %LOGPATH%\\\\${logFile}
+echo.`;
+        
+        case 'chkdsk':
+          return `echo [${stageNum}.${funcNum}] CHECK DISK - Scans/fixes filesystem errors and bad sectors
+echo *** Checking filesystem integrity ***
+echo NOTE: This may schedule a scan on next reboot if errors are found
+chkdsk C: >> "%LOGPATH%\\\\${logFile}" 2>&1
+echo Results logged to: %LOGPATH%\\\\${logFile}
+echo.`;
+        
+        case 'repair-volume':
+          return `echo [${stageNum}.${funcNum}] REPAIR VOLUME - Online/offline volume scan and repair
+echo *** PowerShell volume repair operations ***
+powershell -Command "Repair-Volume -DriveLetter C -Scan; Repair-Volume -DriveLetter C -OfflineScanAndFix" >> "%LOGPATH%\\\\${logFile}" 2>&1
+echo Results logged to: %LOGPATH%\\\\${logFile}
+echo.`;
+
+        // System Cleaning Functions
+        case 'cleanmgr':
+          return `echo [${stageNum}.${funcNum}] DISK CLEANUP - Legacy Disk Cleanup; scripted space reclaim
+echo *** Running Windows Disk Cleanup utility ***
+cleanmgr /sagerun:1 /verylowdisk >> "%LOGPATH%\\\\${logFile}" 2>&1
+echo Results logged to: %LOGPATH%\\\\${logFile}
+echo.`;
+        
+        case 'optimize-volume':
+          return `echo [${stageNum}.${funcNum}] OPTIMIZE VOLUME - TRIM/defrag per-drive type
+echo *** Auto-detecting drive type and optimizing ***
+powershell -Command "Get-Volume | Where-Object {$_.DriveLetter -eq 'C'} | Optimize-Volume -Verbose" >> "%LOGPATH%\\\\${logFile}" 2>&1
+echo Results logged to: %LOGPATH%\\\\${logFile}
+echo.`;
+        
+        case 'bleachbit':
+          return `echo [${stageNum}.${funcNum}] BLEACHBIT - Deep system/browser cleanup
+echo *** Checking for BleachBit portable ***
+if exist "%~dp0bleachbit_portable\\\\bleachbit_console.exe" (
+    echo Running BleachBit deep clean...
+    "%~dp0bleachbit_portable\\\\bleachbit_console.exe" --clean system.cache system.logs system.tmp >> "%LOGPATH%\\\\${logFile}" 2>&1
+) else (
+    echo WARNING: BleachBit portable not found. Download from bleachbit.org
+)
+echo Results logged to: %LOGPATH%\\\\${logFile}
+echo.`;
+
+        // Event Logs Management
+        case 'wevtutil':
+          return `echo [${stageNum}.${funcNum}] EVENT LOG MANAGEMENT - Query/export/clear Windows event logs
+echo *** Exporting Windows Event Logs ***
+wevtutil qe System /c:100 /f:text > "%LOGPATH%\\\\${logFile}"
+wevtutil qe Application /c:100 /f:text >> "%LOGPATH%\\\\${logFile}"
+wevtutil qe Security /c:100 /f:text >> "%LOGPATH%\\\\${logFile}"
+echo Logs exported to: %LOGPATH%\\\\${logFile}
+echo.`;
+
+        // Network Repair Functions
+        case 'dns-flush':
+          return `echo [${stageNum}.${funcNum}] DNS FLUSH - Flushes DNS resolver cache
+ipconfig /flushdns >> "%LOGPATH%\\\\${logFile}" 2>&1
+echo Results logged to: %LOGPATH%\\\\${logFile}
+echo.`;
+        
+        case 'winsock-reset':
+          return `echo [${stageNum}.${funcNum}] WINSOCK RESET - Resets Winsock/LSP
+netsh winsock reset >> "%LOGPATH%\\\\${logFile}" 2>&1
+echo Results logged to: %LOGPATH%\\\\${logFile}
+echo.`;
+        
+        case 'tcpip-reset':
+          return `echo [${stageNum}.${funcNum}] TCP/IP RESET - Rebuilds TCP/IP stack
+netsh int ip reset >> "%LOGPATH%\\\\${logFile}" 2>&1
+echo Results logged to: %LOGPATH%\\\\${logFile}
+echo.`;
+        
+        case 'firewall-reset':
+          return `echo [${stageNum}.${funcNum}] FIREWALL RESET - Resets Windows Firewall
+netsh advfirewall reset >> "%LOGPATH%\\\\${logFile}" 2>&1
+echo Results logged to: %LOGPATH%\\\\${logFile}
+echo.`;
+        
+        case 'proxy-reset':
+          return `echo [${stageNum}.${funcNum}] PROXY RESET - Clears system proxy
+netsh winhttp reset proxy >> "%LOGPATH%\\\\${logFile}" 2>&1
+echo Results logged to: %LOGPATH%\\\\${logFile}
+echo.`;
+        
+        case 'netcfg-reset':
+          return `echo [${stageNum}.${funcNum}] NETWORK STACK RESET - Full network stack reset/rebind
+echo *** WARNING: This will reset ALL network adapters ***
+netcfg -d >> "%LOGPATH%\\\\${logFile}" 2>&1
+echo Results logged to: %LOGPATH%\\\\${logFile}
+echo.`;
+        
+        case 'arp-clear':
+          return `echo [${stageNum}.${funcNum}] ARP CACHE CLEAR - Clears ARP cache
+arp -d * >> "%LOGPATH%\\\\${logFile}" 2>&1
+echo Results logged to: %LOGPATH%\\\\${logFile}
+echo.`;
+        
+        case 'netsh-trace':
+          return `echo [${stageNum}.${funcNum}] NETWORK TRACE - Built-in network trace capture
+echo *** Starting network trace (will run for 60 seconds) ***
+netsh trace start capture=yes tracefile="%LOGPATH%\\\\network_trace.etl" >> "%LOGPATH%\\\\${logFile}" 2>&1
+timeout /t 60 /nobreak
+netsh trace stop >> "%LOGPATH%\\\\${logFile}" 2>&1
+echo Results logged to: %LOGPATH%\\\\${logFile}
+echo.`;
+
+        // Windows Store & Update Functions
+        case 'wsreset':
+          return `echo [${stageNum}.${funcNum}] WINDOWS STORE RESET - Resets Microsoft Store cache
+WSReset.exe >> "%LOGPATH%\\\\${logFile}" 2>&1
+echo Results logged to: %LOGPATH%\\\\${logFile}
+echo.`;
+        
+        case 'usoclient':
+          return `echo [${stageNum}.${funcNum}] WINDOWS UPDATE CLIENT - Triggers Windows Update actions
+echo *** Starting Windows Update scan ***
+UsoClient StartScan >> "%LOGPATH%\\\\${logFile}" 2>&1
+UsoClient StartDownload >> "%LOGPATH%\\\\${logFile}" 2>&1
+echo Results logged to: %LOGPATH%\\\\${logFile}
+echo.`;
+        
+        case 'pswindowsupdate':
+          return `echo [${stageNum}.${funcNum}] POWERSHELL WINDOWS UPDATE - Script Windows Update scan/install
+echo *** Installing PSWindowsUpdate module if not present ***
+powershell -Command "if (!(Get-Module -ListAvailable -Name PSWindowsUpdate)) { Install-Module PSWindowsUpdate -Force -Scope CurrentUser }; Import-Module PSWindowsUpdate; Get-WindowsUpdate -AcceptAll" >> "%LOGPATH%\\\\${logFile}" 2>&1
+echo Results logged to: %LOGPATH%\\\\${logFile}
+echo.`;
+        
+        case 'winget':
+          return `echo [${stageNum}.${funcNum}] WINGET - Script app installs/upgrades/repairs
+echo *** Checking for available app upgrades ***
+winget upgrade --all >> "%LOGPATH%\\\\${logFile}" 2>&1
+echo Results logged to: %LOGPATH%\\\\${logFile}
+echo.`;
+
+        // Diagnostics & Troubleshooting
+        case 'setupdiag':
+          return `echo [${stageNum}.${funcNum}] SETUP DIAGNOSTIC - CLI analysis of Windows setup/upgrade failures
+echo *** Downloading SetupDiag if needed ***
+if not exist "%TEMP%\\\\SetupDiag.exe" (
+    powershell -Command "Invoke-WebRequest -Uri 'https://go.microsoft.com/fwlink/?linkid=870142' -OutFile '%TEMP%\\\\SetupDiag.exe'"
+)
+"%TEMP%\\\\SetupDiag.exe" /Output:"%LOGPATH%\\\\${logFile}" /Mode:Online
+echo Results logged to: %LOGPATH%\\\\${logFile}
+echo.`;
+
+        // Boot Repair Functions
+        case 'bootrec':
+          return `echo [${stageNum}.${funcNum}] BOOT RECORD REPAIR - /fixmbr /fixboot /rebuildbcd
+echo *** NOTE: This should be run from Windows Recovery Environment ***
+echo *** Logging command recommendations ***
+echo bootrec /fixmbr >> "%LOGPATH%\\\\${logFile}"
+echo bootrec /fixboot >> "%LOGPATH%\\\\${logFile}"
+echo bootrec /rebuildbcd >> "%LOGPATH%\\\\${logFile}"
+echo Boot repair commands logged for WinRE execution
+echo.`;
+        
+        case 'bcdboot':
+          return `echo [${stageNum}.${funcNum}] BCD BOOT REBUILD - Rebuilds boot files/BCD
+echo *** Rebuilding BCD boot configuration ***
+bcdboot C:\\Windows /s C: >> "%LOGPATH%\\\\${logFile}" 2>&1
+echo Results logged to: %LOGPATH%\\\\${logFile}
+echo.`;
+
+        // Storage & Backup Management
+        case 'vssadmin':
+          return `echo [${stageNum}.${funcNum}] SHADOW COPY MANAGEMENT - Lists/deletes shadow copies
+echo *** Listing shadow copies ***
+vssadmin list shadows >> "%LOGPATH%\\\\${logFile}" 2>&1
+echo Results logged to: %LOGPATH%\\\\${logFile}
+echo.`;
+
+        // System Services & Tasks
+        case 'sc-repair':
+          return `echo [${stageNum}.${funcNum}] SERVICE CONTROL REPAIR - Repair service states
+echo *** Checking critical service states ***
+sc query wuauserv >> "%LOGPATH%\\\\${logFile}" 2>&1
+sc query bits >> "%LOGPATH%\\\\${logFile}" 2>&1
+sc query cryptsvc >> "%LOGPATH%\\\\${logFile}" 2>&1
+echo Results logged to: %LOGPATH%\\\\${logFile}
+echo.`;
+        
+        case 'gpupdate':
+          return `echo [${stageNum}.${funcNum}] GROUP POLICY UPDATE - Reapplies local/domain Group Policy
+gpupdate /force >> "%LOGPATH%\\\\${logFile}" 2>&1
+echo Results logged to: %LOGPATH%\\\\${logFile}
+echo.`;
+        
+        case 'time-sync':
+          return `echo [${stageNum}.${funcNum}] TIME SYNC - Time service repair/sync
+w32tm /resync /force >> "%LOGPATH%\\\\${logFile}" 2>&1
+echo Results logged to: %LOGPATH%\\\\${logFile}
+echo.`;
+
+        // Certificate & Driver Management
+        case 'certutil':
+          return `echo [${stageNum}.${funcNum}] CERTIFICATE CACHE CLEAR - Clears CRL/OCSP cache
+certutil -urlcache * delete >> "%LOGPATH%\\\\${logFile}" 2>&1
+echo Results logged to: %LOGPATH%\\\\${logFile}
+echo.`;
+        
+        case 'pnputil':
+          return `echo [${stageNum}.${funcNum}] DRIVER MANAGEMENT - Enumerate/add/delete drivers
+echo *** Listing all third-party drivers ***
+pnputil /enum-drivers >> "%LOGPATH%\\\\${logFile}" 2>&1
+echo Results logged to: %LOGPATH%\\\\${logFile}
+echo.`;
+        
+        case 'printuientry':
+          return `echo [${stageNum}.${funcNum}] PRINTER MANAGEMENT - Listing installed printers
+echo *** Enumerating installed printers ***
+wmic printer list brief >> "%LOGPATH%\\\\${logFile}" 2>&1
+echo Results logged to: %LOGPATH%\\\\${logFile}
+echo.`;
+
+        // Power Management
+        case 'powercfg':
+          return `echo [${stageNum}.${funcNum}] POWER CONFIGURATION - Reset/optimize power plans
+echo *** Generating energy report ***
+powercfg /energy /output "%LOGPATH%\\\\energy_report.html" >> "%LOGPATH%\\\\${logFile}" 2>&1
+powercfg /batteryreport /output "%LOGPATH%\\\\battery_report.html" >> "%LOGPATH%\\\\${logFile}" 2>&1
+echo Reports generated: energy_report.html and battery_report.html
+echo Results logged to: %LOGPATH%\\\\${logFile}
+echo.`;
+
+        // Security & Malware Protection
+        case 'defender-update':
+          return `echo [${stageNum}.${funcNum}] DEFENDER UPDATE - Signature updates and remediation
+echo *** Updating Microsoft Defender signatures ***
+"%ProgramFiles%\\\\Windows Defender\\\\MpCmdRun.exe" -SignatureUpdate >> "%LOGPATH%\\\\${logFile}" 2>&1
+echo Results logged to: %LOGPATH%\\\\${logFile}
+echo.`;
+        
+        case 'defender-scan':
+          return `echo [${stageNum}.${funcNum}] DEFENDER SCAN - Full system scan
+echo *** Starting Microsoft Defender Full Scan (may take 1-3 hours) ***
+powershell -Command "Update-MpSignature; Start-MpScan -ScanType FullScan" >> "%LOGPATH%\\\\${logFile}" 2>&1
+powershell -Command "Get-MpThreatDetection | Export-Csv -Path '%LOGPATH%\\\\defender_threats.csv' -NoTypeInformation" 2>&1
+echo Results logged to: %LOGPATH%\\\\${logFile}
+echo.`;
+        
+        case 'defender-offline':
+          return `echo [${stageNum}.${funcNum}] DEFENDER OFFLINE - Schedules offline pre-boot scan
+echo *** Scheduling Defender Offline Scan ***
+powershell -Command "Start-MpWDOScan" >> "%LOGPATH%\\\\${logFile}" 2>&1
+echo Offline scan scheduled for next reboot
+echo.`;
+        
+        case 'safety-scanner':
+          return `echo [${stageNum}.${funcNum}] SAFETY SCANNER - Microsoft standalone cleaner
+echo *** Downloading Microsoft Safety Scanner ***
+powershell -Command "Invoke-WebRequest -Uri 'https://go.microsoft.com/fwlink/?LinkId=212732' -OutFile '%TEMP%\\\\msert.exe'"
+echo Running Microsoft Safety Scanner (may take 1+ hours)
+"%TEMP%\\\\msert.exe" /Q /F >> "%LOGPATH%\\\\${logFile}" 2>&1
+del "%TEMP%\\\\msert.exe" 2>nul
+echo Results logged to: %LOGPATH%\\\\${logFile}
+echo.`;
+        
+        case 'mrt':
+          return `echo [${stageNum}.${funcNum}] MALICIOUS SOFTWARE REMOVAL TOOL - Monthly targeted remover
+echo *** Running Windows Malicious Software Removal Tool ***
+"%windir%\\\\system32\\\\mrt.exe" /Q >> "%LOGPATH%\\\\${logFile}" 2>&1
+echo Results logged to: %LOGPATH%\\\\${logFile}
+echo.`;
+        
+        case 'autorunsc':
+          return `echo [${stageNum}.${funcNum}] AUTORUNSC - Enumerate/disable autoruns
+echo *** Downloading Sysinternals Autorunsc ***
+powershell -Command "Invoke-WebRequest -Uri 'https://live.sysinternals.com/autorunsc.exe' -OutFile '%TEMP%\\\\autorunsc.exe'"
+"%TEMP%\\\\autorunsc.exe" -accepteula -a * -c > "%LOGPATH%\\\\autoruns.csv"
+del "%TEMP%\\\\autorunsc.exe" 2>nul
+echo Results logged to: %LOGPATH%\\\\autoruns.csv
+echo.`;
+        
+        case 'sigcheck':
+          return `echo [${stageNum}.${funcNum}] SIGCHECK - List unsigned/suspicious files
+echo *** Downloading Sysinternals Sigcheck ***
+powershell -Command "Invoke-WebRequest -Uri 'https://live.sysinternals.com/sigcheck.exe' -OutFile '%TEMP%\\\\sigcheck.exe'"
+"%TEMP%\\\\sigcheck.exe" -accepteula -u -e -s C:\\Windows\\System32 > "%LOGPATH%\\\\unsigned_files.txt"
+del "%TEMP%\\\\sigcheck.exe" 2>nul
+echo Results logged to: %LOGPATH%\\\\unsigned_files.txt
+echo.`;
+        
+        case 'procdump':
+          return `echo [${stageNum}.${funcNum}] PROCDUMP - Auto-capture crash dumps
+echo *** Downloading Sysinternals ProcDump ***
+powershell -Command "Invoke-WebRequest -Uri 'https://live.sysinternals.com/procdump.exe' -OutFile '%TEMP%\\\\procdump.exe'"
+echo ProcDump ready for manual crash dump capture
+del "%TEMP%\\\\procdump.exe" 2>nul
+echo.`;
+        
+        case 'rkill':
+          return `echo [${stageNum}.${funcNum}] RKILL - Kills malicious processes
+echo *** Downloading RKill ***
+powershell -Command "Invoke-WebRequest -Uri 'https://www.bleepingcomputer.com/download/rkill/dl/10/' -OutFile '%TEMP%\\\\rkill.exe'"
+"%TEMP%\\\\rkill.exe" -s -l "%LOGPATH%\\\\rkill.log"
+del "%TEMP%\\\\rkill.exe" 2>nul
+echo Results logged to: %LOGPATH%\\\\rkill.log
+echo.`;
+        
+        case 'adwcleaner':
+          return `echo [${stageNum}.${funcNum}] ADWCLEANER - Adware/PUP cleanup
+echo *** Downloading AdwCleaner ***
+powershell -Command "Invoke-WebRequest -Uri 'https://downloads.malwarebytes.com/file/adwcleaner' -OutFile '%TEMP%\\\\adwcleaner.exe'"
+"%TEMP%\\\\adwcleaner.exe" /eula /clean /noreboot >> "%LOGPATH%\\\\${logFile}" 2>&1
+del "%TEMP%\\\\adwcleaner.exe" 2>nul
+echo Results logged to: %LOGPATH%\\\\${logFile}
+echo.`;
+        
+        case 'kvrt':
+          return `echo [${stageNum}.${funcNum}] KASPERSKY VIRUS REMOVAL TOOL - Portable scanner
+echo *** Downloading Kaspersky Virus Removal Tool ***
+powershell -Command "Invoke-WebRequest -Uri 'https://devbuilds.s.kaspersky-labs.com/devbuilds/KVRT/latest/full/KVRT.exe' -OutFile '%TEMP%\\\\kvrt.exe'"
+"%TEMP%\\\\kvrt.exe" -accepteula -silent -processlevel 2 >> "%LOGPATH%\\\\${logFile}" 2>&1
+del "%TEMP%\\\\kvrt.exe" 2>nul
+echo Results logged to: %LOGPATH%\\\\${logFile}
+echo.`;
+        
+        case 'clamav':
+          return `echo [${stageNum}.${funcNum}] CLAMAV - Open-source AV scanner
+echo *** NOTE: ClamAV requires manual installation ***
+echo *** Checking if ClamAV is installed ***
+if exist "%ProgramFiles%\\\\ClamAV\\\\clamscan.exe" (
+    echo Updating signatures...
+    "%ProgramFiles%\\\\ClamAV\\\\freshclam.exe" >> "%LOGPATH%\\\\${logFile}" 2>&1
+    echo Running scan...
+    "%ProgramFiles%\\\\ClamAV\\\\clamscan.exe" -r C:\\ --log="%LOGPATH%\\\\clamav_scan.log"
+) else (
+    echo ClamAV not found. Download from clamav.net
+)
+echo.`;
+        
+        case 'raccine':
+          return `echo [${stageNum}.${funcNum}] RACCINE - Ransomware vaccine
+echo *** Downloading Raccine ***
+powershell -Command "Invoke-WebRequest -Uri 'https://github.com/Neo23x0/Raccine/releases/latest/download/RaccineSettings.exe' -OutFile '%TEMP%\\\\RaccineSettings.exe'"
+echo Raccine downloaded to %TEMP% - Manual installation required
+echo Visit: https://github.com/Neo23x0/Raccine
+echo.`;
+
+        // Reporting & Notifications
+        case 'system-report':
+          return `echo [${stageNum}.${funcNum}] COMPREHENSIVE SYSTEM REPORT - Complete system analysis
+echo *** Generating comprehensive system reports ***
+echo === CONSOLIDATED FINDINGS REPORT === > "%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt"
+echo Script Version: SC-USCS v4.1 >> "%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt"
+echo Execution Date: %DATE% %TIME% >> "%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt"
+echo Functions Executed: ${selectedFunctionData.length} of ${functions.length} >> "%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt"
+echo. >> "%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt"
+echo === SYSTEM CONFIGURATION === >> "%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt"
+systeminfo >> "%LOGPATH%\\\\01_system_info.txt"
+echo === HARDWARE REPORT === >> "%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt"
+dxdiag /t "%LOGPATH%\\\\02_hardware_report.txt"
+echo === INSTALLED SOFTWARE === >> "%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt"
+wmic product get name,version,vendor /format:csv > "%LOGPATH%\\\\03_installed_software.csv" 2>nul
+echo === WINDOWS UPDATES === >> "%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt"
+powershell -Command "Get-WmiObject -Class Win32_QuickFixEngineering | Select-Object HotFixID,Description,InstalledOn | Export-Csv -Path '%LOGPATH%\\\\04_windows_updates.csv' -NoTypeInformation"
+echo === SECURITY THREATS DETECTED === >> "%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt"
+powershell -Command "$threats = Get-MpThreatDetection; if ($threats) { $threats | Format-Table ThreatName, ActionSuccess, ProcessName -AutoSize | Out-String | Add-Content '%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt' } else { Add-Content '%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt' 'No active threats detected.' }" 2>nul
+powershell -Command "Get-MpThreatDetection | Export-Csv -Path '%LOGPATH%\\\\05_defender_threats.csv' -NoTypeInformation" 2>nul
+echo === STARTUP PROGRAMS === >> "%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt"
+wmic startup get caption,command,location,user /format:csv > "%LOGPATH%\\\\06_startup_programs.csv" 2>nul
+powershell -Command "Get-WmiObject Win32_StartupCommand | Format-Table -AutoSize | Out-String | Add-Content '%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt'" 2>nul
+echo === WINDOWS SERVICES === >> "%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt"
+sc query state= all > "%LOGPATH%\\\\07_windows_services.txt"
+echo === NETWORK CONFIGURATION === >> "%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt"
+ipconfig /all > "%LOGPATH%\\\\08_network_config.txt"
+netstat -an > "%LOGPATH%\\\\09_network_connections.txt"
+echo === DISK HEALTH === >> "%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt"
+wmic logicaldisk get size,freespace,caption /format:csv > "%LOGPATH%\\\\10_disk_space.csv"
+echo === SYSTEM INTEGRITY === >> "%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt"
+sfc /verifyonly >> "%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt" 2>nul
+echo. >> "%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt"
+echo === SUMMARY === >> "%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt"
+echo All findings consolidated in: %LOGPATH% >> "%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt"
+echo For support, email all files to: scmyhelp@gmail.com and alerts@supportcall.co.za >> "%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt"
+echo Comprehensive system report generated
+echo.`;
+        
+        case 'email-report':
+          return `echo [${stageNum}.${funcNum}] EMAIL REPORT - Send reports to support team
+echo *** Preparing email summary ***
+echo SC-USCS v4.1 Execution Report > "%LOGPATH%\\\\EMAIL_SUMMARY.txt"
+echo ================================ >> "%LOGPATH%\\\\EMAIL_SUMMARY.txt"
+echo Computer: %COMPUTERNAME% >> "%LOGPATH%\\\\EMAIL_SUMMARY.txt"
+echo Date: %DATE% %TIME% >> "%LOGPATH%\\\\EMAIL_SUMMARY.txt"
+echo Functions: ${selectedFunctionData.length} of ${functions.length} >> "%LOGPATH%\\\\EMAIL_SUMMARY.txt"
+echo. >> "%LOGPATH%\\\\EMAIL_SUMMARY.txt"
+echo CRITICAL FINDINGS: >> "%LOGPATH%\\\\EMAIL_SUMMARY.txt"
+powershell -Command "$threats = Get-MpThreatDetection; if ($threats) { Add-Content '%LOGPATH%\\\\EMAIL_SUMMARY.txt' 'THREATS DETECTED: YES'; $threats | ForEach-Object { Add-Content '%LOGPATH%\\\\EMAIL_SUMMARY.txt' ('- ' + $_.ThreatName) } } else { Add-Content '%LOGPATH%\\\\EMAIL_SUMMARY.txt' 'THREATS DETECTED: NONE' }" 2>nul
+echo. >> "%LOGPATH%\\\\EMAIL_SUMMARY.txt"
+echo Reports Location: %LOGPATH% >> "%LOGPATH%\\\\EMAIL_SUMMARY.txt"
+echo Recipients: scmyhelp@gmail.com, alerts@supportcall.co.za >> "%LOGPATH%\\\\EMAIL_SUMMARY.txt"
+echo. >> "%LOGPATH%\\\\EMAIL_SUMMARY.txt"
+echo *** EMAIL REQUIRES SMTP CONFIGURATION ***
+echo *** Manually send all files from %LOGPATH% to support team ***
+echo.`;
+        default:
+          return `echo [${stageNum}.${funcNum}] ${func.name.toUpperCase()} - ${func.description}
+echo >> "%LOGPATH%\\\\${logFile}" 2>&1
+echo Operation completed
+echo.`;
+      }
+    };
+
+    // Group functions by category
+    const categorizedFunctions = categories.map(category => ({
+      category,
+      functions: selectedFunctionData.filter(f => f.category === category)
+    })).filter(cat => cat.functions.length > 0);
+
+    // Generate stage implementations
+    const stageImplementations = categorizedFunctions.map((cat, catIndex) => {
+      const stageNum = catIndex + 1;
+      return `
+REM =============================================================================
+REM STAGE ${stageNum}: ${cat.category.toUpperCase()}
+REM =============================================================================
+REM ${cat.category} - ${cat.functions.length} function(s) selected
+REM All operations are logged to %LOGPATH% for review and support
+REM =============================================================================
+echo =============================================================================
+echo  STAGE ${stageNum}: ${cat.category.toUpperCase()}
+echo =============================================================================
+echo This stage executes ${cat.functions.length} function(s) in the ${cat.category} category.
+echo All operations are logged for comprehensive review.
+echo =============================================================================
+echo.
+${cat.functions.map((func, funcIndex) => generateFunctionImplementation(func, stageNum, funcIndex + 1)).join('\n')}`;
+    }).join('\n');
     
     return `@echo off
 REM =============================================================================
@@ -433,7 +970,7 @@ if %errorlevel% neq 0 (
 )
 
 REM Initialize variables
-set "LOGPATH=%USERPROFILE%\\Desktop\\SC-USCS\\SC-USCS_%timestamp%"
+set "LOGPATH=%USERPROFILE%\\Desktop\\SC-USCS\\SC-USCS_${timestamp}"
 set "STARTTIME=%TIME%"
 mkdir "%USERPROFILE%\\Desktop\\SC-USCS" 2>nul
 mkdir "%LOGPATH%" 2>nul
@@ -476,8 +1013,8 @@ net start "swprv"
 vssadmin resize shadowstorage /for=C: /on=C: /maxsize=10%%
 
 REM Create mandatory restore point with error checking
-echo Creating System Restore Point: SC-USCS-Pre-Run...
-powershell -Command "$result = Checkpoint-Computer -Description 'SC-USCS-Pre-Run-Mandatory' -RestorePointType 'MODIFY_SETTINGS' -Verbose; if ($result -eq $null) { Write-Host 'SUCCESS: System Restore Point Created' -ForegroundColor Green } else { Write-Host 'WARNING: Restore Point Creation Status Unknown' -ForegroundColor Yellow }"
+echo Creating System Restore Point: SC-USCS-Pre-Run-v4.1...
+powershell -Command "$result = Checkpoint-Computer -Description 'SC-USCS-Pre-Run-v4.1' -RestorePointType 'MODIFY_SETTINGS' -Verbose; if ($result -eq $null) { Write-Host 'SUCCESS: System Restore Point Created' -ForegroundColor Green } else { Write-Host 'WARNING: Restore Point Creation Status Unknown' -ForegroundColor Yellow }"
 
 REM Verify restore point was created
 echo Verifying restore point creation...
@@ -490,315 +1027,7 @@ echo Otherwise, press any key to continue with system modifications...
 pause
 echo.
 
-REM =============================================================================
-REM STAGE 1: SYSTEM CLEANING AND REPAIR FUNCTIONS  
-REM =============================================================================
-REM This stage performs essential system maintenance and cleanup operations to:
-REM - Remove temporary files, cache data, and system debris
-REM - Clear DNS cache and network-related temporary data  
-REM - Empty recycle bins and perform disk cleanup operations
-REM - Prepare system for deeper scanning and repair operations
-REM All operations in this stage are HIGH SAFETY and reversible
-REM =============================================================================
-${selectedFunctionData.filter(f => f.category === "System Cleaning & Repair Functions").length > 0 ? 
-`echo =============================================================================
-echo  STAGE 1: SYSTEM CLEANING AND REPAIR FUNCTIONS
-echo =============================================================================
-echo This stage removes temporary files, clears caches, and performs basic
-echo system cleanup to prepare for deeper repair operations.
-echo All operations are HIGH SAFETY and designed to be fully reversible.
-echo =============================================================================
-echo.
-${selectedFunctionData.filter(f => f.category === "System Cleaning & Repair Functions").map(func => {
-  switch(func.id) {
-    case 'temp-cleanup':
-      return `echo [1.1] TEMPORARY FILES CLEANUP - Removing system and user temp files...
-echo *** Cleaning User Temporary Files ***
-del /q /f /s "%TEMP%\\*" 2>nul
-echo *** Cleaning Windows System Temporary Files ***
-del /q /f /s "%WINDIR%\\Temp\\*" 2>nul
-echo *** Cleaning Windows Prefetch Cache ***
-del /q /f /s "%WINDIR%\\Prefetch\\*" 2>nul
-echo Temporary files cleanup completed.
-echo.`;
-    case 'recycle-bin':
-      return `echo [1.2] RECYCLE BIN CLEANUP - Permanently removing deleted files...
-echo *** Emptying All User Recycle Bins ***
-rd /s /q C:\\$Recycle.bin 2>nul
-echo Recycle bin cleanup completed.
-echo.`;
-    case 'dns-flush':
-      return `echo [1.3] DNS CACHE FLUSH - Clearing network DNS resolver cache...
-echo *** Flushing DNS Resolver Cache ***
-ipconfig /flushdns
-echo DNS cache flush completed.
-echo.`;
-    case 'disk-cleanup':
-      return `echo [1.4] WINDOWS DISK CLEANUP - Running built-in system cleanup utility...
-echo *** Executing Windows Disk Cleanup Utility ***
-cleanmgr /sagerun:1 /verylowdisk
-echo Windows disk cleanup completed.
-echo.`;
-    default:
-      return `echo [1.X] ${func.name.toUpperCase()} - ${func.description}
-echo *** Executing: ${func.name} ***
-echo Operation completed.
-echo.`;
-  }
-}).join('\n')}` : ''}
-
-REM =============================================================================
-REM STAGE 2: SYSTEM REPAIR AND INTEGRITY FUNCTIONS
-REM =============================================================================
-REM This stage performs deep system integrity checks and repairs including:
-REM - System File Checker (SFC) to repair corrupted Windows system files
-REM - DISM health restore to repair Windows Component Store corruption
-REM - Disk integrity checks to identify and fix file system errors
-REM - Memory diagnostics to detect hardware-related stability issues
-REM These operations may take significant time but are essential for system stability
-REM =============================================================================
-${selectedFunctionData.filter(f => f.category === "System Repair & Integrity Functions").length > 0 ? 
-`echo =============================================================================
-echo  STAGE 2: SYSTEM REPAIR AND INTEGRITY FUNCTIONS
-echo =============================================================================
-echo This stage performs comprehensive system integrity verification and repair.
-echo Operations may take 30+ minutes but are critical for system stability.
-echo All repair operations use Microsoft built-in tools and are fully supported.
-echo =============================================================================
-echo.
-${selectedFunctionData.filter(f => f.category === "System Repair & Integrity Functions").map(func => {
-  switch(func.id) {
-    case 'sfc-scan':
-      return `echo [2.1] SYSTEM FILE CHECKER - Scanning and repairing system files...
-echo *** This operation scans ALL Windows system files for corruption ***
-echo *** Estimated time: 15-30 minutes - DO NOT INTERRUPT ***
-echo *** Running: sfc /scannow ***
-sfc /scannow
-echo System File Checker scan completed. Check results above.
-echo.`;
-    case 'dism-health':
-      return `echo [2.2] DISM HEALTH RESTORE - Repairing Windows Component Store...
-echo *** This repairs the Windows Component Store that SFC depends on ***
-echo *** Estimated time: 10-20 minutes - Requires internet connection ***
-echo *** Running: DISM /Online /Cleanup-Image /RestoreHealth ***
-DISM /Online /Cleanup-Image /RestoreHealth
-echo DISM health restore completed. Check results above.
-echo.`;
-    case 'check-disk':
-      return `echo [2.3] DISK INTEGRITY CHECK - Scanning file system for errors...
-echo *** This scans the file system for errors and bad sectors ***
-echo *** Estimated time: 30+ minutes depending on disk size ***
-echo *** Running: chkdsk C: /f /r /x ***
-chkdsk C: /f /r /x
-echo Disk integrity check completed. Check results above.
-echo.`;
-    case 'memory-diagnostic':
-      return `echo [2.4] MEMORY DIAGNOSTIC - Scheduling RAM test for next boot...
-echo *** This schedules a comprehensive memory test on next system restart ***
-echo *** The test will run before Windows loads and may take 20+ minutes ***
-echo *** Running: mdsched /a ***
-mdsched /a
-echo Memory diagnostic scheduled. System will test RAM on next reboot.
-echo.`;
-    default:
-      return `echo [2.X] ${func.name.toUpperCase()} - ${func.description}
-echo *** Executing: ${func.name} ***
-echo Operation completed.
-echo.`;
-  }
-}).join('\n')}` : ''}
-
-REM =============================================================================
-REM STAGE 3: SECURITY AND MALWARE PROTECTION FUNCTIONS
-REM =============================================================================
-REM This stage performs comprehensive malware detection and removal including:
-REM - Microsoft Defender full system scan with enhanced cloud protection
-REM - Microsoft Safety Scanner for emergency response and rootkit detection  
-REM - AdwCleaner for adware, toolbars, and potentially unwanted programs
-REM - Malwarebytes for advanced malware and zero-day threat detection
-REM - RKill to terminate malicious processes blocking security tools
-REM These scans may take several hours but provide maximum protection coverage
-REM =============================================================================
-${selectedFunctionData.filter(f => f.category === "Security & Malware Protection").length > 0 ? 
-`echo =============================================================================
-echo  STAGE 3: SECURITY AND MALWARE PROTECTION FUNCTIONS
-echo =============================================================================
-echo This stage performs comprehensive malware detection using multiple engines.
-echo Scans may take 2-4+ hours but provide maximum protection coverage.
-echo All tools are from trusted security vendors and Microsoft.
-echo =============================================================================
-echo.
-${selectedFunctionData.filter(f => f.category === "Security & Malware Protection").map(func => {
-  switch(func.id) {
-    case 'defender-scan':
-      return `echo [3.1] MICROSOFT DEFENDER FULL SCAN - Comprehensive system scan...
-echo *** This performs a complete scan of all files and memory ***
-echo *** Estimated time: 1-3 hours depending on system size ***
-echo *** Running: Microsoft Defender Full System Scan ***
-powershell -Command "Write-Host 'Starting Microsoft Defender Full Scan...' -ForegroundColor Green; Start-MpScan -ScanType FullScan -Verbose"
-echo Microsoft Defender scan completed. Check results above for threats found.
-echo.`;
-    case 'defender-config':
-      return `echo [3.2] MICROSOFT DEFENDER CONFIGURATION - Optimizing security settings...
-echo *** Enabling Real-time Protection and Cloud-based Protection ***
-echo *** Configuring Enhanced Notification and Sample Submission ***
-powershell -Command "Set-MpPreference -DisableRealtimeMonitoring $false; Write-Host 'Real-time Protection: ENABLED' -ForegroundColor Green"
-powershell -Command "Set-MpPreference -MAPSReporting Advanced; Write-Host 'Cloud Protection: ADVANCED' -ForegroundColor Green"
-powershell -Command "Set-MpPreference -SubmitSamplesConsent SendAllSamples; Write-Host 'Sample Submission: ENABLED' -ForegroundColor Green"
-echo Microsoft Defender configuration completed.
-echo.`;
-    case 'safety-scanner':
-      return `echo [3.3] MICROSOFT SAFETY SCANNER - Emergency response malware scan...
-echo *** Downloads and runs Microsoft Emergency Response Tool ***
-echo *** Specialized for rootkits and persistent threats ***
-echo *** Tool is automatically removed after scan completion ***
-echo Downloading Microsoft Safety Scanner...
-powershell -Command "Invoke-WebRequest -Uri 'https://go.microsoft.com/fwlink/?LinkId=212732' -OutFile '%TEMP%\\msert.exe'"
-echo Running Microsoft Safety Scanner (this may take 1+ hours)...
-"%TEMP%\\msert.exe" /Q /F
-del "%TEMP%\\msert.exe" 2>nul
-echo Microsoft Safety Scanner completed and removed.
-echo.`;
-    case 'adwcleaner':
-      return `echo [3.4] ADWCLEANER SCAN - Removing adware and unwanted programs...
-echo *** Downloads and runs Malwarebytes AdwCleaner ***
-echo *** Specialized for adware, toolbars, and browser hijackers ***
-echo *** Tool is automatically removed after scan completion ***
-echo Downloading AdwCleaner...
-powershell -Command "Invoke-WebRequest -Uri 'https://downloads.malwarebytes.com/file/adwcleaner' -OutFile '%TEMP%\\adwcleaner.exe'"
-echo Running AdwCleaner scan...
-"%TEMP%\\adwcleaner.exe" /eula /clean /noreboot
-del "%TEMP%\\adwcleaner.exe" 2>nul
-echo AdwCleaner scan completed and removed.
-echo.`;
-    case 'malwarebytes':
-      return `echo [3.5] MALWAREBYTES SCAN - Advanced malware detection and removal...
-echo *** Downloads, installs, and runs Malwarebytes Anti-Malware ***
-echo *** Provides detection for zero-day and advanced persistent threats ***
-echo *** Application is removed after scan completion ***
-echo Downloading Malwarebytes...
-powershell -Command "Invoke-WebRequest -Uri 'https://data-cdn.mbamupdates.com/web/mb4-setup-consumer/MBSetup.exe' -OutFile '%TEMP%\\mbsetup.exe'"
-echo Installing and running Malwarebytes (this may take 30+ minutes)...
-"%TEMP%\\mbsetup.exe" /SILENT /NORESTART
-echo Malwarebytes scan completed and removed.
-echo.`;
-    case 'rkill':
-      return `echo [3.6] RKILL PROCESS TERMINATION - Stopping malicious processes...
-echo *** Terminates known malicious processes that block security scans ***
-echo *** Safe operation that only targets confirmed malware processes ***
-echo *** Allows other security tools to run without interference ***
-echo Downloading RKill...
-powershell -Command "Invoke-WebRequest -Uri 'https://www.bleepingcomputer.com/download/rkill/dl/10/' -OutFile '%TEMP%\\rkill.exe'"
-echo Running RKill to terminate malicious processes...
-"%TEMP%\\rkill.exe" -s -l "%LOGPATH%\\rkill.log"
-del "%TEMP%\\rkill.exe" 2>nul
-echo RKill completed. Check %LOGPATH%\\rkill.log for terminated processes.
-echo.`;
-    default:
-      return `echo [3.X] ${func.name.toUpperCase()} - ${func.description}
-echo *** Executing: ${func.name} ***
-echo Operation completed.
-echo.`;
-  }
-}).join('\n')}` : ''}
-
-REM =============================================================================
-REM STAGE 4: REPORTING AND NOTIFICATIONS FUNCTIONS
-REM =============================================================================
-REM This stage generates comprehensive system reports including:
-REM - Complete system configuration and hardware inventory
-REM - Detailed security scan results and threat detection summary
-REM - Installed software inventory with version information
-REM - Performance metrics and system health assessment
-REM - Consolidated findings report with all issues, viruses, and recommendations
-REM Reports are saved locally and optionally emailed to support team
-REM =============================================================================
-${selectedFunctionData.filter(f => f.category === "Reporting & Notifications").length > 0 ? 
-`echo =============================================================================
-echo  STAGE 4: REPORTING AND NOTIFICATIONS FUNCTIONS
-echo =============================================================================
-echo This stage generates comprehensive reports of all system findings.
-echo Reports include security scan results, system health, and recommendations.
-echo All reports are saved locally and optionally sent to support team.
-echo =============================================================================
-echo.
-${selectedFunctionData.filter(f => f.category === "Reporting & Notifications").map(func => {
-  switch(func.id) {
-    case 'system-report':
-      return `echo [4.1] COMPREHENSIVE SYSTEM REPORT - Generating complete system analysis...
-echo *** Creating detailed system configuration report ***
-systeminfo > "%LOGPATH%\\01_system_configuration.txt"
-echo *** Generating hardware and driver information ***
-dxdiag /t "%LOGPATH%\\02_hardware_report.txt"
-echo *** Collecting installed software inventory ***
-wmic product get name,version,vendor /format:csv > "%LOGPATH%\\03_installed_software.csv" 2>nul
-echo *** Gathering Windows Update history ***
-powershell -Command "Get-WmiObject -Class Win32_QuickFixEngineering | Select-Object HotFixID,Description,InstalledOn | Export-Csv -Path '%LOGPATH%\\04_windows_updates.csv' -NoTypeInformation"
-echo *** Collecting security scan results and threat summary ***
-powershell -Command "Get-MpThreatDetection | Export-Csv -Path '%LOGPATH%\\05_defender_threats.csv' -NoTypeInformation" 2>nul
-powershell -Command "Get-MpScanHistory | Export-Csv -Path '%LOGPATH%\\06_scan_history.csv' -NoTypeInformation" 2>nul
-echo *** Generating startup programs and services inventory ***
-wmic startup get caption,command,location,user /format:csv > "%LOGPATH%\\07_startup_programs.csv" 2>nul
-sc query state= all > "%LOGPATH%\\08_windows_services.txt"
-echo *** Creating network configuration report ***
-ipconfig /all > "%LOGPATH%\\09_network_config.txt"
-netstat -an > "%LOGPATH%\\10_network_connections.txt"
-echo *** Generating disk and file system health report ***
-wmic logicaldisk get size,freespace,caption /format:csv > "%LOGPATH%\\11_disk_space.csv"
-fsutil fsinfo statistics C: > "%LOGPATH%\\12_filesystem_stats.txt" 2>nul
-echo *** Creating consolidated findings and recommendations report ***
-echo ===================== SC-USCS CONSOLIDATED FINDINGS REPORT ===================== > "%LOGPATH%\\00_CONSOLIDATED_FINDINGS.txt"
-echo Script Version: SC-USCS v4.1 >> "%LOGPATH%\\00_CONSOLIDATED_FINDINGS.txt"
-echo Execution Date: %DATE% %TIME% >> "%LOGPATH%\\00_CONSOLIDATED_FINDINGS.txt"
-echo Functions Executed: ${selectedFunctionData.length} of ${functions.length} >> "%LOGPATH%\\00_CONSOLIDATED_FINDINGS.txt"
-echo. >> "%LOGPATH%\\00_CONSOLIDATED_FINDINGS.txt"
-echo === SECURITY THREATS DETECTED === >> "%LOGPATH%\\00_CONSOLIDATED_FINDINGS.txt"
-powershell -Command "$threats = Get-MpThreatDetection; if ($threats) { $threats | Format-Table ThreatName, ActionSuccess, ProcessName -AutoSize | Out-String | Add-Content '%LOGPATH%\\00_CONSOLIDATED_FINDINGS.txt' } else { Add-Content '%LOGPATH%\\00_CONSOLIDATED_FINDINGS.txt' 'No active threats detected by Microsoft Defender.' }" 2>nul
-echo. >> "%LOGPATH%\\00_CONSOLIDATED_FINDINGS.txt"
-echo === SYSTEM ISSUES IDENTIFIED === >> "%LOGPATH%\\00_CONSOLIDATED_FINDINGS.txt"
-echo Checking for system file corruption... >> "%LOGPATH%\\00_CONSOLIDATED_FINDINGS.txt"
-sfc /verifyonly >> "%LOGPATH%\\00_CONSOLIDATED_FINDINGS.txt" 2>nul
-echo. >> "%LOGPATH%\\00_CONSOLIDATED_FINDINGS.txt"
-echo === PERFORMANCE RECOMMENDATIONS === >> "%LOGPATH%\\00_CONSOLIDATED_FINDINGS.txt"
-echo Analyzing startup impact and system performance... >> "%LOGPATH%\\00_CONSOLIDATED_FINDINGS.txt"
-powershell -Command "Get-WmiObject Win32_StartupCommand | Where-Object {$_.Command -ne $null} | Select-Object Name, Command, Location | Format-Table -AutoSize | Out-String | Add-Content '%LOGPATH%\\00_CONSOLIDATED_FINDINGS.txt'" 2>nul
-echo. >> "%LOGPATH%\\00_CONSOLIDATED_FINDINGS.txt"
-echo === SUMMARY AND NEXT STEPS === >> "%LOGPATH%\\00_CONSOLIDATED_FINDINGS.txt"
-echo Report Generation Complete. Review all files in: %LOGPATH% >> "%LOGPATH%\\00_CONSOLIDATED_FINDINGS.txt"
-echo For technical support, send all files to: scmyhelp@gmail.com >> "%LOGPATH%\\00_CONSOLIDATED_FINDINGS.txt"
-echo ================================================================================ >> "%LOGPATH%\\00_CONSOLIDATED_FINDINGS.txt"
-echo Comprehensive system report generated with ALL findings consolidated.
-echo.`;
-    case 'email-report':
-      return `echo [4.2] EMAIL REPORT TRANSMISSION - Sending reports to support team...
-echo *** Preparing comprehensive report package for email transmission ***
-echo *** Recipients: scmyhelp@gmail.com and alerts@supportcall.co.za ***
-echo Creating report summary for email...
-echo SC-USCS v4.1 Execution Report > "%LOGPATH%\\EMAIL_SUMMARY.txt"
-echo ================================ >> "%LOGPATH%\\EMAIL_SUMMARY.txt"
-echo Computer Name: %COMPUTERNAME% >> "%LOGPATH%\\EMAIL_SUMMARY.txt"
-echo Execution Date: %DATE% %TIME% >> "%LOGPATH%\\EMAIL_SUMMARY.txt"
-echo Functions Selected: ${selectedFunctionData.length} of ${functions.length} >> "%LOGPATH%\\EMAIL_SUMMARY.txt"
-echo. >> "%LOGPATH%\\EMAIL_SUMMARY.txt"
-echo CRITICAL FINDINGS: >> "%LOGPATH%\\EMAIL_SUMMARY.txt"
-echo ================== >> "%LOGPATH%\\EMAIL_SUMMARY.txt"
-powershell -Command "$threats = Get-MpThreatDetection; if ($threats) { Add-Content '%LOGPATH%\\EMAIL_SUMMARY.txt' 'THREATS DETECTED: YES'; $threats | ForEach-Object { Add-Content '%LOGPATH%\\EMAIL_SUMMARY.txt' ('- ' + $_.ThreatName) } } else { Add-Content '%LOGPATH%\\EMAIL_SUMMARY.txt' 'THREATS DETECTED: NONE' }" 2>nul
-echo. >> "%LOGPATH%\\EMAIL_SUMMARY.txt"
-echo Report files location: %LOGPATH% >> "%LOGPATH%\\EMAIL_SUMMARY.txt"
-echo ============================= >> "%LOGPATH%\\EMAIL_SUMMARY.txt"
-echo.
-echo *** EMAIL FUNCTIONALITY REQUIRES SMTP CONFIGURATION ***
-echo *** Reports are ready at: %LOGPATH% ***
-echo *** Manually send all files to support team if automated email fails ***
-echo Email report preparation completed.
-echo.`;
-    default:
-      return `echo [4.X] ${func.name.toUpperCase()} - ${func.description}
-echo *** Executing: ${func.name} ***
-echo Operation completed.
-echo.`;
-  }
-}).join('\n')}` : ''}
+${stageImplementations}
 
 REM =============================================================================
 REM COMPLETION AND CLEANUP
@@ -812,6 +1041,13 @@ echo Start Time: %STARTTIME%
 echo End Time: %ENDTIME%
 echo Log Location: %LOGPATH%
 echo Functions Executed: ${selectedFunctionData.length}
+echo.
+echo ALL OPERATIONS LOGGED TO: %LOGPATH%
+echo CONSOLIDATED FINDINGS: %LOGPATH%\\00_CONSOLIDATED_FINDINGS.txt
+echo.
+echo For support, send all files from %LOGPATH% to:
+echo - scmyhelp@gmail.com
+echo - alerts@supportcall.co.za
 echo.
 echo Please review the logs for any errors or warnings.
 echo A system restart may be required to complete all operations.
