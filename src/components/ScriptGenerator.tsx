@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Download, Copy, FileText, AlertTriangle, ChevronDown, ChevronUp } from "lucide-react";
+import { Download, Copy, FileText, AlertTriangle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface ScriptFunction {
@@ -20,7 +20,6 @@ const ScriptGenerator = () => {
   const { toast } = useToast();
   const [selectedFunctions, setSelectedFunctions] = useState<string[]>([]);
   const [showScript, setShowScript] = useState(false);
-  const [showHeaderDetails, setShowHeaderDetails] = useState(true);
 
   const functions: ScriptFunction[] = [
     // System Repair Functions
@@ -1091,41 +1090,14 @@ exit /b 0`;
                 v2.6 - Professional Edition
               </div>
             </div>
-            
-            {/* Toggle Button for Header Details */}
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setShowHeaderDetails(!showHeaderDetails)}
-              className="mx-auto flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors"
-              aria-label={showHeaderDetails ? "Hide details" : "Show details"}
-            >
-              {showHeaderDetails ? (
-                <>
-                  <ChevronUp className="w-4 h-4" />
-                  Hide Details
-                </>
-              ) : (
-                <>
-                  <ChevronDown className="w-4 h-4" />
-                  Show Details
-                </>
-              )}
-            </Button>
-
-            {/* Collapsible Details Section */}
-            <div className={`transition-all duration-300 ease-in-out overflow-hidden ${
-              showHeaderDetails ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
-            }`}>
-              <CardDescription className="text-base md:text-lg max-w-3xl mx-auto leading-relaxed mb-4">
-                The Ultimate Self-Contained Windows Remediation Engine (UWIRE) - Professional System Cleaning, Security Enhancement & Optimization Tool for Windows 10/11
-              </CardDescription>
-              <div className="flex justify-center gap-2 md:gap-4 flex-wrap">
-                <Badge variant="default" className="px-3 py-1 text-sm">SC-USCS v2.6</Badge>
-                <Badge variant="secondary" className="px-3 py-1 text-sm">Safety: 98%</Badge>
-                <Badge variant="outline" className="px-3 py-1 text-sm">Effectiveness: 95%</Badge>
-                <Badge variant="outline" className="px-3 py-1 text-sm">Win 10/11 Compatible</Badge>
-              </div>
+            <CardDescription className="text-base md:text-lg max-w-3xl mx-auto leading-relaxed">
+              The Ultimate Self-Contained Windows Remediation Engine (UWIRE) - Professional System Cleaning, Security Enhancement & Optimization Tool for Windows 10/11
+            </CardDescription>
+            <div className="flex justify-center gap-2 md:gap-4 flex-wrap">
+              <Badge variant="default" className="px-3 py-1 text-sm">SC-USCS v2.6</Badge>
+              <Badge variant="secondary" className="px-3 py-1 text-sm">Safety: 98%</Badge>
+              <Badge variant="outline" className="px-3 py-1 text-sm">Effectiveness: 95%</Badge>
+              <Badge variant="outline" className="px-3 py-1 text-sm">Win 10/11 Compatible</Badge>
             </div>
           </CardHeader>
         </Card>

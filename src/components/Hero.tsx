@@ -1,11 +1,8 @@
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Download, Shield, Zap, Terminal, AlertTriangle, ChevronDown, ChevronUp } from "lucide-react";
+import { Download, Shield, Zap, Terminal, AlertTriangle } from "lucide-react";
 
 const Hero = () => {
-  const [showDetails, setShowDetails] = useState(true);
-
   return (
     <section className="relative min-h-screen flex items-center justify-center bg-gradient-hero overflow-hidden" role="banner">
       {/* Animated background elements */}
@@ -28,37 +25,11 @@ const Hero = () => {
           UWIRE - Ultimate Secure Clean Script
         </p>
         
-        {/* Toggle Button for Details */}
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => setShowDetails(!showDetails)}
-          className="mb-4 flex items-center gap-2 mx-auto text-muted-foreground hover:text-primary transition-colors"
-          aria-label={showDetails ? "Hide details" : "Show details"}
-        >
-          {showDetails ? (
-            <>
-              <ChevronUp className="w-4 h-4" />
-              Hide Details
-            </>
-          ) : (
-            <>
-              <ChevronDown className="w-4 h-4" />
-              Show Details
-            </>
-          )}
-        </Button>
-
-        {/* Collapsible Details Section */}
-        <div className={`transition-all duration-300 ease-in-out overflow-hidden ${
-          showDetails ? 'max-h-96 opacity-100 mb-8' : 'max-h-0 opacity-0 mb-4'
-        }`}>
-          <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-            Professional-grade Windows remediation engine featuring autonomous multi-stage cleanup, 
-            malware removal, system repair, and performance optimization. Built with modern PowerShell 
-            for enterprise reliability.
-          </p>
-        </div>
+        <p className="text-lg text-muted-foreground mb-8 max-w-3xl mx-auto leading-relaxed">
+          Professional-grade Windows remediation engine featuring autonomous multi-stage cleanup, 
+          malware removal, system repair, and performance optimization. Built with modern PowerShell 
+          for enterprise reliability.
+        </p>
         
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
           <div className="w-full max-w-2xl mb-4">
@@ -87,25 +58,20 @@ const Hero = () => {
           </Button>
         </div>
         
-        {/* Collapsible Features Section */}
-        <div className={`transition-all duration-300 ease-in-out overflow-hidden ${
-          showDetails ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
-        }`}>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-            <div className="flex items-center justify-center space-x-3 text-muted-foreground">
-              <Shield className="w-6 h-6 text-accent" />
-              <span className="font-medium">Enterprise Security</span>
-            </div>
-            
-            <div className="flex items-center justify-center space-x-3 text-muted-foreground">
-              <Zap className="w-6 h-6 text-primary" />
-              <span className="font-medium">Autonomous Operation</span>
-            </div>
-            
-            <div className="flex items-center justify-center space-x-3 text-muted-foreground">
-              <Terminal className="w-6 h-6 text-primary-glow" />
-              <span className="font-medium">Modern PowerShell</span>
-            </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+          <div className="flex items-center justify-center space-x-3 text-muted-foreground">
+            <Shield className="w-6 h-6 text-accent" />
+            <span className="font-medium">Enterprise Security</span>
+          </div>
+          
+          <div className="flex items-center justify-center space-x-3 text-muted-foreground">
+            <Zap className="w-6 h-6 text-primary" />
+            <span className="font-medium">Autonomous Operation</span>
+          </div>
+          
+          <div className="flex items-center justify-center space-x-3 text-muted-foreground">
+            <Terminal className="w-6 h-6 text-primary-glow" />
+            <span className="font-medium">Modern PowerShell</span>
           </div>
         </div>
       </div>
