@@ -4,16 +4,16 @@ import { Download, Shield, Zap, Terminal } from "lucide-react";
 
 const Hero = () => {
   return (
-    <section className="relative min-h-screen flex items-center justify-center bg-gradient-hero overflow-hidden">
+    <section className="relative min-h-screen flex items-center justify-center bg-gradient-hero overflow-hidden" role="banner">
       {/* Animated background elements */}
-      <div className="absolute inset-0">
+      <div className="absolute inset-0" aria-hidden="true">
         <div className="absolute top-20 left-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl animate-pulse"></div>
         <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent/5 rounded-full blur-3xl animate-pulse delay-1000"></div>
       </div>
       
       <div className="relative z-10 text-center max-w-6xl mx-auto px-6">
-        <Badge variant="outline" className="mb-6 border-primary/30 text-primary bg-primary/10">
-          <Terminal className="w-4 h-4 mr-2" />
+        <Badge variant="outline" className="mb-6 border-primary/30 text-primary bg-primary/10" aria-label="Product category">
+          <Terminal className="w-4 h-4 mr-2" aria-hidden="true" />
           Ultimate Windows Remediation Engine
         </Badge>
         

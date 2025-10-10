@@ -78,10 +78,10 @@ const Features = () => {
   ];
 
   return (
-    <section className="py-24 bg-background">
+    <section className="py-24 bg-background" aria-labelledby="features-heading">
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold mb-4 text-foreground">
+          <h2 id="features-heading" className="text-4xl md:text-5xl font-bold mb-4 text-foreground">
             Enterprise-Grade Features
           </h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">

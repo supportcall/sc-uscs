@@ -1342,7 +1342,7 @@ exit /b 0`;
 
               {/* Action Buttons */}
               <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4">
-                <Button onClick={generateScript} size="lg" className="flex-1 sm:flex-none bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90">
+                <Button onClick={generateScript} size="lg" variant="default">
                   <FileText className="w-5 h-5 mr-2" />
                   Generate Custom Script
                 </Button>
