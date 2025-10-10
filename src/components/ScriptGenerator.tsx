@@ -1091,7 +1091,7 @@ exit /b 0`;
               </div>
             </div>
             <CardDescription className="text-base md:text-lg max-w-3xl mx-auto leading-relaxed">
-              SupportCALL - Ultimate Windows Remediation Engine (SC-UWIRE) - Professional System Cleaning, Security Enhancement & Optimization Tool for Windows 10/11
+              Professional Custom Script Generator for Windows System Cleaning, Security Enhancement & Optimization - Tailored PowerShell Solutions for Windows 10/11
             </CardDescription>
             <div className="flex justify-center gap-2 md:gap-4 flex-wrap">
               <Badge variant="default" className="px-3 py-1 text-sm">SC-USCS v2.6</Badge>
