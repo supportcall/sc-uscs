@@ -497,6 +497,11 @@ const ScriptGenerator = () => {
         // System Repair Functions
         case 'sfc-scan':
           return `echo [${stageNum}.${funcNum}] SYSTEM FILE CHECKER - Repairs protected system files
+echo ----------------------------------------------------------------
+echo ^|^| SYSTEM FILE CHECKER - Full scan ^| STARTED %TIME% %DATE% ^|^|
+echo ^|^| *Press [Ctrl] + [C] to cancel and proceed to the next     ^|^|
+echo ----------------------------------------------------------------
+echo.
 echo *** Scanning all Windows system files for corruption ***
 echo *** Estimated time: 15-30 minutes - DO NOT INTERRUPT ***
 sfc /scannow >> "%LOGPATH%\\\\${logFile}" 2>&1
@@ -505,6 +510,11 @@ echo.`;
         
         case 'dism-restore':
           return `echo [${stageNum}.${funcNum}] DISM RESTORE HEALTH - Repairs component store; fixes servicing stack
+echo ----------------------------------------------------------------
+echo ^|^| DISM RESTORE HEALTH - Component repair ^| STARTED %TIME% %DATE% ^|^|
+echo ^|^| *Press [Ctrl] + [C] to cancel and proceed to the next     ^|^|
+echo ----------------------------------------------------------------
+echo.
 echo *** Repairing Windows Component Store ***
 echo *** Estimated time: 10-20 minutes - Requires internet connection ***
 DISM /Online /Cleanup-Image /RestoreHealth /LogPath:"%LOGPATH%\\\\${logFile}"
@@ -520,6 +530,11 @@ echo.`;
         
         case 'chkdsk':
           return `echo [${stageNum}.${funcNum}] CHECK DISK - Scans/fixes filesystem errors and bad sectors
+echo ----------------------------------------------------------------
+echo ^|^| CHECK DISK - Filesystem scan ^| STARTED %TIME% %DATE% ^|^|
+echo ^|^| *Press [Ctrl] + [C] to cancel and proceed to the next     ^|^|
+echo ----------------------------------------------------------------
+echo.
 echo *** Checking filesystem integrity ***
 echo NOTE: This may schedule a scan on next reboot if errors are found
 chkdsk C: >> "%LOGPATH%\\\\${logFile}" 2>&1
@@ -752,6 +767,11 @@ echo.`;
         
         case 'defender-scan':
           return `echo [${stageNum}.${funcNum}] DEFENDER SCAN - Full system scan
+echo ----------------------------------------------------------------
+echo ^|^| DEFENDER SCAN - Full system scan ^| STARTED %TIME% %DATE% ^|^|
+echo ^|^| *Press [Ctrl] + [C] to cancel and proceed to the next     ^|^|
+echo ----------------------------------------------------------------
+echo.
 echo *** Starting Microsoft Defender Full Scan (may take 1-3 hours) ***
 powershell -Command "Update-MpSignature; Start-MpScan -ScanType FullScan" >> "%LOGPATH%\\\\${logFile}" 2>&1
 powershell -Command "Get-MpThreatDetection | Export-Csv -Path '%LOGPATH%\\\\defender_threats.csv' -NoTypeInformation" 2>&1
@@ -769,6 +789,12 @@ echo.`;
           return `echo [${stageNum}.${funcNum}] SAFETY SCANNER - Microsoft standalone cleaner
 echo *** Downloading Microsoft Safety Scanner ***
 powershell -Command "Invoke-WebRequest -Uri 'https://go.microsoft.com/fwlink/?LinkId=212732' -OutFile '%TEMP%\\\\msert.exe'"
+echo.
+echo ----------------------------------------------------------------
+echo ^|^| SAFETY SCANNER - Full scan ^| STARTED %TIME% %DATE% ^|^|
+echo ^|^| *Press [Ctrl] + [C] to cancel and proceed to the next     ^|^|
+echo ----------------------------------------------------------------
+echo.
 echo Running Microsoft Safety Scanner (may take 1+ hours)
 "%TEMP%\\\\msert.exe" /Q /F >> "%LOGPATH%\\\\${logFile}" 2>&1
 del "%TEMP%\\\\msert.exe" 2>nul
@@ -931,6 +957,7 @@ echo.`;
     // Generate stage implementations
     const stageImplementations = categorizedFunctions.map((cat, catIndex) => {
       const stageNum = catIndex + 1;
+      const categoryTitle = cat.category.toUpperCase().replace(/&/g, '^&');
       return `
 REM =============================================================================
 REM STAGE ${stageNum}: ${cat.category.toUpperCase()}
@@ -939,7 +966,7 @@ REM ${cat.category} - ${cat.functions.length} function(s) selected
 REM All operations are logged to %LOGPATH% for review and support
 REM =============================================================================
 echo =============================================================================
-echo  STAGE ${stageNum}: ${cat.category.toUpperCase()}
+echo  STAGE ${stageNum}: ${categoryTitle}
 echo =============================================================================
 echo This stage executes ${cat.functions.length} function(s) in the ${cat.category} category.
 echo All operations are logged for comprehensive review.
