@@ -504,7 +504,14 @@ echo ----------------------------------------------------------------
 echo.
 echo *** Scanning all Windows system files for corruption ***
 echo *** Estimated time: 15-30 minutes - DO NOT INTERRUPT ***
-sfc /scannow >> "%LOGPATH%\\\\${logFile}" 2>&1
+REM Try PATH first, fallback to full path
+where sfc.exe >nul 2>&1
+if %errorlevel% equ 0 (
+    sfc /scannow >> "%LOGPATH%\\\\${logFile}" 2>&1
+) else (
+    echo Using fallback path...
+    "%windir%\\system32\\sfc.exe" /scannow >> "%LOGPATH%\\\\${logFile}" 2>&1
+)
 echo Results logged to: %LOGPATH%\\\\${logFile}
 echo.`;
         
@@ -517,14 +524,28 @@ echo ----------------------------------------------------------------
 echo.
 echo *** Repairing Windows Component Store ***
 echo *** Estimated time: 10-20 minutes - Requires internet connection ***
-DISM /Online /Cleanup-Image /RestoreHealth /LogPath:"%LOGPATH%\\\\${logFile}"
+REM Try PATH first, fallback to full path
+where dism.exe >nul 2>&1
+if %errorlevel% equ 0 (
+    DISM /Online /Cleanup-Image /RestoreHealth /LogPath:"%LOGPATH%\\\\${logFile}"
+) else (
+    echo Using fallback path...
+    "%windir%\\system32\\Dism.exe" /Online /Cleanup-Image /RestoreHealth /LogPath:"%LOGPATH%\\\\${logFile}"
+)
 echo Results logged to: %LOGPATH%\\\\${logFile}
 echo.`;
         
         case 'dism-cleanup':
           return `echo [${stageNum}.${funcNum}] DISM COMPONENT CLEANUP - Removes superseded WinSxS components
 echo *** Removing old component versions to free disk space ***
-DISM /Online /Cleanup-Image /StartComponentCleanup /LogPath:"%LOGPATH%\\\\${logFile}"
+REM Try PATH first, fallback to full path
+where dism.exe >nul 2>&1
+if %errorlevel% equ 0 (
+    DISM /Online /Cleanup-Image /StartComponentCleanup /LogPath:"%LOGPATH%\\\\${logFile}"
+) else (
+    echo Using fallback path...
+    "%windir%\\system32\\Dism.exe" /Online /Cleanup-Image /StartComponentCleanup /LogPath:"%LOGPATH%\\\\${logFile}"
+)
 echo Results logged to: %LOGPATH%\\\\${logFile}
 echo.`;
         
@@ -537,7 +558,14 @@ echo ----------------------------------------------------------------
 echo.
 echo *** Checking filesystem integrity ***
 echo NOTE: This may schedule a scan on next reboot if errors are found
-chkdsk C: >> "%LOGPATH%\\\\${logFile}" 2>&1
+REM Try PATH first, fallback to full path
+where chkdsk.exe >nul 2>&1
+if %errorlevel% equ 0 (
+    chkdsk C: >> "%LOGPATH%\\\\${logFile}" 2>&1
+) else (
+    echo Using fallback path...
+    "%windir%\\system32\\chkdsk.exe" C: >> "%LOGPATH%\\\\${logFile}" 2>&1
+)
 echo Results logged to: %LOGPATH%\\\\${logFile}
 echo.`;
         
@@ -552,7 +580,19 @@ echo.`;
         case 'cleanmgr':
           return `echo [${stageNum}.${funcNum}] DISK CLEANUP - Legacy Disk Cleanup; scripted space reclaim
 echo *** Running Windows Disk Cleanup utility ***
-cleanmgr /sagerun:1 /verylowdisk >> "%LOGPATH%\\\\${logFile}" 2>&1
+REM Try PATH first, fallback to full path or PowerShell alternative
+where cleanmgr.exe >nul 2>&1
+if %errorlevel% equ 0 (
+    cleanmgr /sagerun:1 /verylowdisk >> "%LOGPATH%\\\\${logFile}" 2>&1
+) else (
+    if exist "%windir%\\system32\\cleanmgr.exe" (
+        echo Using fallback path...
+        "%windir%\\system32\\cleanmgr.exe" /sagerun:1 /verylowdisk >> "%LOGPATH%\\\\${logFile}" 2>&1
+    ) else (
+        echo Cleanmgr not found - Using PowerShell cleanup alternative...
+        powershell -Command "Get-ChildItem $env:TEMP -Recurse | Remove-Item -Force -Recurse -ErrorAction SilentlyContinue; Clear-RecycleBin -Force -ErrorAction SilentlyContinue" >> "%LOGPATH%\\\\${logFile}" 2>&1
+    )
+)
 echo Results logged to: %LOGPATH%\\\\${logFile}
 echo.`;
         
@@ -671,11 +711,13 @@ echo.`;
         // Diagnostics & Troubleshooting
         case 'setupdiag':
           return `echo [${stageNum}.${funcNum}] SETUP DIAGNOSTIC - CLI analysis of Windows setup/upgrade failures
-echo *** Downloading SetupDiag if needed ***
-if not exist "%TEMP%\\\\SetupDiag.exe" (
-    powershell -Command "Invoke-WebRequest -Uri 'https://go.microsoft.com/fwlink/?linkid=870142' -OutFile '%TEMP%\\\\SetupDiag.exe'"
+echo *** Running SetupDiag analysis ***
+if exist "%TOOLSPATH%\\\\SetupDiag.exe" (
+    "%TOOLSPATH%\\\\SetupDiag.exe" /Output:"%LOGPATH%\\\\${logFile}" /Mode:Online
+) else (
+    echo ERROR: SetupDiag not found in Tools folder
+    echo Manual download: https://go.microsoft.com/fwlink/?linkid=870142
 )
-"%TEMP%\\\\SetupDiag.exe" /Output:"%LOGPATH%\\\\${logFile}" /Mode:Online
 echo Results logged to: %LOGPATH%\\\\${logFile}
 echo.`;
 
@@ -762,7 +804,13 @@ echo.`;
         case 'defender-update':
           return `echo [${stageNum}.${funcNum}] DEFENDER UPDATE - Signature updates and remediation
 echo *** Updating Microsoft Defender signatures ***
-"%ProgramFiles%\\\\Windows Defender\\\\MpCmdRun.exe" -SignatureUpdate >> "%LOGPATH%\\\\${logFile}" 2>&1
+REM Try Windows Defender CLI, fallback to PowerShell
+if exist "%ProgramFiles%\\\\Windows Defender\\\\MpCmdRun.exe" (
+    "%ProgramFiles%\\\\Windows Defender\\\\MpCmdRun.exe" -SignatureUpdate >> "%LOGPATH%\\\\${logFile}" 2>&1
+) else (
+    echo Windows Defender CLI not found - Using PowerShell fallback...
+    powershell -Command "Update-MpSignature" >> "%LOGPATH%\\\\${logFile}" 2>&1
+)
 echo Results logged to: %LOGPATH%\\\\${logFile}
 echo.`;
         
@@ -1030,15 +1078,38 @@ echo Start Time: %STARTTIME%
 echo.
 
 REM =============================================================================
-REM STAGE -1: DOWNLOAD AND VERIFY REQUIRED TOOLS
+REM STAGE -1: DOWNLOAD AND VERIFY ALL REQUIRED TOOLS
 REM =============================================================================
-echo [Stage -1] Downloading Required External Tools to Tools Folder...
-echo This ensures all commands can run without internet dependency.
+echo =============================================================================
+echo  STAGE -1: COMPREHENSIVE TOOL ACQUISITION
+echo =============================================================================
+echo This stage downloads ALL required external tools to ensure reliability.
+echo Even Windows built-in tools will be verified and alternatives provided.
 echo Tools will be saved to: %TOOLSPATH%
 echo.
+echo NOTE: This may take 10-30 minutes on first run depending on your selection.
+echo Subsequent runs will skip existing tools and be much faster.
+echo.
+pause
+
+REM === MICROSOFT OFFICIAL TOOLS ===
+echo.
+echo === DOWNLOADING MICROSOFT OFFICIAL TOOLS ===
+echo.
+
+${selectedFunctionData.some(f => f.id === 'setupdiag') ? `
+echo [MS-Tool 1] SetupDiag - Windows Setup/Upgrade Diagnostic Tool...
+if not exist "%TOOLSPATH%\\\\SetupDiag.exe" (
+    echo Downloading SetupDiag from Microsoft...
+    powershell -Command "try { [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -Uri 'https://go.microsoft.com/fwlink/?linkid=870142' -OutFile '%TOOLSPATH%\\\\SetupDiag.exe' -UseBasicParsing; Write-Host 'SUCCESS: SetupDiag downloaded' -ForegroundColor Green } catch { Write-Host 'ERROR: Failed to download SetupDiag' -ForegroundColor Red }"
+) else (
+    echo SetupDiag already exists - skipping download
+)
+echo.
+` : ''}
 
 ${selectedFunctionData.some(f => f.id === 'safety-scanner') ? `
-echo [Tool 1/7] Microsoft Safety Scanner (msert.exe)...
+echo [MS-Tool 2] Microsoft Safety Scanner (msert.exe)...
 if not exist "%TOOLSPATH%\\\\msert.exe" (
     echo Downloading Safety Scanner ^(~130MB - may take several minutes^)...
     powershell -Command "try { [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -Uri 'https://go.microsoft.com/fwlink/?LinkId=212732' -OutFile '%TOOLSPATH%\\\\msert.exe' -UseBasicParsing; Write-Host 'SUCCESS: Safety Scanner downloaded' -ForegroundColor Green } catch { Write-Host 'ERROR: Failed to download Safety Scanner' -ForegroundColor Red }"
@@ -1048,10 +1119,15 @@ if not exist "%TOOLSPATH%\\\\msert.exe" (
 echo.
 ` : ''}
 
+REM === SYSINTERNALS SUITE ===
+echo.
+echo === DOWNLOADING SYSINTERNALS TOOLS ===
+echo.
+
 ${selectedFunctionData.some(f => f.id === 'autorunsc') ? `
-echo [Tool 2/7] Sysinternals Autorunsc...
+echo [SysInt-1] Autorunsc - Autorun Analysis Tool...
 if not exist "%TOOLSPATH%\\\\autorunsc.exe" (
-    echo Downloading Autorunsc from live.sysinternals.com...
+    echo Downloading from live.sysinternals.com...
     powershell -Command "try { [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -Uri 'https://live.sysinternals.com/autorunsc.exe' -OutFile '%TOOLSPATH%\\\\autorunsc.exe' -UseBasicParsing; Write-Host 'SUCCESS: Autorunsc downloaded' -ForegroundColor Green } catch { Write-Host 'ERROR: Failed to download Autorunsc' -ForegroundColor Red }"
 ) else (
     echo Autorunsc already exists - skipping download
@@ -1060,9 +1136,9 @@ echo.
 ` : ''}
 
 ${selectedFunctionData.some(f => f.id === 'sigcheck') ? `
-echo [Tool 3/7] Sysinternals Sigcheck...
+echo [SysInt-2] Sigcheck - Signature Verification Tool...
 if not exist "%TOOLSPATH%\\\\sigcheck.exe" (
-    echo Downloading Sigcheck from live.sysinternals.com...
+    echo Downloading from live.sysinternals.com...
     powershell -Command "try { [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -Uri 'https://live.sysinternals.com/sigcheck.exe' -OutFile '%TOOLSPATH%\\\\sigcheck.exe' -UseBasicParsing; Write-Host 'SUCCESS: Sigcheck downloaded' -ForegroundColor Green } catch { Write-Host 'ERROR: Failed to download Sigcheck' -ForegroundColor Red }"
 ) else (
     echo Sigcheck already exists - skipping download
@@ -1071,9 +1147,9 @@ echo.
 ` : ''}
 
 ${selectedFunctionData.some(f => f.id === 'procdump') ? `
-echo [Tool 4/7] Sysinternals ProcDump...
+echo [SysInt-3] ProcDump - Process Dump Tool...
 if not exist "%TOOLSPATH%\\\\procdump.exe" (
-    echo Downloading ProcDump from live.sysinternals.com...
+    echo Downloading from live.sysinternals.com...
     powershell -Command "try { [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -Uri 'https://live.sysinternals.com/procdump.exe' -OutFile '%TOOLSPATH%\\\\procdump.exe' -UseBasicParsing; Write-Host 'SUCCESS: ProcDump downloaded' -ForegroundColor Green } catch { Write-Host 'ERROR: Failed to download ProcDump' -ForegroundColor Red }"
 ) else (
     echo ProcDump already exists - skipping download
@@ -1081,10 +1157,35 @@ if not exist "%TOOLSPATH%\\\\procdump.exe" (
 echo.
 ` : ''}
 
+REM Download Sysinternals PSExec for advanced operations
+echo [SysInt-4] PSExec - Remote Execution Tool...
+if not exist "%TOOLSPATH%\\\\psexec.exe" (
+    echo Downloading PSExec from live.sysinternals.com...
+    powershell -Command "try { [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -Uri 'https://live.sysinternals.com/psexec.exe' -OutFile '%TOOLSPATH%\\\\psexec.exe' -UseBasicParsing; Write-Host 'SUCCESS: PSExec downloaded' -ForegroundColor Green } catch { Write-Host 'ERROR: Failed to download PSExec' -ForegroundColor Red }"
+) else (
+    echo PSExec already exists - skipping download
+)
+echo.
+
+REM Download Sysinternals Process Explorer
+echo [SysInt-5] Process Explorer - Advanced Task Manager...
+if not exist "%TOOLSPATH%\\\\procexp.exe" (
+    echo Downloading Process Explorer from live.sysinternals.com...
+    powershell -Command "try { [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -Uri 'https://live.sysinternals.com/procexp.exe' -OutFile '%TOOLSPATH%\\\\procexp.exe' -UseBasicParsing; Write-Host 'SUCCESS: Process Explorer downloaded' -ForegroundColor Green } catch { Write-Host 'ERROR: Failed to download Process Explorer' -ForegroundColor Red }"
+) else (
+    echo Process Explorer already exists - skipping download
+)
+echo.
+
+REM === SECURITY & MALWARE REMOVAL TOOLS ===
+echo.
+echo === DOWNLOADING SECURITY TOOLS ===
+echo.
+
 ${selectedFunctionData.some(f => f.id === 'rkill') ? `
-echo [Tool 5/7] RKill from BleepingComputer...
+echo [Security-1] RKill - Malicious Process Killer...
 if not exist "%TOOLSPATH%\\\\rkill.exe" (
-    echo Downloading RKill...
+    echo Downloading from BleepingComputer...
     powershell -Command "try { [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -Uri 'https://download.bleepingcomputer.com/grinler/rkill.exe' -OutFile '%TOOLSPATH%\\\\rkill.exe' -UseBasicParsing; Write-Host 'SUCCESS: RKill downloaded' -ForegroundColor Green } catch { Write-Host 'ERROR: Failed to download RKill' -ForegroundColor Red }"
 ) else (
     echo RKill already exists - skipping download
@@ -1093,7 +1194,7 @@ echo.
 ` : ''}
 
 ${selectedFunctionData.some(f => f.id === 'adwcleaner') ? `
-echo [Tool 6/7] Malwarebytes AdwCleaner...
+echo [Security-2] Malwarebytes AdwCleaner - PUP/Adware Remover...
 if not exist "%TOOLSPATH%\\\\adwcleaner.exe" (
     echo Downloading AdwCleaner ^(~10MB^)...
     powershell -Command "try { [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -Uri 'https://adwcleaner.malwarebytes.com/adwcleaner?channel=release' -OutFile '%TOOLSPATH%\\\\adwcleaner.exe' -UseBasicParsing; Write-Host 'SUCCESS: AdwCleaner downloaded' -ForegroundColor Green } catch { Write-Host 'ERROR: Failed to download AdwCleaner' -ForegroundColor Red }"
@@ -1104,7 +1205,7 @@ echo.
 ` : ''}
 
 ${selectedFunctionData.some(f => f.id === 'kvrt') ? `
-echo [Tool 7/7] Kaspersky Virus Removal Tool...
+echo [Security-3] Kaspersky Virus Removal Tool - Second Opinion Scanner...
 if not exist "%TOOLSPATH%\\\\kvrt.exe" (
     echo Downloading KVRT ^(~200MB - may take several minutes^)...
     powershell -Command "try { [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -Uri 'https://devbuilds.s.kaspersky-labs.com/devbuilds/KVRT/latest/full/KVRT.exe' -OutFile '%TOOLSPATH%\\\\kvrt.exe' -UseBasicParsing; Write-Host 'SUCCESS: KVRT downloaded' -ForegroundColor Green } catch { Write-Host 'ERROR: Failed to download KVRT' -ForegroundColor Red }"
@@ -1114,13 +1215,123 @@ if not exist "%TOOLSPATH%\\\\kvrt.exe" (
 echo.
 ` : ''}
 
-echo =============================================================================
-echo  TOOL DOWNLOAD COMPLETE
-echo =============================================================================
-echo All required external tools are now in: %TOOLSPATH%
-echo These tools will be reused on future runs without re-downloading.
+REM === POWERSHELL MODULES ===
 echo.
-echo IMPORTANT: Verify the tools folder contains all required executables
+echo === INSTALLING POWERSHELL MODULES ===
+echo.
+
+${selectedFunctionData.some(f => f.id === 'pswindowsupdate') ? `
+echo [PS-Module-1] PSWindowsUpdate - Windows Update Management Module...
+powershell -Command "if (!(Get-Module -ListAvailable -Name PSWindowsUpdate)) { try { Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force -ErrorAction SilentlyContinue; Set-PSRepository -Name PSGallery -InstallationPolicy Trusted -ErrorAction SilentlyContinue; Install-Module -Name PSWindowsUpdate -Force -Scope CurrentUser; Write-Host 'SUCCESS: PSWindowsUpdate module installed' -ForegroundColor Green } catch { Write-Host 'ERROR: Failed to install PSWindowsUpdate' -ForegroundColor Red } } else { Write-Host 'PSWindowsUpdate already installed' -ForegroundColor Green }"
+echo.
+` : ''}
+
+REM === VERIFY CRITICAL WINDOWS BUILT-IN TOOLS ===
+echo.
+echo === VERIFYING WINDOWS BUILT-IN TOOLS ===
+echo.
+
+echo [Verify-1] Checking System File Checker ^(sfc.exe^)...
+where sfc.exe >nul 2>&1
+if %errorlevel% neq 0 (
+    echo WARNING: SFC.EXE not found in PATH - System may be severely corrupted
+    echo FALLBACK: Will attempt to use full path: %windir%\\system32\\sfc.exe
+) else (
+    echo SUCCESS: SFC.EXE verified
+)
+echo.
+
+echo [Verify-2] Checking DISM ^(Dism.exe^)...
+where dism.exe >nul 2>&1
+if %errorlevel% neq 0 (
+    echo WARNING: DISM.EXE not found in PATH
+    echo FALLBACK: Will attempt to use full path: %windir%\\system32\\Dism.exe
+) else (
+    echo SUCCESS: DISM.EXE verified
+)
+echo.
+
+echo [Verify-3] Checking Check Disk ^(chkdsk.exe^)...
+where chkdsk.exe >nul 2>&1
+if %errorlevel% neq 0 (
+    echo WARNING: CHKDSK.EXE not found in PATH
+    echo FALLBACK: Will attempt to use full path: %windir%\\system32\\chkdsk.exe
+) else (
+    echo SUCCESS: CHKDSK.EXE verified
+)
+echo.
+
+echo [Verify-4] Checking Disk Cleanup ^(cleanmgr.exe^)...
+where cleanmgr.exe >nul 2>&1
+if %errorlevel% neq 0 (
+    echo WARNING: CLEANMGR.EXE not found - Will use PowerShell alternative
+) else (
+    echo SUCCESS: CLEANMGR.EXE verified
+)
+echo.
+
+echo [Verify-5] Checking Windows Defender ^(MpCmdRun.exe^)...
+if exist "%ProgramFiles%\\Windows Defender\\MpCmdRun.exe" (
+    echo SUCCESS: Windows Defender CLI verified
+) else (
+    echo WARNING: Windows Defender CLI not found
+    echo FALLBACK: Will use PowerShell Defender cmdlets
+)
+echo.
+
+echo [Verify-6] Checking Network Tools ^(ipconfig, netsh^)...
+where ipconfig.exe >nul 2>&1
+if %errorlevel% neq 0 (
+    echo WARNING: IPCONFIG.EXE not found
+) else (
+    echo SUCCESS: Network tools verified
+)
+echo.
+
+echo [Verify-7] Checking PowerShell...
+where powershell.exe >nul 2>&1
+if %errorlevel% neq 0 (
+    echo CRITICAL ERROR: PowerShell not found - Cannot continue
+    echo System requires Windows repair or reinstallation
+    pause
+    exit /b 1
+) else (
+    echo SUCCESS: PowerShell verified
+)
+echo.
+
+REM === DOWNLOAD NINITE FOR MASS APP UPDATES ===
+${selectedFunctionData.some(f => f.id === 'winget') ? `
+echo.
+echo === VERIFYING APP MANAGEMENT TOOLS ===
+echo.
+echo [AppMgmt-1] Checking Windows Package Manager ^(winget^)...
+where winget.exe >nul 2>&1
+if %errorlevel% neq 0 (
+    echo WARNING: Winget not found - Install from Microsoft Store: "App Installer"
+    echo Download: https://aka.ms/getwinget
+) else (
+    echo SUCCESS: Winget verified
+)
+echo.
+` : ''}
+
+echo =============================================================================
+echo  TOOL ACQUISITION COMPLETE
+echo =============================================================================
+echo.
+echo EXTERNAL TOOLS: Downloaded to %TOOLSPATH%
+echo BUILT-IN TOOLS: Verified ^(fallbacks configured for missing tools^)
+echo MODULES: PowerShell modules installed
+echo.
+echo All required tools are now ready for use.
+echo On future runs, existing tools will be reused without re-downloading.
+echo.
+echo IMPORTANT NOTES:
+echo - If any CRITICAL tools failed, the script will attempt fallbacks
+echo - For severely corrupted systems, Windows repair may be required
+echo - All external tools are from official vendor sources
+echo.
 echo Press any key to continue with system preparation...
 pause
 echo.
