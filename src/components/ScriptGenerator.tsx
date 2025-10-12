@@ -566,11 +566,12 @@ echo.`;
         case 'bleachbit':
           return `echo [${stageNum}.${funcNum}] BLEACHBIT - Deep system/browser cleanup
 echo *** Checking for BleachBit portable ***
-if exist "%~dp0bleachbit_portable\\\\bleachbit_console.exe" (
+if exist "%TOOLSPATH%\\\\bleachbit_portable\\\\bleachbit_console.exe" (
     echo Running BleachBit deep clean...
-    "%~dp0bleachbit_portable\\\\bleachbit_console.exe" --clean system.cache system.logs system.tmp >> "%LOGPATH%\\\\${logFile}" 2>&1
+    "%TOOLSPATH%\\\\bleachbit_portable\\\\bleachbit_console.exe" --clean system.cache system.logs system.tmp >> "%LOGPATH%\\\\${logFile}" 2>&1
 ) else (
-    echo WARNING: BleachBit portable not found. Download from bleachbit.org
+    echo NOTE: BleachBit requires manual download from bleachbit.org
+    echo Extract to: %TOOLSPATH%\\\\bleachbit_portable\\\\
 )
 echo Results logged to: %LOGPATH%\\\\${logFile}
 echo.`;
@@ -787,17 +788,17 @@ echo.`;
         
         case 'safety-scanner':
           return `echo [${stageNum}.${funcNum}] SAFETY SCANNER - Microsoft standalone cleaner
-echo *** Downloading Microsoft Safety Scanner ***
-powershell -Command "Invoke-WebRequest -Uri 'https://go.microsoft.com/fwlink/?LinkId=212732' -OutFile '%TEMP%\\\\msert.exe'"
-echo.
 echo ----------------------------------------------------------------
 echo ^|^| SAFETY SCANNER - Full scan ^| STARTED %TIME% %DATE% ^|^|
 echo ^|^| *Press [Ctrl] + [C] to cancel and proceed to the next     ^|^|
 echo ----------------------------------------------------------------
 echo.
-echo Running Microsoft Safety Scanner (may take 1+ hours)
-"%TEMP%\\\\msert.exe" /Q /F >> "%LOGPATH%\\\\${logFile}" 2>&1
-del "%TEMP%\\\\msert.exe" 2>nul
+echo *** Running Microsoft Safety Scanner (may take 1+ hours) ***
+if exist "%TOOLSPATH%\\\\msert.exe" (
+    "%TOOLSPATH%\\\\msert.exe" /Q /F >> "%LOGPATH%\\\\${logFile}" 2>&1
+) else (
+    echo ERROR: Safety Scanner not found in Tools folder
+)
 echo Results logged to: %LOGPATH%\\\\${logFile}
 echo.`;
         
@@ -810,54 +811,66 @@ echo.`;
         
         case 'autorunsc':
           return `echo [${stageNum}.${funcNum}] AUTORUNSC - Enumerate/disable autoruns
-echo *** Downloading Sysinternals Autorunsc ***
-powershell -Command "Invoke-WebRequest -Uri 'https://live.sysinternals.com/autorunsc.exe' -OutFile '%TEMP%\\\\autorunsc.exe'"
-"%TEMP%\\\\autorunsc.exe" -accepteula -a * -c > "%LOGPATH%\\\\autoruns.csv"
-del "%TEMP%\\\\autorunsc.exe" 2>nul
+echo *** Running Sysinternals Autorunsc ***
+if exist "%TOOLSPATH%\\\\autorunsc.exe" (
+    "%TOOLSPATH%\\\\autorunsc.exe" -accepteula -a * -c > "%LOGPATH%\\\\autoruns.csv"
+) else (
+    echo ERROR: Autorunsc not found in Tools folder
+)
 echo Results logged to: %LOGPATH%\\\\autoruns.csv
 echo.`;
         
         case 'sigcheck':
           return `echo [${stageNum}.${funcNum}] SIGCHECK - List unsigned/suspicious files
-echo *** Downloading Sysinternals Sigcheck ***
-powershell -Command "Invoke-WebRequest -Uri 'https://live.sysinternals.com/sigcheck.exe' -OutFile '%TEMP%\\\\sigcheck.exe'"
-"%TEMP%\\\\sigcheck.exe" -accepteula -u -e -s C:\\Windows\\System32 > "%LOGPATH%\\\\unsigned_files.txt"
-del "%TEMP%\\\\sigcheck.exe" 2>nul
+echo *** Running Sysinternals Sigcheck ***
+if exist "%TOOLSPATH%\\\\sigcheck.exe" (
+    "%TOOLSPATH%\\\\sigcheck.exe" -accepteula -u -e -s C:\\Windows\\System32 > "%LOGPATH%\\\\unsigned_files.txt"
+) else (
+    echo ERROR: Sigcheck not found in Tools folder
+)
 echo Results logged to: %LOGPATH%\\\\unsigned_files.txt
 echo.`;
         
         case 'procdump':
           return `echo [${stageNum}.${funcNum}] PROCDUMP - Auto-capture crash dumps
-echo *** Downloading Sysinternals ProcDump ***
-powershell -Command "Invoke-WebRequest -Uri 'https://live.sysinternals.com/procdump.exe' -OutFile '%TEMP%\\\\procdump.exe'"
-echo ProcDump ready for manual crash dump capture
-del "%TEMP%\\\\procdump.exe" 2>nul
+echo *** ProcDump is available in Tools folder for manual use ***
+if exist "%TOOLSPATH%\\\\procdump.exe" (
+    echo ProcDump ready at: %TOOLSPATH%\\\\procdump.exe
+) else (
+    echo ERROR: ProcDump not found in Tools folder
+)
 echo.`;
         
         case 'rkill':
           return `echo [${stageNum}.${funcNum}] RKILL - Kills malicious processes
-echo *** Downloading RKill ***
-powershell -Command "Invoke-WebRequest -Uri 'https://www.bleepingcomputer.com/download/rkill/dl/10/' -OutFile '%TEMP%\\\\rkill.exe'"
-"%TEMP%\\\\rkill.exe" -s -l "%LOGPATH%\\\\rkill.log"
-del "%TEMP%\\\\rkill.exe" 2>nul
+echo *** Running RKill ***
+if exist "%TOOLSPATH%\\\\rkill.exe" (
+    "%TOOLSPATH%\\\\rkill.exe" -s -l "%LOGPATH%\\\\rkill.log"
+) else (
+    echo ERROR: RKill not found in Tools folder
+)
 echo Results logged to: %LOGPATH%\\\\rkill.log
 echo.`;
         
         case 'adwcleaner':
           return `echo [${stageNum}.${funcNum}] ADWCLEANER - Adware/PUP cleanup
-echo *** Downloading AdwCleaner ***
-powershell -Command "Invoke-WebRequest -Uri 'https://downloads.malwarebytes.com/file/adwcleaner' -OutFile '%TEMP%\\\\adwcleaner.exe'"
-"%TEMP%\\\\adwcleaner.exe" /eula /clean /noreboot >> "%LOGPATH%\\\\${logFile}" 2>&1
-del "%TEMP%\\\\adwcleaner.exe" 2>nul
+echo *** Running AdwCleaner ***
+if exist "%TOOLSPATH%\\\\adwcleaner.exe" (
+    "%TOOLSPATH%\\\\adwcleaner.exe" /eula /clean /noreboot >> "%LOGPATH%\\\\${logFile}" 2>&1
+) else (
+    echo ERROR: AdwCleaner not found in Tools folder
+)
 echo Results logged to: %LOGPATH%\\\\${logFile}
 echo.`;
         
         case 'kvrt':
           return `echo [${stageNum}.${funcNum}] KASPERSKY VIRUS REMOVAL TOOL - Portable scanner
-echo *** Downloading Kaspersky Virus Removal Tool ***
-powershell -Command "Invoke-WebRequest -Uri 'https://devbuilds.s.kaspersky-labs.com/devbuilds/KVRT/latest/full/KVRT.exe' -OutFile '%TEMP%\\\\kvrt.exe'"
-"%TEMP%\\\\kvrt.exe" -accepteula -silent -processlevel 2 >> "%LOGPATH%\\\\${logFile}" 2>&1
-del "%TEMP%\\\\kvrt.exe" 2>nul
+echo *** Running Kaspersky Virus Removal Tool ***
+if exist "%TOOLSPATH%\\\\kvrt.exe" (
+    "%TOOLSPATH%\\\\kvrt.exe" -accepteula -silent -processlevel 2 >> "%LOGPATH%\\\\${logFile}" 2>&1
+) else (
+    echo ERROR: KVRT not found in Tools folder
+)
 echo Results logged to: %LOGPATH%\\\\${logFile}
 echo.`;
         
@@ -997,10 +1010,13 @@ if %errorlevel% neq 0 (
 )
 
 REM Initialize variables
+set "SCRIPTDIR=%~dp0"
+set "TOOLSPATH=%SCRIPTDIR%Tools"
 set "LOGPATH=%USERPROFILE%\\Desktop\\SC-USCS\\SC-USCS_${timestamp}"
 set "STARTTIME=%TIME%"
 mkdir "%USERPROFILE%\\Desktop\\SC-USCS" 2>nul
 mkdir "%LOGPATH%" 2>nul
+mkdir "%TOOLSPATH%" 2>nul
 
 echo =============================================================================
 echo  SupportCALL - Ultimate Secure Clean Script v2.7
@@ -1008,8 +1024,105 @@ echo  Professional Windows Remediation Engine
 echo =============================================================================
 echo.
 echo Selected Functions: ${selectedFunctionData.length}
+echo Tools Path: %TOOLSPATH%
 echo Log Path: %LOGPATH%
 echo Start Time: %STARTTIME%
+echo.
+
+REM =============================================================================
+REM STAGE -1: DOWNLOAD AND VERIFY REQUIRED TOOLS
+REM =============================================================================
+echo [Stage -1] Downloading Required External Tools to Tools Folder...
+echo This ensures all commands can run without internet dependency.
+echo Tools will be saved to: %TOOLSPATH%
+echo.
+
+${selectedFunctionData.some(f => f.id === 'safety-scanner') ? `
+echo [Tool 1/7] Microsoft Safety Scanner (msert.exe)...
+if not exist "%TOOLSPATH%\\\\msert.exe" (
+    echo Downloading Safety Scanner ^(~130MB - may take several minutes^)...
+    powershell -Command "try { [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -Uri 'https://go.microsoft.com/fwlink/?LinkId=212732' -OutFile '%TOOLSPATH%\\\\msert.exe' -UseBasicParsing; Write-Host 'SUCCESS: Safety Scanner downloaded' -ForegroundColor Green } catch { Write-Host 'ERROR: Failed to download Safety Scanner' -ForegroundColor Red }"
+) else (
+    echo Safety Scanner already exists - skipping download
+)
+echo.
+` : ''}
+
+${selectedFunctionData.some(f => f.id === 'autorunsc') ? `
+echo [Tool 2/7] Sysinternals Autorunsc...
+if not exist "%TOOLSPATH%\\\\autorunsc.exe" (
+    echo Downloading Autorunsc from live.sysinternals.com...
+    powershell -Command "try { [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -Uri 'https://live.sysinternals.com/autorunsc.exe' -OutFile '%TOOLSPATH%\\\\autorunsc.exe' -UseBasicParsing; Write-Host 'SUCCESS: Autorunsc downloaded' -ForegroundColor Green } catch { Write-Host 'ERROR: Failed to download Autorunsc' -ForegroundColor Red }"
+) else (
+    echo Autorunsc already exists - skipping download
+)
+echo.
+` : ''}
+
+${selectedFunctionData.some(f => f.id === 'sigcheck') ? `
+echo [Tool 3/7] Sysinternals Sigcheck...
+if not exist "%TOOLSPATH%\\\\sigcheck.exe" (
+    echo Downloading Sigcheck from live.sysinternals.com...
+    powershell -Command "try { [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -Uri 'https://live.sysinternals.com/sigcheck.exe' -OutFile '%TOOLSPATH%\\\\sigcheck.exe' -UseBasicParsing; Write-Host 'SUCCESS: Sigcheck downloaded' -ForegroundColor Green } catch { Write-Host 'ERROR: Failed to download Sigcheck' -ForegroundColor Red }"
+) else (
+    echo Sigcheck already exists - skipping download
+)
+echo.
+` : ''}
+
+${selectedFunctionData.some(f => f.id === 'procdump') ? `
+echo [Tool 4/7] Sysinternals ProcDump...
+if not exist "%TOOLSPATH%\\\\procdump.exe" (
+    echo Downloading ProcDump from live.sysinternals.com...
+    powershell -Command "try { [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -Uri 'https://live.sysinternals.com/procdump.exe' -OutFile '%TOOLSPATH%\\\\procdump.exe' -UseBasicParsing; Write-Host 'SUCCESS: ProcDump downloaded' -ForegroundColor Green } catch { Write-Host 'ERROR: Failed to download ProcDump' -ForegroundColor Red }"
+) else (
+    echo ProcDump already exists - skipping download
+)
+echo.
+` : ''}
+
+${selectedFunctionData.some(f => f.id === 'rkill') ? `
+echo [Tool 5/7] RKill from BleepingComputer...
+if not exist "%TOOLSPATH%\\\\rkill.exe" (
+    echo Downloading RKill...
+    powershell -Command "try { [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -Uri 'https://download.bleepingcomputer.com/grinler/rkill.exe' -OutFile '%TOOLSPATH%\\\\rkill.exe' -UseBasicParsing; Write-Host 'SUCCESS: RKill downloaded' -ForegroundColor Green } catch { Write-Host 'ERROR: Failed to download RKill' -ForegroundColor Red }"
+) else (
+    echo RKill already exists - skipping download
+)
+echo.
+` : ''}
+
+${selectedFunctionData.some(f => f.id === 'adwcleaner') ? `
+echo [Tool 6/7] Malwarebytes AdwCleaner...
+if not exist "%TOOLSPATH%\\\\adwcleaner.exe" (
+    echo Downloading AdwCleaner ^(~10MB^)...
+    powershell -Command "try { [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -Uri 'https://adwcleaner.malwarebytes.com/adwcleaner?channel=release' -OutFile '%TOOLSPATH%\\\\adwcleaner.exe' -UseBasicParsing; Write-Host 'SUCCESS: AdwCleaner downloaded' -ForegroundColor Green } catch { Write-Host 'ERROR: Failed to download AdwCleaner' -ForegroundColor Red }"
+) else (
+    echo AdwCleaner already exists - skipping download
+)
+echo.
+` : ''}
+
+${selectedFunctionData.some(f => f.id === 'kvrt') ? `
+echo [Tool 7/7] Kaspersky Virus Removal Tool...
+if not exist "%TOOLSPATH%\\\\kvrt.exe" (
+    echo Downloading KVRT ^(~200MB - may take several minutes^)...
+    powershell -Command "try { [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -Uri 'https://devbuilds.s.kaspersky-labs.com/devbuilds/KVRT/latest/full/KVRT.exe' -OutFile '%TOOLSPATH%\\\\kvrt.exe' -UseBasicParsing; Write-Host 'SUCCESS: KVRT downloaded' -ForegroundColor Green } catch { Write-Host 'ERROR: Failed to download KVRT' -ForegroundColor Red }"
+) else (
+    echo KVRT already exists - skipping download
+)
+echo.
+` : ''}
+
+echo =============================================================================
+echo  TOOL DOWNLOAD COMPLETE
+echo =============================================================================
+echo All required external tools are now in: %TOOLSPATH%
+echo These tools will be reused on future runs without re-downloading.
+echo.
+echo IMPORTANT: Verify the tools folder contains all required executables
+echo Press any key to continue with system preparation...
+pause
 echo.
 
 REM =============================================================================
