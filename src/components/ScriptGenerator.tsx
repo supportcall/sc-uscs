@@ -464,7 +464,7 @@ const ScriptGenerator = () => {
       selectionType = "Recommended";
     }
     
-    a.download = `SC-USCS-v2.7-${selectionType}-Functions.bat`;
+    a.download = `SC-USCS-v2.8-${selectionType}-Functions.bat`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -472,7 +472,7 @@ const ScriptGenerator = () => {
     
     toast({
       title: "Script Downloaded",
-      description: `SC-USCS-v2.7-${selectionType}-Functions.bat has been downloaded to your device.`,
+      description: `SC-USCS-v2.8-${selectionType}-Functions.bat has been downloaded to your device.`,
     });
   };
 
@@ -949,7 +949,7 @@ echo.`;
           return `echo [${stageNum}.${funcNum}] COMPREHENSIVE SYSTEM REPORT - Complete system analysis
 echo *** Generating comprehensive system reports ***
 echo === CONSOLIDATED FINDINGS REPORT === > "%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt"
-echo Script Version: SC-USCS v2.7 >> "%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt"
+echo Script Version: SC-USCS v2.8 >> "%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt"
 echo Execution Date: %DATE% %TIME% >> "%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt"
 echo Functions Executed: ${selectedFunctionData.length} of ${functions.length} >> "%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt"
 echo. >> "%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt"
@@ -1020,7 +1020,7 @@ powershell -ExecutionPolicy Bypass -Command "$ErrorActionPreference='Continue'; 
     <div class='container'>
         <div class='header'>
             <h1>🛡️ SC-USCS System Report</h1>
-            <p>Windows Remediation & Security Scan v2.7</p>
+            <p>Windows Remediation & Security Scan v2.8</p>
         </div>
         <div class='content'>
             <div class='status-box'>
@@ -1109,7 +1109,7 @@ ${cat.functions.map((func, funcIndex) => generateFunctionImplementation(func, st
     
     return `@echo off
 REM =============================================================================
-REM SupportCALL - Ultimate Secure Clean Script (SC-USCS) v2.7
+REM SupportCALL - Ultimate Secure Clean Script (SC-USCS) v2.8
 REM Professional Windows Remediation Engine (SC-UWIRE)
 REM Generated: ${new Date().toLocaleString()}
 REM Functions Selected: ${selectedFunctionData.length} of ${functions.length}
@@ -1117,7 +1117,7 @@ REM Compatibility: Windows 10, Windows 11
 REM =============================================================================
 
 setlocal EnableDelayedExpansion
-title SupportCALL - SC-USCS v2.7 - Professional Edition
+title SupportCALL - SC-USCS v2.8 - Professional Edition
 
 REM Check for Administrator privileges
 net session >nul 2>&1
@@ -1138,7 +1138,7 @@ mkdir "%LOGPATH%" 2>nul
 mkdir "%TOOLSPATH%" 2>nul
 
 echo =============================================================================
-echo  SupportCALL - Ultimate Secure Clean Script v2.7
+echo  SupportCALL - Ultimate Secure Clean Script v2.8
 echo  Professional Windows Remediation Engine
 echo =============================================================================
 echo.
@@ -1435,8 +1435,8 @@ net start "swprv"
 vssadmin resize shadowstorage /for=C: /on=C: /maxsize=10%%
 
 REM Create mandatory restore point with error checking
-echo Creating System Restore Point: SC-USCS-Pre-Run-v2.7...
-powershell -Command "$result = Checkpoint-Computer -Description 'SC-USCS-Pre-Run-v2.7' -RestorePointType 'MODIFY_SETTINGS' -Verbose; if ($result -eq $null) { Write-Host 'SUCCESS: System Restore Point Created' -ForegroundColor Green } else { Write-Host 'WARNING: Restore Point Creation Status Unknown' -ForegroundColor Yellow }"
+echo Creating System Restore Point: SC-USCS-Pre-Run-v2.8...
+powershell -Command "$result = Checkpoint-Computer -Description 'SC-USCS-Pre-Run-v2.8' -RestorePointType 'MODIFY_SETTINGS' -Verbose; if ($result -eq $null) { Write-Host 'SUCCESS: System Restore Point Created' -ForegroundColor Green } else { Write-Host 'WARNING: Restore Point Creation Status Unknown' -ForegroundColor Yellow }"
 
 REM Verify restore point was created
 echo Verifying restore point creation...
@@ -1509,14 +1509,14 @@ exit /b 0`;
                 SupportCALL - Ultimate Secure Clean Script
               </h1>
               <div className="text-lg md:text-xl font-semibold text-muted-foreground">
-                v2.7 - Professional Edition
+                v2.8 - Professional Edition
               </div>
             </div>
             <CardDescription className="text-base md:text-lg max-w-3xl mx-auto leading-relaxed">
               Professional Custom Script Generator for Windows System Cleaning, Security Enhancement & Optimization - Tailored PowerShell Solutions for Windows 10/11
             </CardDescription>
             <div className="flex justify-center gap-2 md:gap-4 flex-wrap">
-              <Badge variant="default" className="px-3 py-1 text-sm">SC-USCS v2.7</Badge>
+              <Badge variant="default" className="px-3 py-1 text-sm">SC-USCS v2.8</Badge>
               <Badge variant="secondary" className="px-3 py-1 text-sm">Safety: 98%</Badge>
               <Badge variant="outline" className="px-3 py-1 text-sm">Effectiveness: 95%</Badge>
               <Badge variant="outline" className="px-3 py-1 text-sm">Win 10/11 Compatible</Badge>
