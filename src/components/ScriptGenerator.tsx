@@ -985,21 +985,92 @@ echo.`;
         
         case 'email-report':
           return `echo [${stageNum}.${funcNum}] EMAIL REPORT - Send reports to support team
-echo *** Preparing email summary ***
-echo SC-USCS v2.7 Execution Report > "%LOGPATH%\\\\EMAIL_SUMMARY.txt"
-echo ================================ >> "%LOGPATH%\\\\EMAIL_SUMMARY.txt"
-echo Computer: %COMPUTERNAME% >> "%LOGPATH%\\\\EMAIL_SUMMARY.txt"
-echo Date: %DATE% %TIME% >> "%LOGPATH%\\\\EMAIL_SUMMARY.txt"
-echo Functions: ${selectedFunctionData.length} of ${functions.length} >> "%LOGPATH%\\\\EMAIL_SUMMARY.txt"
-echo. >> "%LOGPATH%\\\\EMAIL_SUMMARY.txt"
-echo CRITICAL FINDINGS: >> "%LOGPATH%\\\\EMAIL_SUMMARY.txt"
-powershell -Command "$threats = Get-MpThreatDetection; if ($threats) { Add-Content '%LOGPATH%\\\\EMAIL_SUMMARY.txt' 'THREATS DETECTED: YES'; $threats | ForEach-Object { Add-Content '%LOGPATH%\\\\EMAIL_SUMMARY.txt' ('- ' + $_.ThreatName) } } else { Add-Content '%LOGPATH%\\\\EMAIL_SUMMARY.txt' 'THREATS DETECTED: NONE' }" 2>nul
-echo. >> "%LOGPATH%\\\\EMAIL_SUMMARY.txt"
-echo Reports Location: %LOGPATH% >> "%LOGPATH%\\\\EMAIL_SUMMARY.txt"
-echo Recipients: scmyhelp@gmail.com, alerts@supportcall.co.za >> "%LOGPATH%\\\\EMAIL_SUMMARY.txt"
-echo. >> "%LOGPATH%\\\\EMAIL_SUMMARY.txt"
-echo *** EMAIL REQUIRES SMTP CONFIGURATION ***
-echo *** Manually send all files from %LOGPATH% to support team ***
+echo *** Preparing and sending email report ***
+powershell -ExecutionPolicy Bypass -Command "$ErrorActionPreference='Continue'; try { $computerName = $env:COMPUTERNAME; $logPath = '%LOGPATH%'; $threats = try { Get-MpThreatDetection -ErrorAction SilentlyContinue } catch { $null }; $threatList = if ($threats) { ($threats | ForEach-Object { '<li style=\\"color: #d32f2f; margin: 5px 0;\\">' + $_.ThreatName + '</li>' }) -join '' } else { '<li style=\\"color: #388e3c;\\">No threats detected</li>' }; $threatStatus = if ($threats) { '<span style=\\"color: #d32f2f; font-weight: bold;\\">⚠ THREATS DETECTED</span>' } else { '<span style=\\"color: #388e3c; font-weight: bold;\\">✓ System Clean</span>' }; $htmlBody = @\\\"
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='UTF-8'>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; background-color: #f5f5f5; margin: 0; padding: 0; }
+        .container { max-width: 650px; margin: 20px auto; background-color: #ffffff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); overflow: hidden; }
+        .header { background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); color: #ffffff; padding: 30px 20px; text-align: center; }
+        .header h1 { margin: 0; font-size: 24px; font-weight: 600; }
+        .header p { margin: 8px 0 0 0; font-size: 14px; opacity: 0.95; }
+        .content { padding: 30px 25px; }
+        .status-box { background-color: #f8f9fa; border-left: 4px solid #2a5298; padding: 15px 20px; margin: 20px 0; border-radius: 4px; }
+        .status-box h2 { margin: 0 0 10px 0; font-size: 18px; color: #1e3c72; }
+        .info-grid { display: table; width: 100%; margin: 15px 0; }
+        .info-row { display: table-row; }
+        .info-label { display: table-cell; padding: 8px 15px 8px 0; font-weight: 600; color: #555; width: 40%; }
+        .info-value { display: table-cell; padding: 8px 0; color: #333; }
+        .section { margin: 25px 0; }
+        .section h3 { color: #1e3c72; font-size: 16px; margin: 0 0 12px 0; padding-bottom: 8px; border-bottom: 2px solid #e0e0e0; }
+        .findings-list { list-style: none; padding: 0; margin: 10px 0; }
+        .findings-list li { padding: 8px 12px; margin: 5px 0; background-color: #f8f9fa; border-radius: 4px; }
+        .footer { background-color: #f8f9fa; padding: 20px 25px; text-align: center; font-size: 13px; color: #666; border-top: 1px solid #e0e0e0; }
+        .footer p { margin: 5px 0; }
+        .badge { display: inline-block; padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 600; }
+        .badge-success { background-color: #e8f5e9; color: #2e7d32; }
+        .badge-warning { background-color: #fff3e0; color: #e65100; }
+        .alert-box { background-color: #fff3cd; border: 1px solid #ffc107; border-radius: 4px; padding: 15px; margin: 15px 0; }
+    </style>
+</head>
+<body>
+    <div class='container'>
+        <div class='header'>
+            <h1>🛡️ SC-USCS System Report</h1>
+            <p>Windows Remediation & Security Scan v2.7</p>
+        </div>
+        <div class='content'>
+            <div class='status-box'>
+                <h2>Security Status</h2>
+                <p style='font-size: 18px; margin: 10px 0;'>$threatStatus</p>
+            </div>
+            <div class='section'>
+                <h3>System Information</h3>
+                <div class='info-grid'>
+                    <div class='info-row'>
+                        <div class='info-label'>Computer Name:</div>
+                        <div class='info-value'><strong>$computerName</strong></div>
+                    </div>
+                    <div class='info-row'>
+                        <div class='info-label'>Scan Date:</div>
+                        <div class='info-value'>$(Get-Date -Format 'dddd, MMMM dd, yyyy - HH:mm:ss')</div>
+                    </div>
+                    <div class='info-row'>
+                        <div class='info-label'>Functions Executed:</div>
+                        <div class='info-value'><span class='badge badge-success'>${selectedFunctionData.length} of ${functions.length}</span></div>
+                    </div>
+                    <div class='info-row'>
+                        <div class='info-label'>Log Location:</div>
+                        <div class='info-value'><code style='background: #f5f5f5; padding: 2px 6px; border-radius: 3px;'>$logPath</code></div>
+                    </div>
+                </div>
+            </div>
+            <div class='section'>
+                <h3>Critical Findings</h3>
+                <ul class='findings-list'>
+                    $threatList
+                </ul>
+            </div>
+            <div class='alert-box'>
+                <strong>📋 Next Steps:</strong>
+                <ul style='margin: 10px 0 0 0; padding-left: 20px;'>
+                    <li>Review detailed logs at the location specified above</li>
+                    <li>Check CONSOLIDATED_FINDINGS.txt for complete analysis</li>
+                    <li>A system restart may be required to complete repairs</li>
+                </ul>
+            </div>
+        </div>
+        <div class='footer'>
+            <p><strong>SC-USCS</strong> - Automated Windows System Care</p>
+            <p style='color: #999; font-size: 12px;'>This is an automated report from your system remediation script</p>
+        </div>
+    </div>
+</body>
+</html>
+\\"@; $smtpServer = 'mail.supportcall.co.za'; $smtpPort = 465; $smtpUser = 'sendserver@supportcall.co.za'; $smtpPass = '74Dhm28#74Dhm28#'; $fromEmail = 'sendserver@supportcall.co.za'; $toEmails = @('alerts@supportcall.co.za', 'scmyhelp@gmail.com'); $subject = \\\"SC-USCS Report: $computerName - $(Get-Date -Format 'yyyy-MM-dd HH:mm')\\\"; Write-Host 'Configuring SMTP client with SSL...'; $smtp = New-Object System.Net.Mail.SmtpClient($smtpServer, $smtpPort); $smtp.EnableSsl = $true; $smtp.Timeout = 30000; $smtp.Credentials = New-Object System.Net.NetworkCredential($smtpUser, $smtpPass); $message = New-Object System.Net.Mail.MailMessage; $message.From = $fromEmail; $message.Subject = $subject; $message.Body = $htmlBody; $message.IsBodyHtml = $true; foreach ($toEmail in $toEmails) { $message.To.Add($toEmail); Write-Host \\\"Added recipient: $toEmail\\\"; }; Write-Host 'Attempting to send email...'; try { $smtp.Send($message); Write-Host '✓ Email sent successfully to all recipients' -ForegroundColor Green; Write-Host \\\"  → alerts@supportcall.co.za\\\"; Write-Host \\\"  → scmyhelp@gmail.com\\\"; } catch { Write-Host \\\"✗ Email send failed: $($_.Exception.Message)\\\" -ForegroundColor Red; Write-Host 'Saving email content to file for manual review...'; $htmlBody | Out-File \\\"$logPath\\\\EMAIL_REPORT.html\\\" -Encoding UTF8; Write-Host \\\"Email content saved to: $logPath\\\\EMAIL_REPORT.html\\\"; } finally { $message.Dispose(); $smtp.Dispose(); }; } catch { Write-Host \\\"Error in email process: $($_.Exception.Message)\\\" -ForegroundColor Red; }" 2>&1
 echo.`;
         default:
           return `echo [${stageNum}.${funcNum}] ${func.name.toUpperCase()} - ${func.description}
