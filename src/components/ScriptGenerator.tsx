@@ -48,14 +48,6 @@ const ScriptGenerator = () => {
       category: "System Repair Functions"
     },
     {
-      id: "chkdsk",
-      name: "Check Disk (CHKDSK)",
-      description: "CHKDSK — Scans/fixes filesystem errors and bad sectors.",
-      safety: "Medium Safety",
-      recommendation: "Optional",
-      category: "System Repair Functions"
-    },
-    {
       id: "repair-volume",
       name: "Repair Volume (PowerShell)",
       description: "Repair-Volume (PowerShell) — Online/offline volume scan and repair.",
@@ -299,14 +291,6 @@ const ScriptGenerator = () => {
       category: "Security & Malware Protection"
     },
     {
-      id: "defender-scan",
-      name: "Defender Full Scan",
-      description: "Defender PowerShell (Start-MpScan / Remove-MpThreat / Update-MpSignature) — Full scripting interface to Defender.",
-      safety: "High Safety",
-      recommendation: "Recommended",
-      category: "Security & Malware Protection"
-    },
-    {
       id: "defender-offline",
       name: "Defender Offline Scan",
       description: "Defender Offline (Start-MpWDOScan) — Schedules an offline pre-boot scan via PowerShell.",
@@ -412,6 +396,23 @@ const ScriptGenerator = () => {
       safety: "High Safety",
       recommendation: "Recommended",
       category: "Reporting & Notifications"
+    },
+    // Extended Scans - Long Running Operations (Execute Last)
+    {
+      id: "chkdsk",
+      name: "Check Disk (CHKDSK)",
+      description: "CHKDSK — Scans/fixes filesystem errors and bad sectors.",
+      safety: "Medium Safety",
+      recommendation: "Optional",
+      category: "Extended Scans (Long Running)"
+    },
+    {
+      id: "defender-scan",
+      name: "Defender Full Scan",
+      description: "Defender PowerShell (Start-MpScan / Remove-MpThreat / Update-MpSignature) — Full scripting interface to Defender.",
+      safety: "High Safety",
+      recommendation: "Recommended",
+      category: "Extended Scans (Long Running)"
     }
   ];
 
