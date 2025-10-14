@@ -399,19 +399,19 @@ const ScriptGenerator = () => {
     },
     // Extended Scans - Long Running Operations (Execute Last)
     {
-      id: "chkdsk",
-      name: "Check Disk (CHKDSK)",
-      description: "CHKDSK — Scans/fixes filesystem errors and bad sectors.",
-      safety: "Medium Safety",
-      recommendation: "Optional",
-      category: "Extended Scans (Long Running)"
-    },
-    {
       id: "defender-scan",
       name: "Defender Full Scan",
       description: "Defender PowerShell (Start-MpScan / Remove-MpThreat / Update-MpSignature) — Full scripting interface to Defender.",
       safety: "High Safety",
       recommendation: "Recommended",
+      category: "Extended Scans (Long Running)"
+    },
+    {
+      id: "chkdsk",
+      name: "Check Disk (CHKDSK)",
+      description: "CHKDSK — Scans/fixes filesystem errors and bad sectors.",
+      safety: "Medium Safety",
+      recommendation: "Optional",
       category: "Extended Scans (Long Running)"
     }
   ];
