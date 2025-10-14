@@ -5,12 +5,9 @@ const Navigation = () => {
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
-      const offset = 80; // Account for fixed header height
-      const elementPosition = element.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.pageYOffset - offset;
-      
+      // Always scroll to absolute top for consistency
       window.scrollTo({
-        top: offsetPosition,
+        top: 0,
         behavior: "smooth"
       });
     }
