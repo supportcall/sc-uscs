@@ -1081,13 +1081,21 @@ echo.`;
       }
     };
 
-    // Group functions by category
-    const categorizedFunctions = categories.map(category => ({
-      category,
-      functions: selectedFunctionData.filter(f => f.category === category)
-    })).filter(cat => cat.functions.length > 0);
+    // Separate Extended Scans (Long Running) from other functions
+    const extendedScansCategory = "Extended Scans (Long Running)";
+    const regularFunctions = selectedFunctionData.filter(f => f.category !== extendedScansCategory);
+    const extendedScans = selectedFunctionData.filter(f => f.category === extendedScansCategory);
 
-    // Generate stage implementations
+    // Group regular functions by category
+    const categorizedFunctions = categories
+      .filter(cat => cat !== extendedScansCategory)
+      .map(category => ({
+        category,
+        functions: regularFunctions.filter(f => f.category === category)
+      }))
+      .filter(cat => cat.functions.length > 0);
+
+    // Generate stage implementations for regular functions
     const stageImplementations = categorizedFunctions.map((cat, catIndex) => {
       const stageNum = catIndex + 1;
       const categoryTitle = cat.category.toUpperCase().replace(/&/g, '^&');
@@ -1107,6 +1115,277 @@ echo ===========================================================================
 echo.
 ${cat.functions.map((func, funcIndex) => generateFunctionImplementation(func, stageNum, funcIndex + 1)).join('\n')}`;
     }).join('\n');
+
+    // Generate pre-final-scans comprehensive report
+    const preReportStage = extendedScans.length > 0 ? `
+REM =============================================================================
+REM STAGE ${categorizedFunctions.length + 1}: PRE-FINAL-SCANS COMPREHENSIVE REPORT
+REM =============================================================================
+echo =============================================================================
+echo  STAGE ${categorizedFunctions.length + 1}: PRE-FINAL-SCANS COMPREHENSIVE REPORT
+echo =============================================================================
+echo Generating comprehensive report of all operations completed so far...
+echo This report will be saved BEFORE running the final long-running scans.
+echo If you cancel during the final scans, this report will still be available.
+echo =============================================================================
+echo.
+
+echo [REPORT] Generating comprehensive system report - This may take 2-5 minutes...
+echo *** Creating consolidated findings report ***
+echo === CONSOLIDATED FINDINGS REPORT (PRE-FINAL-SCANS) === > "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
+echo Script Version: SC-USCS v2.9 >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
+echo Report Type: Pre-Final-Scans (Before Defender Full Scan ^& CHKDSK) >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
+echo Execution Date: %DATE% %TIME% >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
+echo Functions Executed: ${regularFunctions.length} of ${selectedFunctionData.length} >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
+echo Remaining Functions: ${extendedScans.map(f => f.name).join(', ')} >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
+echo. >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
+echo === SYSTEM CONFIGURATION === >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
+systeminfo >> "%LOGPATH%\\01_system_info.txt"
+type "%LOGPATH%\\01_system_info.txt" >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
+echo. >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
+echo === HARDWARE REPORT === >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
+dxdiag /t "%LOGPATH%\\02_hardware_report.txt"
+timeout /t 10 /nobreak >nul
+type "%LOGPATH%\\02_hardware_report.txt" >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt" 2>nul
+echo. >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
+echo === INSTALLED SOFTWARE === >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
+wmic product get name,version,vendor /format:csv > "%LOGPATH%\\03_installed_software.csv" 2>nul
+type "%LOGPATH%\\03_installed_software.csv" >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt" 2>nul
+echo. >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
+echo === WINDOWS UPDATES === >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
+powershell -Command "Get-WmiObject -Class Win32_QuickFixEngineering | Select-Object HotFixID,Description,InstalledOn | Export-Csv -Path '%LOGPATH%\\04_windows_updates.csv' -NoTypeInformation"
+type "%LOGPATH%\\04_windows_updates.csv" >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt" 2>nul
+echo. >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
+echo === SECURITY THREATS DETECTED (SO FAR) === >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
+powershell -Command "$threats = Get-MpThreatDetection; if ($threats) { $threats | Format-Table ThreatName, ActionSuccess, ProcessName -AutoSize | Out-String | Add-Content '%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt' } else { Add-Content '%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt' 'No active threats detected at this stage.' }" 2>nul
+powershell -Command "Get-MpThreatDetection | Export-Csv -Path '%LOGPATH%\\05_defender_threats_prefinal.csv' -NoTypeInformation" 2>nul
+echo. >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
+echo === STARTUP PROGRAMS === >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
+wmic startup get caption,command,location,user /format:csv > "%LOGPATH%\\06_startup_programs.csv" 2>nul
+type "%LOGPATH%\\06_startup_programs.csv" >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt" 2>nul
+echo. >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
+echo === WINDOWS SERVICES === >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
+sc query state= all > "%LOGPATH%\\07_windows_services.txt"
+type "%LOGPATH%\\07_windows_services.txt" >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt" 2>nul
+echo. >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
+echo === NETWORK CONFIGURATION === >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
+ipconfig /all > "%LOGPATH%\\08_network_config.txt"
+type "%LOGPATH%\\08_network_config.txt" >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
+echo. >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
+echo === NETWORK CONNECTIONS === >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
+netstat -an > "%LOGPATH%\\09_network_connections.txt"
+type "%LOGPATH%\\09_network_connections.txt" >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
+echo. >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
+echo === DISK HEALTH === >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
+wmic logicaldisk get size,freespace,caption /format:csv > "%LOGPATH%\\10_disk_space.csv"
+type "%LOGPATH%\\10_disk_space.csv" >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
+echo. >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
+echo === EXECUTED OPERATIONS LOG SUMMARY === >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
+echo Listing all operation logs generated so far: >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
+dir /b "%LOGPATH%\\*.log" >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt" 2>nul
+echo. >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
+echo === SUMMARY === >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
+echo Status: All operations up to this point completed >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
+echo Remaining: Defender Full Scan ^& Check Disk operations >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
+echo All findings consolidated in: %LOGPATH% >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
+echo For support, email all files to: scmyhelp@gmail.com and alerts@supportcall.co.za >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
+echo. >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
+
+echo.
+echo *** HTML VERSION OF REPORT ***
+echo Creating formatted HTML report for easy viewing...
+powershell -Command "$reportPath = '%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.html'; $html = @'
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=\"UTF-8\">
+    <title>SC-USCS Pre-Final-Scans Report</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; background: #f5f5f5; margin: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h1 { color: #1e3c72; border-bottom: 3px solid #2a5298; padding-bottom: 10px; }
+        h2 { color: #2a5298; border-left: 4px solid #1e3c72; padding-left: 10px; margin-top: 30px; }
+        .info-box { background: #f8f9fa; border-left: 4px solid #2a5298; padding: 15px; margin: 20px 0; border-radius: 4px; }
+        .status { display: inline-block; padding: 5px 15px; border-radius: 20px; font-weight: bold; }
+        .status-complete { background: #d4edda; color: #155724; }
+        .status-pending { background: #fff3cd; color: #856404; }
+        pre { background: #f8f9fa; padding: 15px; border-radius: 4px; overflow-x: auto; }
+        .timestamp { color: #666; font-size: 0.9em; }
+    </style>
+</head>
+<body>
+    <div class=\"container\">
+        <h1>🛡️ SC-USCS System Report (Pre-Final-Scans)</h1>
+        <div class=\"info-box\">
+            <p><strong>Script Version:</strong> SC-USCS v2.9</p>
+            <p><strong>Report Type:</strong> Pre-Final-Scans Checkpoint</p>
+            <p class=\"timestamp\"><strong>Generated:</strong> '+ (Get-Date -Format 'dddd, MMMM dd, yyyy - HH:mm:ss') +'</p>
+            <p><strong>Status:</strong> <span class=\"status status-complete\">Completed ${regularFunctions.length} of ${selectedFunctionData.length} Operations</span></p>
+            <p><strong>Remaining:</strong> <span class=\"status status-pending\">${extendedScans.map(f => f.name).join(', ')}</span></p>
+        </div>
+        <h2>⚠️ Important Note</h2>
+        <p>This report captures all system information and findings <strong>BEFORE</strong> running the final long-running operations (Defender Full Scan and Check Disk).</p>
+        <p>If you cancel execution during these final scans, this report will preserve all work completed up to this point.</p>
+        <h2>📊 Report Contents</h2>
+        <ul>
+            <li>System Configuration</li>
+            <li>Hardware Information</li>
+            <li>Installed Software Inventory</li>
+            <li>Windows Update History</li>
+            <li>Security Threat Analysis</li>
+            <li>Startup Programs</li>
+            <li>Network Configuration</li>
+            <li>Disk Health Status</li>
+            <li>All Operation Logs</li>
+        </ul>
+        <h2>📁 Full Report Location</h2>
+        <p><code>%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt</code></p>
+        <h2>📧 Support Contact</h2>
+        <p>For technical support, send all files from the log directory to:</p>
+        <ul>
+            <li>scmyhelp@gmail.com</li>
+            <li>alerts@supportcall.co.za</li>
+        </ul>
+    </div>
+</body>
+</html>
+'@; $html | Out-File -FilePath $reportPath -Encoding UTF8"
+
+echo.
+echo =============================================================================
+echo  PRE-FINAL-SCANS REPORT COMPLETE
+echo =============================================================================
+echo Text Report: %LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt
+echo HTML Report: %LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.html
+echo.
+echo This report captures all work completed so far.
+echo If you cancel during the final scans, this report will still be available.
+echo =============================================================================
+echo.
+echo Press any key to continue with the final long-running operations...
+pause
+echo.
+` : '';
+
+    // Generate extended scans stage
+    const extendedScansStage = extendedScans.length > 0 ? `
+REM =============================================================================
+REM STAGE ${categorizedFunctions.length + 2}: EXTENDED SCANS (LONG RUNNING)
+REM =============================================================================
+echo =============================================================================
+echo  STAGE ${categorizedFunctions.length + 2}: EXTENDED SCANS ^(LONG RUNNING^)
+echo =============================================================================
+echo This stage executes ${extendedScans.length} long-running scan(s).
+echo These operations may take several hours to complete.
+echo All operations are logged for comprehensive review.
+echo =============================================================================
+echo.
+
+${extendedScans.map((func, funcIndex) => generateFunctionImplementation(func, categorizedFunctions.length + 2, funcIndex + 1)).join('\n')}
+
+REM =============================================================================
+REM FINAL REPORT UPDATE - After Extended Scans Complete
+REM =============================================================================
+echo.
+echo =============================================================================
+echo  UPDATING FINAL COMPREHENSIVE REPORT
+echo =============================================================================
+echo Updating report with results from extended scans...
+echo =============================================================================
+echo.
+
+echo [FINAL-REPORT] Generating updated comprehensive report...
+echo === FINAL CONSOLIDATED FINDINGS REPORT === > "%LOGPATH%\\00_FINAL_CONSOLIDATED_REPORT.txt"
+echo Script Version: SC-USCS v2.9 >> "%LOGPATH%\\00_FINAL_CONSOLIDATED_REPORT.txt"
+echo Report Type: Final Complete Report (All Operations) >> "%LOGPATH%\\00_FINAL_CONSOLIDATED_REPORT.txt"
+echo Execution Date: %DATE% %TIME% >> "%LOGPATH%\\00_FINAL_CONSOLIDATED_REPORT.txt"
+echo Functions Executed: ${selectedFunctionData.length} of ${functions.length} >> "%LOGPATH%\\00_FINAL_CONSOLIDATED_REPORT.txt"
+echo. >> "%LOGPATH%\\00_FINAL_CONSOLIDATED_REPORT.txt"
+echo === EXTENDED SCAN RESULTS === >> "%LOGPATH%\\00_FINAL_CONSOLIDATED_REPORT.txt"
+${extendedScans.some(f => f.id === 'defender-scan') ? `
+echo --- Defender Full Scan Results --- >> "%LOGPATH%\\00_FINAL_CONSOLIDATED_REPORT.txt"
+powershell -Command "$threats = Get-MpThreatDetection; if ($threats) { Add-Content '%LOGPATH%\\00_FINAL_CONSOLIDATED_REPORT.txt' '=== THREATS DETECTED ==='; $threats | Format-Table ThreatName, ActionSuccess, ProcessName, Resources -AutoSize | Out-String | Add-Content '%LOGPATH%\\00_FINAL_CONSOLIDATED_REPORT.txt' } else { Add-Content '%LOGPATH%\\00_FINAL_CONSOLIDATED_REPORT.txt' '✓ No threats detected by full scan' }" 2>nul
+powershell -Command "Get-MpThreatDetection | Export-Csv -Path '%LOGPATH%\\defender_threats_final.csv' -NoTypeInformation" 2>nul
+echo. >> "%LOGPATH%\\00_FINAL_CONSOLIDATED_REPORT.txt"
+` : ''}
+${extendedScans.some(f => f.id === 'chkdsk') ? `
+echo --- Check Disk Results --- >> "%LOGPATH%\\00_FINAL_CONSOLIDATED_REPORT.txt"
+if exist "%LOGPATH%\\*_chkdsk.log" (
+    type "%LOGPATH%\\*_chkdsk.log" >> "%LOGPATH%\\00_FINAL_CONSOLIDATED_REPORT.txt"
+) else (
+    echo Check Disk log not found >> "%LOGPATH%\\00_FINAL_CONSOLIDATED_REPORT.txt"
+)
+echo. >> "%LOGPATH%\\00_FINAL_CONSOLIDATED_REPORT.txt"
+` : ''}
+echo === COPYING DATA FROM PRE-SCAN REPORT === >> "%LOGPATH%\\00_FINAL_CONSOLIDATED_REPORT.txt"
+if exist "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt" (
+    type "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt" >> "%LOGPATH%\\00_FINAL_CONSOLIDATED_REPORT.txt"
+)
+echo. >> "%LOGPATH%\\00_FINAL_CONSOLIDATED_REPORT.txt"
+echo === FINAL SUMMARY === >> "%LOGPATH%\\00_FINAL_CONSOLIDATED_REPORT.txt"
+echo Status: ALL OPERATIONS COMPLETED >> "%LOGPATH%\\00_FINAL_CONSOLIDATED_REPORT.txt"
+echo Total Functions Executed: ${selectedFunctionData.length} >> "%LOGPATH%\\00_FINAL_CONSOLIDATED_REPORT.txt"
+echo All findings consolidated in: %LOGPATH% >> "%LOGPATH%\\00_FINAL_CONSOLIDATED_REPORT.txt"
+echo For support, email all files to: scmyhelp@gmail.com and alerts@supportcall.co.za >> "%LOGPATH%\\00_FINAL_CONSOLIDATED_REPORT.txt"
+echo. >> "%LOGPATH%\\00_FINAL_CONSOLIDATED_REPORT.txt"
+
+echo *** Creating final HTML report ***
+powershell -Command "$reportPath = '%LOGPATH%\\00_FINAL_CONSOLIDATED_REPORT.html'; $threats = Get-MpThreatDetection; $threatStatus = if ($threats) { '<span style=\"color: #d32f2f; font-weight: bold;\">⚠ THREATS DETECTED</span>' } else { '<span style=\"color: #388e3c; font-weight: bold;\">✓ System Clean</span>' }; $threatList = if ($threats) { ($threats | ForEach-Object { '<li style=\"color: #d32f2f; margin: 5px 0;\">' + $_.ThreatName + ' - ' + $_.Resources + '</li>' }) -join '' } else { '<li style=\"color: #388e3c;\">No threats detected</li>' }; $html = @'
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=\"UTF-8\">
+    <title>SC-USCS Final Complete Report</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; background: #f5f5f5; margin: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h1 { color: #1e3c72; border-bottom: 3px solid #2a5298; padding-bottom: 10px; }
+        h2 { color: #2a5298; border-left: 4px solid #1e3c72; padding-left: 10px; margin-top: 30px; }
+        .info-box { background: #f8f9fa; border-left: 4px solid #2a5298; padding: 15px; margin: 20px 0; border-radius: 4px; }
+        .status { display: inline-block; padding: 5px 15px; border-radius: 20px; font-weight: bold; }
+        .status-complete { background: #d4edda; color: #155724; }
+        .alert { background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 20px 0; border-radius: 4px; }
+        ul { line-height: 2; }
+    </style>
+</head>
+<body>
+    <div class=\"container\">
+        <h1>🛡️ SC-USCS Final Complete System Report</h1>
+        <div class=\"info-box\">
+            <p><strong>Script Version:</strong> SC-USCS v2.9</p>
+            <p><strong>Report Type:</strong> Final Complete Report</p>
+            <p><strong>Generated:</strong> '+ (Get-Date -Format 'dddd, MMMM dd, yyyy - HH:mm:ss') +'</p>
+            <p><strong>Status:</strong> <span class=\"status status-complete\">✓ All ${selectedFunctionData.length} Operations Completed</span></p>
+        </div>
+        <h2>🔍 Security Status</h2>
+        <p style=\"font-size: 18px;\">$threatStatus</p>
+        <h2>⚠️ Detected Threats</h2>
+        <ul>$threatList</ul>
+        <h2>📊 Complete Analysis Available</h2>
+        <p>Full detailed report with all system information, scan results, and findings available at:</p>
+        <p><code>%LOGPATH%\\00_FINAL_CONSOLIDATED_REPORT.txt</code></p>
+        <h2>📧 Support Contact</h2>
+        <p>For technical support, send all files from the log directory to:</p>
+        <ul>
+            <li>scmyhelp@gmail.com</li>
+            <li>alerts@supportcall.co.za</li>
+        </ul>
+    </div>
+</body>
+</html>
+'@; $html | Out-File -FilePath $reportPath -Encoding UTF8"
+
+echo.
+echo =============================================================================
+echo  FINAL REPORT COMPLETE
+echo =============================================================================
+echo Text Report: %LOGPATH%\\00_FINAL_CONSOLIDATED_REPORT.txt
+echo HTML Report: %LOGPATH%\\00_FINAL_CONSOLIDATED_REPORT.html
+echo =============================================================================
+echo.
+` : '';
+
+    const allStages = stageImplementations + preReportStage + extendedScansStage;
     
     return `@echo off
 REM =============================================================================
@@ -1450,7 +1729,7 @@ echo Otherwise, press any key to continue with system modifications...
 pause
 echo.
 
-${stageImplementations}
+${allStages}
 
 REM =============================================================================
 REM COMPLETION AND CLEANUP
@@ -1466,7 +1745,9 @@ echo Log Location: %LOGPATH%
 echo Functions Executed: ${selectedFunctionData.length}
 echo.
 echo ALL OPERATIONS LOGGED TO: %LOGPATH%
-echo CONSOLIDATED FINDINGS: %LOGPATH%\\00_CONSOLIDATED_FINDINGS.txt
+echo PRE-FINAL REPORT: %LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt
+echo FINAL REPORT: %LOGPATH%\\00_FINAL_CONSOLIDATED_REPORT.txt
+echo HTML REPORTS: %LOGPATH%\\*.html
 echo.
 echo For support, send all files from %LOGPATH% to:
 echo - scmyhelp@gmail.com
