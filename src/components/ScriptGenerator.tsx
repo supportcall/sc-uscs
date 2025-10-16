@@ -4,8 +4,9 @@ import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Download, Copy, FileText, AlertTriangle } from "lucide-react";
+import { Download, Copy, FileText, AlertTriangle, Package } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import JSZip from "jszip";
 
 interface ScriptFunction {
   id: string;
@@ -484,6 +485,223 @@ const ScriptGenerator = () => {
       title: "Script Copied",
       description: "Script content has been copied to clipboard.",
     });
+  };
+
+  const getRequiredTools = () => {
+    const tools: { [key: string]: { name: string; url: string; instructions: string } } = {};
+    
+    if (selectedFunctions.includes('bleachbit')) {
+      tools['bleachbit'] = {
+        name: 'BleachBit Portable',
+        url: 'https://www.bleachbit.org/download/portable',
+        instructions: 'Download BleachBit portable and extract to: Tools\\bleachbit_portable\\'
+      };
+    }
+    
+    if (selectedFunctions.includes('setupdiag')) {
+      tools['setupdiag'] = {
+        name: 'SetupDiag.exe',
+        url: 'https://go.microsoft.com/fwlink/?linkid=870142',
+        instructions: 'Download SetupDiag.exe and place in: Tools\\SetupDiag.exe'
+      };
+    }
+    
+    if (selectedFunctions.includes('safety-scanner')) {
+      tools['msert'] = {
+        name: 'Microsoft Safety Scanner (MSERT.exe)',
+        url: 'https://www.microsoft.com/en-us/wdsi/products/scanner',
+        instructions: 'Download Microsoft Safety Scanner and rename to: Tools\\msert.exe'
+      };
+    }
+    
+    if (selectedFunctions.includes('autorunsc')) {
+      tools['autorunsc'] = {
+        name: 'Sysinternals Autorunsc',
+        url: 'https://live.sysinternals.com/autorunsc.exe',
+        instructions: 'Download Autorunsc.exe and place in: Tools\\autorunsc.exe'
+      };
+    }
+    
+    if (selectedFunctions.includes('sigcheck')) {
+      tools['sigcheck'] = {
+        name: 'Sysinternals Sigcheck',
+        url: 'https://live.sysinternals.com/sigcheck.exe',
+        instructions: 'Download Sigcheck.exe and place in: Tools\\sigcheck.exe'
+      };
+    }
+    
+    if (selectedFunctions.includes('procdump')) {
+      tools['procdump'] = {
+        name: 'Sysinternals ProcDump',
+        url: 'https://live.sysinternals.com/procdump.exe',
+        instructions: 'Download ProcDump.exe and place in: Tools\\procdump.exe'
+      };
+    }
+    
+    if (selectedFunctions.includes('rkill')) {
+      tools['rkill'] = {
+        name: 'RKill',
+        url: 'https://www.bleepingcomputer.com/download/rkill/',
+        instructions: 'Download RKill and rename to: Tools\\rkill.exe'
+      };
+    }
+    
+    if (selectedFunctions.includes('adwcleaner')) {
+      tools['adwcleaner'] = {
+        name: 'AdwCleaner',
+        url: 'https://www.malwarebytes.com/adwcleaner',
+        instructions: 'Download AdwCleaner and place in: Tools\\adwcleaner.exe'
+      };
+    }
+    
+    if (selectedFunctions.includes('kvrt')) {
+      tools['kvrt'] = {
+        name: 'Kaspersky Virus Removal Tool (KVRT)',
+        url: 'https://www.kaspersky.com/downloads/free-virus-removal-tool',
+        instructions: 'Download KVRT and place in: Tools\\kvrt.exe'
+      };
+    }
+    
+    if (selectedFunctions.includes('clamav')) {
+      tools['clamav'] = {
+        name: 'ClamAV',
+        url: 'https://www.clamav.net/downloads',
+        instructions: 'Download ClamAV and extract to: Tools\\clamav\\'
+      };
+    }
+    
+    if (selectedFunctions.includes('raccine')) {
+      tools['raccine'] = {
+        name: 'Raccine',
+        url: 'https://github.com/Neo23x0/Raccine/releases',
+        instructions: 'Download Raccine and place in: Tools\\raccine.exe'
+      };
+    }
+    
+    return tools;
+  };
+
+  const downloadCompletePackage = async () => {
+    try {
+      const zip = new JSZip();
+      const scriptContent = generateScriptContent();
+      const tools = getRequiredTools();
+      
+      // Generate dynamic filename based on selection type
+      let selectionType = "Selected";
+      if (selectedFunctions.length === functions.length) {
+        selectionType = "All";
+      } else if (selectedFunctions.length === functions.filter(f => f.recommendation === "Recommended").length && 
+                 functions.filter(f => f.recommendation === "Recommended").every(f => selectedFunctions.includes(f.id))) {
+        selectionType = "Recommended";
+      }
+      
+      // Add the main script file
+      zip.file(`SC-USCS-v3.1-${selectionType}-Functions.bat`, scriptContent);
+      
+      // Create SC-USCS folder (empty, ready for reports)
+      zip.folder("SC-USCS");
+      zip.file("SC-USCS/README.txt", `SC-USCS v3.1 Reports Folder
+=====================================
+
+This folder will contain all system reports generated by the script:
+- Pre-final scan reports (before Defender Full Scan and CHKDSK)
+- Final complete reports (after all operations)
+- Individual operation logs
+- System information dumps
+- Threat detection reports
+
+Reports will be automatically saved here when you run the script.
+
+Generated: ${new Date().toLocaleString()}
+Version: v3.1
+Selection: ${selectionType} Functions (${selectedFunctions.length}/${functions.length})
+`);
+      
+      // Create Tools folder with README files for each required tool
+      const toolsFolder = zip.folder("Tools");
+      
+      if (Object.keys(tools).length > 0) {
+        let toolsReadme = `SC-USCS v3.1 - Required Tools
+=====================================
+
+Based on your selected functions, you need to download the following tools:
+
+`;
+        
+        Object.values(tools).forEach((tool, index) => {
+          toolsReadme += `${index + 1}. ${tool.name}
+   Download: ${tool.url}
+   Install: ${tool.instructions}
+
+`;
+        });
+        
+        toolsReadme += `
+IMPORTANT NOTES:
+- All tools must be placed in their correct locations before running the script
+- Some tools require accepting EULAs on first run
+- Ensure you download tools from official sources only
+- Keep tools updated for best results
+
+Generated: ${new Date().toLocaleString()}
+Version: v3.1
+`;
+        
+        toolsFolder?.file("REQUIRED_TOOLS_README.txt", toolsReadme);
+        
+        // Create individual README for each tool
+        Object.entries(tools).forEach(([key, tool]) => {
+          const individualReadme = `${tool.name}
+${'='.repeat(tool.name.length)}
+
+Download URL: ${tool.url}
+Installation: ${tool.instructions}
+
+This tool is required for the functions you selected in your custom script.
+Please download and install this tool before running SC-USCS v3.1.
+
+Note: Always download from official sources to ensure security.
+`;
+          toolsFolder?.file(`${key.toUpperCase()}_README.txt`, individualReadme);
+        });
+      } else {
+        toolsFolder?.file("README.txt", `SC-USCS v3.1 - Tools Folder
+=====================================
+
+Good news! The functions you selected don't require any external tools.
+All operations will use built-in Windows utilities.
+
+This folder is here for future use if you modify your script to include
+functions that require external tools.
+
+Generated: ${new Date().toLocaleString()}
+Version: v3.1
+`);
+      }
+      
+      // Generate the zip file
+      const zipBlob = await zip.generateAsync({ type: "blob" });
+      const url = URL.createObjectURL(zipBlob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `SC-USCS-v3.1-${selectionType}-Complete-Package.zip`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      
+      toast({
+        title: "Complete Package Downloaded",
+        description: `SC-USCS-v3.1-${selectionType}-Complete-Package.zip includes the script, SC-USCS folder, and Tools folder with ${Object.keys(tools).length} required tool(s).`,
+      });
+    } catch (error) {
+      toast({
+        title: "Error Creating Package",
+        description: "Failed to create the complete package. Please try downloading the script individually.",
+        variant: "destructive"
+      });
+    }
   };
 
   const generateScriptContent = () => {
@@ -2078,9 +2296,13 @@ exit /b 0`;
                   <FileText className="w-5 h-5 mr-2" />
                   Generate Custom Script
                 </Button>
+                <Button onClick={downloadCompletePackage} size="lg" variant="default" className="flex-1 sm:flex-none bg-gradient-to-r from-primary to-secondary hover:opacity-90">
+                  <Package className="w-5 h-5 mr-2" />
+                  Download Complete Package (.zip)
+                </Button>
                 <Button onClick={downloadScript} size="lg" variant="outline" className="flex-1 sm:flex-none border-primary text-primary hover:bg-primary hover:text-primary-foreground">
                   <Download className="w-5 h-5 mr-2" />
-                  Download sc-uscs.bat
+                  Download sc-uscs.bat Only
                 </Button>
                 <Button onClick={() => setShowScript(!showScript)} size="lg" variant="secondary" className="flex-1 sm:flex-none">
                   <Copy className="w-5 h-5 mr-2" />
