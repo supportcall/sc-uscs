@@ -5,8 +5,8 @@ const Index = () => {
   return (
     <>
       <Helmet>
-        <title>SupportCALL SC-USCS v3.1 - Ultimate Secure Clean Script | Professional Windows Tool</title>
-        <meta name="description" content="Professional Windows script generator v3.1 for system cleaning, security enhancement, and optimization. Generate custom PowerShell scripts for Windows 10/11 with 40+ functions." />
+        <title>SupportCALL SC-USCS v3.11 - Ultimate Secure Clean Script | Professional Windows Tool</title>
+        <meta name="description" content="Professional Windows script generator v3.11 for system cleaning, security enhancement, and optimization. Generate custom PowerShell scripts for Windows 10/11 with 40+ functions." />
       </Helmet>
       <main className="min-h-screen">
         <div id="sc-uscs">
