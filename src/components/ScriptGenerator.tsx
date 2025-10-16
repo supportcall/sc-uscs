@@ -4,9 +4,8 @@ import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Download, Copy, FileText, AlertTriangle, Package } from "lucide-react";
+import { Download, Copy, FileText, AlertTriangle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import JSZip from "jszip";
 
 interface ScriptFunction {
   id: string;
@@ -466,7 +465,7 @@ const ScriptGenerator = () => {
       selectionType = "Recommended";
     }
     
-    a.download = `SC-USCS-v3.11-${selectionType}-Functions.bat`;
+    a.download = `SC-USCS-v3.1-${selectionType}-Functions.bat`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -474,7 +473,7 @@ const ScriptGenerator = () => {
     
     toast({
       title: "Script Downloaded",
-      description: `SC-USCS-v3.11-${selectionType}-Functions.bat has been downloaded to your device.`,
+      description: `SC-USCS-v3.1-${selectionType}-Functions.bat has been downloaded to your device.`,
     });
   };
 
@@ -485,223 +484,6 @@ const ScriptGenerator = () => {
       title: "Script Copied",
       description: "Script content has been copied to clipboard.",
     });
-  };
-
-  const getRequiredTools = () => {
-    const tools: { [key: string]: { name: string; url: string; instructions: string } } = {};
-    
-    if (selectedFunctions.includes('bleachbit')) {
-      tools['bleachbit'] = {
-        name: 'BleachBit Portable',
-        url: 'https://www.bleachbit.org/download/portable',
-        instructions: 'Download BleachBit portable and extract to: Tools\\bleachbit_portable\\'
-      };
-    }
-    
-    if (selectedFunctions.includes('setupdiag')) {
-      tools['setupdiag'] = {
-        name: 'SetupDiag.exe',
-        url: 'https://go.microsoft.com/fwlink/?linkid=870142',
-        instructions: 'Download SetupDiag.exe and place in: Tools\\SetupDiag.exe'
-      };
-    }
-    
-    if (selectedFunctions.includes('safety-scanner')) {
-      tools['msert'] = {
-        name: 'Microsoft Safety Scanner (MSERT.exe)',
-        url: 'https://www.microsoft.com/en-us/wdsi/products/scanner',
-        instructions: 'Download Microsoft Safety Scanner and rename to: Tools\\msert.exe'
-      };
-    }
-    
-    if (selectedFunctions.includes('autorunsc')) {
-      tools['autorunsc'] = {
-        name: 'Sysinternals Autorunsc',
-        url: 'https://live.sysinternals.com/autorunsc.exe',
-        instructions: 'Download Autorunsc.exe and place in: Tools\\autorunsc.exe'
-      };
-    }
-    
-    if (selectedFunctions.includes('sigcheck')) {
-      tools['sigcheck'] = {
-        name: 'Sysinternals Sigcheck',
-        url: 'https://live.sysinternals.com/sigcheck.exe',
-        instructions: 'Download Sigcheck.exe and place in: Tools\\sigcheck.exe'
-      };
-    }
-    
-    if (selectedFunctions.includes('procdump')) {
-      tools['procdump'] = {
-        name: 'Sysinternals ProcDump',
-        url: 'https://live.sysinternals.com/procdump.exe',
-        instructions: 'Download ProcDump.exe and place in: Tools\\procdump.exe'
-      };
-    }
-    
-    if (selectedFunctions.includes('rkill')) {
-      tools['rkill'] = {
-        name: 'RKill',
-        url: 'https://www.bleepingcomputer.com/download/rkill/',
-        instructions: 'Download RKill and rename to: Tools\\rkill.exe'
-      };
-    }
-    
-    if (selectedFunctions.includes('adwcleaner')) {
-      tools['adwcleaner'] = {
-        name: 'AdwCleaner',
-        url: 'https://www.malwarebytes.com/adwcleaner',
-        instructions: 'Download AdwCleaner and place in: Tools\\adwcleaner.exe'
-      };
-    }
-    
-    if (selectedFunctions.includes('kvrt')) {
-      tools['kvrt'] = {
-        name: 'Kaspersky Virus Removal Tool (KVRT)',
-        url: 'https://www.kaspersky.com/downloads/free-virus-removal-tool',
-        instructions: 'Download KVRT and place in: Tools\\kvrt.exe'
-      };
-    }
-    
-    if (selectedFunctions.includes('clamav')) {
-      tools['clamav'] = {
-        name: 'ClamAV',
-        url: 'https://www.clamav.net/downloads',
-        instructions: 'Download ClamAV and extract to: Tools\\clamav\\'
-      };
-    }
-    
-    if (selectedFunctions.includes('raccine')) {
-      tools['raccine'] = {
-        name: 'Raccine',
-        url: 'https://github.com/Neo23x0/Raccine/releases',
-        instructions: 'Download Raccine and place in: Tools\\raccine.exe'
-      };
-    }
-    
-    return tools;
-  };
-
-  const downloadCompletePackage = async () => {
-    try {
-      const zip = new JSZip();
-      const scriptContent = generateScriptContent();
-      const tools = getRequiredTools();
-      
-      // Generate dynamic filename based on selection type
-      let selectionType = "Selected";
-      if (selectedFunctions.length === functions.length) {
-        selectionType = "All";
-      } else if (selectedFunctions.length === functions.filter(f => f.recommendation === "Recommended").length && 
-                 functions.filter(f => f.recommendation === "Recommended").every(f => selectedFunctions.includes(f.id))) {
-        selectionType = "Recommended";
-      }
-      
-      // Add the main script file
-      zip.file(`SC-USCS-v3.11-${selectionType}-Functions.bat`, scriptContent);
-      
-      // Create SC-USCS folder (empty, ready for reports)
-      zip.folder("SC-USCS");
-      zip.file("SC-USCS/README.txt", `SC-USCS v3.11 Reports Folder
-=====================================
-
-This folder will contain all system reports generated by the script:
-- Pre-final scan reports (before Defender Full Scan and CHKDSK)
-- Final complete reports (after all operations)
-- Individual operation logs
-- System information dumps
-- Threat detection reports
-
-Reports will be automatically saved here when you run the script.
-
-Generated: ${new Date().toLocaleString()}
-Version: v3.11
-Selection: ${selectionType} Functions (${selectedFunctions.length}/${functions.length})
-`);
-      
-      // Create Tools folder with README files for each required tool
-      const toolsFolder = zip.folder("Tools");
-      
-      if (Object.keys(tools).length > 0) {
-        let toolsReadme = `SC-USCS v3.11 - Required Tools
-=====================================
-
-Based on your selected functions, you need to download the following tools:
-
-`;
-        
-        Object.values(tools).forEach((tool, index) => {
-          toolsReadme += `${index + 1}. ${tool.name}
-   Download: ${tool.url}
-   Install: ${tool.instructions}
-
-`;
-        });
-        
-        toolsReadme += `
-IMPORTANT NOTES:
-- All tools must be placed in their correct locations before running the script
-- Some tools require accepting EULAs on first run
-- Ensure you download tools from official sources only
-- Keep tools updated for best results
-
-Generated: ${new Date().toLocaleString()}
-Version: v3.11
-`;
-        
-        toolsFolder?.file("REQUIRED_TOOLS_README.txt", toolsReadme);
-        
-        // Create individual README for each tool
-        Object.entries(tools).forEach(([key, tool]) => {
-          const individualReadme = `${tool.name}
-${'='.repeat(tool.name.length)}
-
-Download URL: ${tool.url}
-Installation: ${tool.instructions}
-
-This tool is required for the functions you selected in your custom script.
-Please download and install this tool before running SC-USCS v3.11.
-
-Note: Always download from official sources to ensure security.
-`;
-          toolsFolder?.file(`${key.toUpperCase()}_README.txt`, individualReadme);
-        });
-      } else {
-        toolsFolder?.file("README.txt", `SC-USCS v3.11 - Tools Folder
-=====================================
-
-Good news! The functions you selected don't require any external tools.
-All operations will use built-in Windows utilities.
-
-This folder is here for future use if you modify your script to include
-functions that require external tools.
-
-Generated: ${new Date().toLocaleString()}
-Version: v3.11
-`);
-      }
-      
-      // Generate the zip file
-      const zipBlob = await zip.generateAsync({ type: "blob" });
-      const url = URL.createObjectURL(zipBlob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `SC-USCS-v3.11-${selectionType}-Complete-Package.zip`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-      
-      toast({
-        title: "Complete Package Downloaded",
-        description: `SC-USCS-v3.11-${selectionType}-Complete-Package.zip includes the script, SC-USCS folder, and Tools folder with ${Object.keys(tools).length} required tool(s).`,
-      });
-    } catch (error) {
-      toast({
-        title: "Error Creating Package",
-        description: "Failed to create the complete package. Please try downloading the script individually.",
-        variant: "destructive"
-      });
-    }
   };
 
   const generateScriptContent = () => {
@@ -1168,7 +950,7 @@ echo.`;
           return `echo [${stageNum}.${funcNum}] COMPREHENSIVE SYSTEM REPORT - Complete system analysis
 echo *** Generating comprehensive system reports ***
 echo === CONSOLIDATED FINDINGS REPORT === > "%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt"
-echo Script Version: SC-USCS v3.11 >> "%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt"
+echo Script Version: SC-USCS v3.1 >> "%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt"
 echo Execution Date: %DATE% %TIME% >> "%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt"
 echo Functions Executed: ${selectedFunctionData.length} of ${functions.length} >> "%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt"
 echo. >> "%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt"
@@ -1239,7 +1021,7 @@ powershell -ExecutionPolicy Bypass -Command "$ErrorActionPreference='Continue'; 
     <div class='container'>
         <div class='header'>
             <h1>🛡️ SC-USCS System Report</h1>
-            <p>Windows Remediation & Security Scan v3.11</p>
+            <p>Windows Remediation & Security Scan v3.1</p>
         </div>
         <div class='content'>
             <div class='status-box'>
@@ -1352,9 +1134,9 @@ echo [REPORT] Generating comprehensive system report - This may take 2-5 minutes
 echo *** Creating consolidated findings report ***
 set "REPORT_TIMESTAMP=%DATE:~10,4%%DATE:~4,2%%DATE:~7,2%-%TIME:~0,2%%TIME:~3,2%%TIME:~6,2%"
 set "REPORT_TIMESTAMP=%REPORT_TIMESTAMP: =0%"
-set "PRE_REPORT_NAME=SC-USCS-v3.11-PreFinalScans-%REPORT_TIMESTAMP%.txt"
+set "PRE_REPORT_NAME=SC-USCS-v3.1-PreFinalScans-%REPORT_TIMESTAMP%.txt"
 echo === CONSOLIDATED FINDINGS REPORT (PRE-FINAL-SCANS) === > "%LOGPATH%\\%PRE_REPORT_NAME%"
-echo Script Version: SC-USCS v3.11 >> "%LOGPATH%\\%PRE_REPORT_NAME%"
+echo Script Version: SC-USCS v3.1 >> "%LOGPATH%\\%PRE_REPORT_NAME%"
 echo Report Type: Pre-Final-Scans (Before Defender Full Scan ^& CHKDSK) >> "%LOGPATH%\\%PRE_REPORT_NAME%"
 echo Execution Date: %DATE% %TIME% >> "%LOGPATH%\\%PRE_REPORT_NAME%"
 echo Functions Executed: ${regularFunctions.length} of ${selectedFunctionData.length} >> "%LOGPATH%\\%PRE_REPORT_NAME%"
@@ -1415,7 +1197,7 @@ echo. >> "%LOGPATH%\\%PRE_REPORT_NAME%"
 echo.
 echo *** HTML VERSION OF REPORT ***
 echo Creating formatted HTML report for easy viewing...
-set "PRE_REPORT_HTML=SC-USCS-v3.11-PreFinalScans-%REPORT_TIMESTAMP%.html"
+set "PRE_REPORT_HTML=SC-USCS-v3.1-PreFinalScans-%REPORT_TIMESTAMP%.html"
 powershell -Command "$reportPath = '%LOGPATH%\\%PRE_REPORT_HTML%'; $html = @'
 <!DOCTYPE html>
 <html>
@@ -1439,7 +1221,7 @@ powershell -Command "$reportPath = '%LOGPATH%\\%PRE_REPORT_HTML%'; $html = @'
     <div class=\"container\">
         <h1>🛡️ SC-USCS System Report (Pre-Final-Scans)</h1>
         <div class=\"info-box\">
-            <p><strong>Script Version:</strong> SC-USCS v3.11</p>
+            <p><strong>Script Version:</strong> SC-USCS v3.1</p>
             <p><strong>Report Type:</strong> Pre-Final-Scans Checkpoint</p>
             <p class=\"timestamp\"><strong>Generated:</strong> '+ (Get-Date -Format 'dddd, MMMM dd, yyyy - HH:mm:ss') +'</p>
             <p><strong>Status:</strong> <span class=\"status status-complete\">Completed ${regularFunctions.length} of ${selectedFunctionData.length} Operations</span></p>
@@ -1519,9 +1301,9 @@ echo.
 echo [FINAL-REPORT] Generating updated comprehensive report...
 set "FINAL_REPORT_TIMESTAMP=%DATE:~10,4%%DATE:~4,2%%DATE:~7,2%-%TIME:~0,2%%TIME:~3,2%%TIME:~6,2%"
 set "FINAL_REPORT_TIMESTAMP=%FINAL_REPORT_TIMESTAMP: =0%"
-set "FINAL_REPORT_NAME=SC-USCS-v3.11-FinalComplete-%FINAL_REPORT_TIMESTAMP%.txt"
+set "FINAL_REPORT_NAME=SC-USCS-v3.1-FinalComplete-%FINAL_REPORT_TIMESTAMP%.txt"
 echo === FINAL CONSOLIDATED FINDINGS REPORT === > "%LOGPATH%\\%FINAL_REPORT_NAME%"
-echo Script Version: SC-USCS v3.11 >> "%LOGPATH%\\%FINAL_REPORT_NAME%"
+echo Script Version: SC-USCS v3.1 >> "%LOGPATH%\\%FINAL_REPORT_NAME%"
 echo Report Type: Final Complete Report (All Operations) >> "%LOGPATH%\\%FINAL_REPORT_NAME%"
 echo Execution Date: %DATE% %TIME% >> "%LOGPATH%\\%FINAL_REPORT_NAME%"
 echo Functions Executed: ${selectedFunctionData.length} of ${functions.length} >> "%LOGPATH%\\%FINAL_REPORT_NAME%"
@@ -1555,7 +1337,7 @@ echo For support, email all files to: scmyhelp@gmail.com and alerts@supportcall.
 echo. >> "%LOGPATH%\\%FINAL_REPORT_NAME%"
 
 echo *** Creating final HTML report ***
-set "FINAL_REPORT_HTML=SC-USCS-v3.11-FinalComplete-%FINAL_REPORT_TIMESTAMP%.html"
+set "FINAL_REPORT_HTML=SC-USCS-v3.1-FinalComplete-%FINAL_REPORT_TIMESTAMP%.html"
 powershell -Command "$reportPath = '%LOGPATH%\\%FINAL_REPORT_HTML%'; $threats = Get-MpThreatDetection; $threatStatus = if ($threats) { '<span style=\"color: #d32f2f; font-weight: bold;\">⚠ THREATS DETECTED</span>' } else { '<span style=\"color: #388e3c; font-weight: bold;\">✓ System Clean</span>' }; $threatList = if ($threats) { ($threats | ForEach-Object { '<li style=\"color: #d32f2f; margin: 5px 0;\">' + $_.ThreatName + ' - ' + $_.Resources + '</li>' }) -join '' } else { '<li style=\"color: #388e3c;\">No threats detected</li>' }; $html = @'
 <!DOCTYPE html>
 <html>
@@ -1578,7 +1360,7 @@ powershell -Command "$reportPath = '%LOGPATH%\\%FINAL_REPORT_HTML%'; $threats = 
     <div class=\"container\">
         <h1>🛡️ SC-USCS Final Complete System Report</h1>
         <div class=\"info-box\">
-            <p><strong>Script Version:</strong> SC-USCS v3.11</p>
+            <p><strong>Script Version:</strong> SC-USCS v3.1</p>
             <p><strong>Report Type:</strong> Final Complete Report</p>
             <p><strong>Generated:</strong> '+ (Get-Date -Format 'dddd, MMMM dd, yyyy - HH:mm:ss') +'</p>
             <p><strong>Status:</strong> <span class=\"status status-complete\">✓ All ${selectedFunctionData.length} Operations Completed</span></p>
@@ -1615,7 +1397,7 @@ echo.
     
     return `@echo off
 REM =============================================================================
-REM SupportCALL - Ultimate Secure Clean Script (SC-USCS) v3.11
+REM SupportCALL - Ultimate Secure Clean Script (SC-USCS) v3.1
 REM Professional Windows Remediation Engine (SC-UWIRE)
 REM Generated: ${new Date().toLocaleString()}
 REM Functions Selected: ${selectedFunctionData.length} of ${functions.length}
@@ -1623,7 +1405,7 @@ REM Functions Selected: ${selectedFunctionData.length} of ${functions.length}
 REM =============================================================================
 
 setlocal EnableDelayedExpansion
-title SupportCALL - SC-USCS v3.11 - Professional Edition
+title SupportCALL - SC-USCS v3.1 - Professional Edition
 
 REM Check for Administrator privileges
 net session >nul 2>&1
@@ -1644,7 +1426,7 @@ mkdir "%LOGPATH%" 2>nul
 mkdir "%TOOLSPATH%" 2>nul
 
 echo =============================================================================
-echo  SupportCALL - Ultimate Secure Clean Script v3.11
+echo  SupportCALL - Ultimate Secure Clean Script v3.1
 echo  Professional Windows Remediation Engine
 echo =============================================================================
 echo.
@@ -1941,8 +1723,8 @@ net start "swprv"
 vssadmin resize shadowstorage /for=C: /on=C: /maxsize=10%%
 
 REM Create mandatory restore point with error checking
-echo Creating System Restore Point: SC-USCS-Pre-Run-v3.11...
-powershell -Command "$result = Checkpoint-Computer -Description 'SC-USCS-Pre-Run-v3.11' -RestorePointType 'MODIFY_SETTINGS' -Verbose; if ($result -eq $null) { Write-Host 'SUCCESS: System Restore Point Created' -ForegroundColor Green } else { Write-Host 'WARNING: Restore Point Creation Status Unknown' -ForegroundColor Yellow }"
+echo Creating System Restore Point: SC-USCS-Pre-Run-v3.1...
+powershell -Command "$result = Checkpoint-Computer -Description 'SC-USCS-Pre-Run-v3.1' -RestorePointType 'MODIFY_SETTINGS' -Verbose; if ($result -eq $null) { Write-Host 'SUCCESS: System Restore Point Created' -ForegroundColor Green } else { Write-Host 'WARNING: Restore Point Creation Status Unknown' -ForegroundColor Yellow }"
 
 REM Verify restore point was created
 echo Verifying restore point creation...
@@ -1971,9 +1753,9 @@ echo Log Location: %LOGPATH%
 echo Functions Executed: ${selectedFunctionData.length}
 echo.
 echo ALL OPERATIONS LOGGED TO: %LOGPATH%
-echo REPORTS: Check %LOGPATH% for SC-USCS-v3.11-*.txt and *.html files
-echo PRE-FINAL REPORT: SC-USCS-v3.11-PreFinalScans-[timestamp].txt
-echo FINAL REPORT: SC-USCS-v3.11-FinalComplete-[timestamp].txt
+echo REPORTS: Check %LOGPATH% for SC-USCS-v3.1-*.txt and *.html files
+echo PRE-FINAL REPORT: SC-USCS-v3.1-PreFinalScans-[timestamp].txt
+echo FINAL REPORT: SC-USCS-v3.1-FinalComplete-[timestamp].txt
 echo.
 echo For support, send all files from %LOGPATH% to:
 echo - scmyhelp@gmail.com
@@ -2017,14 +1799,14 @@ exit /b 0`;
                 SupportCALL - Ultimate Secure Clean Script
               </h1>
               <div className="text-lg md:text-xl font-semibold text-muted-foreground">
-                v3.11 - Professional Edition
+                v3.1 - Professional Edition
               </div>
             </div>
             <CardDescription className="text-base md:text-lg max-w-3xl mx-auto leading-relaxed">
               Professional Custom Script Generator for Windows System Cleaning, Security Enhancement & Optimization - Tailored PowerShell Solutions for Windows 10/11
             </CardDescription>
             <div className="flex justify-center gap-2 md:gap-4 flex-wrap">
-              <Badge variant="default" className="px-3 py-1 text-sm">SC-USCS v3.11</Badge>
+              <Badge variant="default" className="px-3 py-1 text-sm">SC-USCS v3.1</Badge>
               <Badge variant="secondary" className="px-3 py-1 text-sm">Safety: 98%</Badge>
               <Badge variant="outline" className="px-3 py-1 text-sm">Effectiveness: 95%</Badge>
               <Badge variant="outline" className="px-3 py-1 text-sm">Win 10/11 Compatible</Badge>
@@ -2296,13 +2078,9 @@ exit /b 0`;
                   <FileText className="w-5 h-5 mr-2" />
                   Generate Custom Script
                 </Button>
-                <Button onClick={downloadCompletePackage} size="lg" variant="default" className="flex-1 sm:flex-none bg-gradient-to-r from-primary to-secondary hover:opacity-90">
-                  <Package className="w-5 h-5 mr-2" />
-                  Download Complete Package (.zip)
-                </Button>
                 <Button onClick={downloadScript} size="lg" variant="outline" className="flex-1 sm:flex-none border-primary text-primary hover:bg-primary hover:text-primary-foreground">
                   <Download className="w-5 h-5 mr-2" />
-                  Download sc-uscs.bat Only
+                  Download sc-uscs.bat
                 </Button>
                 <Button onClick={() => setShowScript(!showScript)} size="lg" variant="secondary" className="flex-1 sm:flex-none">
                   <Copy className="w-5 h-5 mr-2" />
