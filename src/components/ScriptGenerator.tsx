@@ -465,7 +465,7 @@ const ScriptGenerator = () => {
       selectionType = "Recommended";
     }
     
-    a.download = `SC-USCS-v2.9-${selectionType}-Functions.bat`;
+    a.download = `SC-USCS-v3.1-${selectionType}-Functions.bat`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -473,7 +473,7 @@ const ScriptGenerator = () => {
     
     toast({
       title: "Script Downloaded",
-      description: `SC-USCS-v2.9-${selectionType}-Functions.bat has been downloaded to your device.`,
+      description: `SC-USCS-v3.1-${selectionType}-Functions.bat has been downloaded to your device.`,
     });
   };
 
@@ -950,7 +950,7 @@ echo.`;
           return `echo [${stageNum}.${funcNum}] COMPREHENSIVE SYSTEM REPORT - Complete system analysis
 echo *** Generating comprehensive system reports ***
 echo === CONSOLIDATED FINDINGS REPORT === > "%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt"
-echo Script Version: SC-USCS v2.9 >> "%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt"
+echo Script Version: SC-USCS v3.1 >> "%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt"
 echo Execution Date: %DATE% %TIME% >> "%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt"
 echo Functions Executed: ${selectedFunctionData.length} of ${functions.length} >> "%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt"
 echo. >> "%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt"
@@ -1021,7 +1021,7 @@ powershell -ExecutionPolicy Bypass -Command "$ErrorActionPreference='Continue'; 
     <div class='container'>
         <div class='header'>
             <h1>🛡️ SC-USCS System Report</h1>
-            <p>Windows Remediation & Security Scan v2.9</p>
+            <p>Windows Remediation & Security Scan v3.1</p>
         </div>
         <div class='content'>
             <div class='status-box'>
@@ -1134,9 +1134,9 @@ echo [REPORT] Generating comprehensive system report - This may take 2-5 minutes
 echo *** Creating consolidated findings report ***
 set "REPORT_TIMESTAMP=%DATE:~10,4%%DATE:~4,2%%DATE:~7,2%-%TIME:~0,2%%TIME:~3,2%%TIME:~6,2%"
 set "REPORT_TIMESTAMP=%REPORT_TIMESTAMP: =0%"
-set "PRE_REPORT_NAME=SC-USCS-v2.9-PreFinalScans-%REPORT_TIMESTAMP%.txt"
+set "PRE_REPORT_NAME=SC-USCS-v3.1-PreFinalScans-%REPORT_TIMESTAMP%.txt"
 echo === CONSOLIDATED FINDINGS REPORT (PRE-FINAL-SCANS) === > "%LOGPATH%\\%PRE_REPORT_NAME%"
-echo Script Version: SC-USCS v2.9 >> "%LOGPATH%\\%PRE_REPORT_NAME%"
+echo Script Version: SC-USCS v3.1 >> "%LOGPATH%\\%PRE_REPORT_NAME%"
 echo Report Type: Pre-Final-Scans (Before Defender Full Scan ^& CHKDSK) >> "%LOGPATH%\\%PRE_REPORT_NAME%"
 echo Execution Date: %DATE% %TIME% >> "%LOGPATH%\\%PRE_REPORT_NAME%"
 echo Functions Executed: ${regularFunctions.length} of ${selectedFunctionData.length} >> "%LOGPATH%\\%PRE_REPORT_NAME%"
@@ -1197,7 +1197,7 @@ echo. >> "%LOGPATH%\\%PRE_REPORT_NAME%"
 echo.
 echo *** HTML VERSION OF REPORT ***
 echo Creating formatted HTML report for easy viewing...
-set "PRE_REPORT_HTML=SC-USCS-v2.9-PreFinalScans-%REPORT_TIMESTAMP%.html"
+set "PRE_REPORT_HTML=SC-USCS-v3.1-PreFinalScans-%REPORT_TIMESTAMP%.html"
 powershell -Command "$reportPath = '%LOGPATH%\\%PRE_REPORT_HTML%'; $html = @'
 <!DOCTYPE html>
 <html>
@@ -1221,7 +1221,7 @@ powershell -Command "$reportPath = '%LOGPATH%\\%PRE_REPORT_HTML%'; $html = @'
     <div class=\"container\">
         <h1>🛡️ SC-USCS System Report (Pre-Final-Scans)</h1>
         <div class=\"info-box\">
-            <p><strong>Script Version:</strong> SC-USCS v2.9</p>
+            <p><strong>Script Version:</strong> SC-USCS v3.1</p>
             <p><strong>Report Type:</strong> Pre-Final-Scans Checkpoint</p>
             <p class=\"timestamp\"><strong>Generated:</strong> '+ (Get-Date -Format 'dddd, MMMM dd, yyyy - HH:mm:ss') +'</p>
             <p><strong>Status:</strong> <span class=\"status status-complete\">Completed ${regularFunctions.length} of ${selectedFunctionData.length} Operations</span></p>
@@ -1301,9 +1301,9 @@ echo.
 echo [FINAL-REPORT] Generating updated comprehensive report...
 set "FINAL_REPORT_TIMESTAMP=%DATE:~10,4%%DATE:~4,2%%DATE:~7,2%-%TIME:~0,2%%TIME:~3,2%%TIME:~6,2%"
 set "FINAL_REPORT_TIMESTAMP=%FINAL_REPORT_TIMESTAMP: =0%"
-set "FINAL_REPORT_NAME=SC-USCS-v2.9-FinalComplete-%FINAL_REPORT_TIMESTAMP%.txt"
+set "FINAL_REPORT_NAME=SC-USCS-v3.1-FinalComplete-%FINAL_REPORT_TIMESTAMP%.txt"
 echo === FINAL CONSOLIDATED FINDINGS REPORT === > "%LOGPATH%\\%FINAL_REPORT_NAME%"
-echo Script Version: SC-USCS v2.9 >> "%LOGPATH%\\%FINAL_REPORT_NAME%"
+echo Script Version: SC-USCS v3.1 >> "%LOGPATH%\\%FINAL_REPORT_NAME%"
 echo Report Type: Final Complete Report (All Operations) >> "%LOGPATH%\\%FINAL_REPORT_NAME%"
 echo Execution Date: %DATE% %TIME% >> "%LOGPATH%\\%FINAL_REPORT_NAME%"
 echo Functions Executed: ${selectedFunctionData.length} of ${functions.length} >> "%LOGPATH%\\%FINAL_REPORT_NAME%"
@@ -1337,7 +1337,7 @@ echo For support, email all files to: scmyhelp@gmail.com and alerts@supportcall.
 echo. >> "%LOGPATH%\\%FINAL_REPORT_NAME%"
 
 echo *** Creating final HTML report ***
-set "FINAL_REPORT_HTML=SC-USCS-v2.9-FinalComplete-%FINAL_REPORT_TIMESTAMP%.html"
+set "FINAL_REPORT_HTML=SC-USCS-v3.1-FinalComplete-%FINAL_REPORT_TIMESTAMP%.html"
 powershell -Command "$reportPath = '%LOGPATH%\\%FINAL_REPORT_HTML%'; $threats = Get-MpThreatDetection; $threatStatus = if ($threats) { '<span style=\"color: #d32f2f; font-weight: bold;\">⚠ THREATS DETECTED</span>' } else { '<span style=\"color: #388e3c; font-weight: bold;\">✓ System Clean</span>' }; $threatList = if ($threats) { ($threats | ForEach-Object { '<li style=\"color: #d32f2f; margin: 5px 0;\">' + $_.ThreatName + ' - ' + $_.Resources + '</li>' }) -join '' } else { '<li style=\"color: #388e3c;\">No threats detected</li>' }; $html = @'
 <!DOCTYPE html>
 <html>
@@ -1360,7 +1360,7 @@ powershell -Command "$reportPath = '%LOGPATH%\\%FINAL_REPORT_HTML%'; $threats = 
     <div class=\"container\">
         <h1>🛡️ SC-USCS Final Complete System Report</h1>
         <div class=\"info-box\">
-            <p><strong>Script Version:</strong> SC-USCS v2.9</p>
+            <p><strong>Script Version:</strong> SC-USCS v3.1</p>
             <p><strong>Report Type:</strong> Final Complete Report</p>
             <p><strong>Generated:</strong> '+ (Get-Date -Format 'dddd, MMMM dd, yyyy - HH:mm:ss') +'</p>
             <p><strong>Status:</strong> <span class=\"status status-complete\">✓ All ${selectedFunctionData.length} Operations Completed</span></p>
@@ -1397,7 +1397,7 @@ echo.
     
     return `@echo off
 REM =============================================================================
-REM SupportCALL - Ultimate Secure Clean Script (SC-USCS) v2.9
+REM SupportCALL - Ultimate Secure Clean Script (SC-USCS) v3.1
 REM Professional Windows Remediation Engine (SC-UWIRE)
 REM Generated: ${new Date().toLocaleString()}
 REM Functions Selected: ${selectedFunctionData.length} of ${functions.length}
@@ -1405,7 +1405,7 @@ REM Functions Selected: ${selectedFunctionData.length} of ${functions.length}
 REM =============================================================================
 
 setlocal EnableDelayedExpansion
-title SupportCALL - SC-USCS v2.9 - Professional Edition
+title SupportCALL - SC-USCS v3.1 - Professional Edition
 
 REM Check for Administrator privileges
 net session >nul 2>&1
@@ -1426,7 +1426,7 @@ mkdir "%LOGPATH%" 2>nul
 mkdir "%TOOLSPATH%" 2>nul
 
 echo =============================================================================
-echo  SupportCALL - Ultimate Secure Clean Script v2.9
+echo  SupportCALL - Ultimate Secure Clean Script v3.1
 echo  Professional Windows Remediation Engine
 echo =============================================================================
 echo.
@@ -1723,8 +1723,8 @@ net start "swprv"
 vssadmin resize shadowstorage /for=C: /on=C: /maxsize=10%%
 
 REM Create mandatory restore point with error checking
-echo Creating System Restore Point: SC-USCS-Pre-Run-v2.9...
-powershell -Command "$result = Checkpoint-Computer -Description 'SC-USCS-Pre-Run-v2.9' -RestorePointType 'MODIFY_SETTINGS' -Verbose; if ($result -eq $null) { Write-Host 'SUCCESS: System Restore Point Created' -ForegroundColor Green } else { Write-Host 'WARNING: Restore Point Creation Status Unknown' -ForegroundColor Yellow }"
+echo Creating System Restore Point: SC-USCS-Pre-Run-v3.1...
+powershell -Command "$result = Checkpoint-Computer -Description 'SC-USCS-Pre-Run-v3.1' -RestorePointType 'MODIFY_SETTINGS' -Verbose; if ($result -eq $null) { Write-Host 'SUCCESS: System Restore Point Created' -ForegroundColor Green } else { Write-Host 'WARNING: Restore Point Creation Status Unknown' -ForegroundColor Yellow }"
 
 REM Verify restore point was created
 echo Verifying restore point creation...
@@ -1753,9 +1753,9 @@ echo Log Location: %LOGPATH%
 echo Functions Executed: ${selectedFunctionData.length}
 echo.
 echo ALL OPERATIONS LOGGED TO: %LOGPATH%
-echo REPORTS: Check %LOGPATH% for SC-USCS-v2.9-*.txt and *.html files
-echo PRE-FINAL REPORT: SC-USCS-v2.9-PreFinalScans-[timestamp].txt
-echo FINAL REPORT: SC-USCS-v2.9-FinalComplete-[timestamp].txt
+echo REPORTS: Check %LOGPATH% for SC-USCS-v3.1-*.txt and *.html files
+echo PRE-FINAL REPORT: SC-USCS-v3.1-PreFinalScans-[timestamp].txt
+echo FINAL REPORT: SC-USCS-v3.1-FinalComplete-[timestamp].txt
 echo.
 echo For support, send all files from %LOGPATH% to:
 echo - scmyhelp@gmail.com
@@ -1799,14 +1799,14 @@ exit /b 0`;
                 SupportCALL - Ultimate Secure Clean Script
               </h1>
               <div className="text-lg md:text-xl font-semibold text-muted-foreground">
-                v2.9 - Professional Edition
+                v3.1 - Professional Edition
               </div>
             </div>
             <CardDescription className="text-base md:text-lg max-w-3xl mx-auto leading-relaxed">
               Professional Custom Script Generator for Windows System Cleaning, Security Enhancement & Optimization - Tailored PowerShell Solutions for Windows 10/11
             </CardDescription>
             <div className="flex justify-center gap-2 md:gap-4 flex-wrap">
-              <Badge variant="default" className="px-3 py-1 text-sm">SC-USCS v2.9</Badge>
+              <Badge variant="default" className="px-3 py-1 text-sm">SC-USCS v3.1</Badge>
               <Badge variant="secondary" className="px-3 py-1 text-sm">Safety: 98%</Badge>
               <Badge variant="outline" className="px-3 py-1 text-sm">Effectiveness: 95%</Badge>
               <Badge variant="outline" className="px-3 py-1 text-sm">Win 10/11 Compatible</Badge>
