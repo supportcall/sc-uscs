@@ -1071,7 +1071,7 @@ powershell -ExecutionPolicy Bypass -Command "$ErrorActionPreference='Continue'; 
     </div>
 </body>
 </html>
-\\"@; $smtpServer = 'mail.supportcall.co.za'; $smtpPort = 465; $smtpUser = 'sendserver@supportcall.co.za'; $smtpPass = '74Dhm28#74Dhm28#'; $fromEmail = 'sendserver@supportcall.co.za'; $toEmails = @('alerts@supportcall.co.za', 'scmyhelp@gmail.com'); $subject = \\\"SC-USCS Report: $computerName - $(Get-Date -Format 'yyyy-MM-dd HH:mm')\\\"; Write-Host 'Configuring SMTP client with SSL...'; $smtp = New-Object System.Net.Mail.SmtpClient($smtpServer, $smtpPort); $smtp.EnableSsl = $true; $smtp.Timeout = 30000; $smtp.Credentials = New-Object System.Net.NetworkCredential($smtpUser, $smtpPass); $message = New-Object System.Net.Mail.MailMessage; $message.From = $fromEmail; $message.Subject = $subject; $message.Body = $htmlBody; $message.IsBodyHtml = $true; foreach ($toEmail in $toEmails) { $message.To.Add($toEmail); Write-Host \\\"Added recipient: $toEmail\\\"; }; Write-Host 'Attempting to send email...'; try { $smtp.Send($message); Write-Host '✓ Email sent successfully to all recipients' -ForegroundColor Green; Write-Host \\\"  → alerts@supportcall.co.za\\\"; Write-Host \\\"  → scmyhelp@gmail.com\\\"; } catch { Write-Host \\\"✗ Email send failed: $($_.Exception.Message)\\\" -ForegroundColor Red; Write-Host 'Saving email content to file for manual review...'; $htmlBody | Out-File \\\"$logPath\\\\EMAIL_REPORT.html\\\" -Encoding UTF8; Write-Host \\\"Email content saved to: $logPath\\\\EMAIL_REPORT.html\\\"; } finally { $message.Dispose(); $smtp.Dispose(); }; } catch { Write-Host \\\"Error in email process: $($_.Exception.Message)\\\" -ForegroundColor Red; }" 2>&1
+\\"@; Write-Host 'Configuring email parameters...' -ForegroundColor Cyan; $smtpServer = 'mail.supportcall.co.za'; $smtpPort = 465; $smtpUser = 'sendserver@supportcall.co.za'; $smtpPass = '74Dhm28#74Dhm28#'; $fromEmail = 'sendserver@supportcall.co.za'; $toEmails = @('alerts@supportcall.co.za', 'scmyhelp@gmail.com'); $subject = \\\"SC-USCS Report: $computerName - $(Get-Date -Format 'yyyy-MM-dd HH:mm')\\\"; Write-Host \\\"SMTP Server: $smtpServer:$smtpPort\\\" -ForegroundColor Cyan; Write-Host \\\"From: $fromEmail\\\" -ForegroundColor Cyan; Write-Host \\\"To: $($toEmails -join ', ')\\\" -ForegroundColor Cyan; Write-Host 'Creating SMTP client with SSL/TLS...' -ForegroundColor Cyan; try { [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12 -bor [System.Net.SecurityProtocolType]::Tls11 -bor [System.Net.SecurityProtocolType]::Tls; Write-Host 'Security protocol set to TLS 1.2/1.1/1.0' -ForegroundColor Green; } catch { Write-Host \\\"Warning: Could not set security protocol: $($_.Exception.Message)\\\" -ForegroundColor Yellow; }; $smtp = New-Object System.Net.Mail.SmtpClient($smtpServer, $smtpPort); $smtp.EnableSsl = $true; $smtp.Timeout = 60000; $smtp.Credentials = New-Object System.Net.NetworkCredential($smtpUser, $smtpPass); Write-Host 'SMTP client configured successfully' -ForegroundColor Green; $message = New-Object System.Net.Mail.MailMessage; $message.From = $fromEmail; $message.Subject = $subject; $message.Body = $htmlBody; $message.IsBodyHtml = $true; $message.Priority = [System.Net.Mail.MailPriority]::High; foreach ($toEmail in $toEmails) { $message.To.Add($toEmail); Write-Host \\\"Added recipient: $toEmail\\\" -ForegroundColor Cyan; }; Write-Host 'Attempting to send email via SMTP...' -ForegroundColor Yellow; Write-Host 'This may take 30-60 seconds...' -ForegroundColor Yellow; try { $smtp.Send($message); Write-Host '========================================' -ForegroundColor Green; Write-Host '✓✓✓ EMAIL SENT SUCCESSFULLY! ✓✓✓' -ForegroundColor Green; Write-Host '========================================' -ForegroundColor Green; Write-Host 'Email delivered to:' -ForegroundColor Green; Write-Host \\\"  → alerts@supportcall.co.za\\\" -ForegroundColor Green; Write-Host \\\"  → scmyhelp@gmail.com\\\" -ForegroundColor Green; Write-Host '========================================' -ForegroundColor Green; } catch { Write-Host '========================================' -ForegroundColor Red; Write-Host '✗✗✗ EMAIL SEND FAILED ✗✗✗' -ForegroundColor Red; Write-Host '========================================' -ForegroundColor Red; Write-Host \\\"Error Type: $($_.Exception.GetType().FullName)\\\" -ForegroundColor Red; Write-Host \\\"Error Message: $($_.Exception.Message)\\\" -ForegroundColor Red; if ($_.Exception.InnerException) { Write-Host \\\"Inner Error: $($_.Exception.InnerException.Message)\\\" -ForegroundColor Red; }; Write-Host '----------------------------------------' -ForegroundColor Yellow; Write-Host 'Possible causes:' -ForegroundColor Yellow; Write-Host '  1. Firewall blocking port 465' -ForegroundColor Yellow; Write-Host '  2. SMTP server credentials changed' -ForegroundColor Yellow; Write-Host '  3. Network connectivity issues' -ForegroundColor Yellow; Write-Host '  4. SMTP server down or unreachable' -ForegroundColor Yellow; Write-Host '----------------------------------------' -ForegroundColor Yellow; Write-Host 'Saving email content to local file...' -ForegroundColor Cyan; $htmlBody | Out-File \\\"$logPath\\\\EMAIL_REPORT.html\\\" -Encoding UTF8; Write-Host \\\"✓ Email content saved to: $logPath\\\\EMAIL_REPORT.html\\\" -ForegroundColor Green; Write-Host 'Please manually send this file to support.' -ForegroundColor Yellow; Write-Host '========================================' -ForegroundColor Red; } finally { if ($message) { $message.Dispose(); }; if ($smtp) { $smtp.Dispose(); }; }; } catch { Write-Host '========================================' -ForegroundColor Red; Write-Host \\\"CRITICAL ERROR in email process: $($_.Exception.Message)\\\" -ForegroundColor Red; Write-Host \\\"Stack Trace: $($_.ScriptStackTrace)\\\" -ForegroundColor Red; Write-Host '========================================' -ForegroundColor Red; }" 2>&1
 echo.`;
         default:
           return `echo [${stageNum}.${funcNum}] ${func.name.toUpperCase()} - ${func.description}
@@ -1132,69 +1132,73 @@ echo.
 
 echo [REPORT] Generating comprehensive system report - This may take 2-5 minutes...
 echo *** Creating consolidated findings report ***
-echo === CONSOLIDATED FINDINGS REPORT (PRE-FINAL-SCANS) === > "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
-echo Script Version: SC-USCS v2.9 >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
-echo Report Type: Pre-Final-Scans (Before Defender Full Scan ^& CHKDSK) >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
-echo Execution Date: %DATE% %TIME% >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
-echo Functions Executed: ${regularFunctions.length} of ${selectedFunctionData.length} >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
-echo Remaining Functions: ${extendedScans.map(f => f.name).join(', ')} >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
-echo. >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
-echo === SYSTEM CONFIGURATION === >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
+set "REPORT_TIMESTAMP=%DATE:~10,4%%DATE:~4,2%%DATE:~7,2%-%TIME:~0,2%%TIME:~3,2%%TIME:~6,2%"
+set "REPORT_TIMESTAMP=%REPORT_TIMESTAMP: =0%"
+set "PRE_REPORT_NAME=SC-USCS-v2.9-PreFinalScans-%REPORT_TIMESTAMP%.txt"
+echo === CONSOLIDATED FINDINGS REPORT (PRE-FINAL-SCANS) === > "%LOGPATH%\\%PRE_REPORT_NAME%"
+echo Script Version: SC-USCS v2.9 >> "%LOGPATH%\\%PRE_REPORT_NAME%"
+echo Report Type: Pre-Final-Scans (Before Defender Full Scan ^& CHKDSK) >> "%LOGPATH%\\%PRE_REPORT_NAME%"
+echo Execution Date: %DATE% %TIME% >> "%LOGPATH%\\%PRE_REPORT_NAME%"
+echo Functions Executed: ${regularFunctions.length} of ${selectedFunctionData.length} >> "%LOGPATH%\\%PRE_REPORT_NAME%"
+echo Remaining Functions: ${extendedScans.map(f => f.name).join(', ')} >> "%LOGPATH%\\%PRE_REPORT_NAME%"
+echo. >> "%LOGPATH%\\%PRE_REPORT_NAME%"
+echo === SYSTEM CONFIGURATION === >> "%LOGPATH%\\%PRE_REPORT_NAME%"
 systeminfo >> "%LOGPATH%\\01_system_info.txt"
-type "%LOGPATH%\\01_system_info.txt" >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
-echo. >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
-echo === HARDWARE REPORT === >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
+type "%LOGPATH%\\01_system_info.txt" >> "%LOGPATH%\\%PRE_REPORT_NAME%"
+echo. >> "%LOGPATH%\\%PRE_REPORT_NAME%"
+echo === HARDWARE REPORT === >> "%LOGPATH%\\%PRE_REPORT_NAME%"
 dxdiag /t "%LOGPATH%\\02_hardware_report.txt"
 timeout /t 10 /nobreak >nul
-type "%LOGPATH%\\02_hardware_report.txt" >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt" 2>nul
-echo. >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
-echo === INSTALLED SOFTWARE === >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
+type "%LOGPATH%\\02_hardware_report.txt" >> "%LOGPATH%\\%PRE_REPORT_NAME%" 2>nul
+echo. >> "%LOGPATH%\\%PRE_REPORT_NAME%"
+echo === INSTALLED SOFTWARE === >> "%LOGPATH%\\%PRE_REPORT_NAME%"
 wmic product get name,version,vendor /format:csv > "%LOGPATH%\\03_installed_software.csv" 2>nul
-type "%LOGPATH%\\03_installed_software.csv" >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt" 2>nul
-echo. >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
-echo === WINDOWS UPDATES === >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
+type "%LOGPATH%\\03_installed_software.csv" >> "%LOGPATH%\\%PRE_REPORT_NAME%" 2>nul
+echo. >> "%LOGPATH%\\%PRE_REPORT_NAME%"
+echo === WINDOWS UPDATES === >> "%LOGPATH%\\%PRE_REPORT_NAME%"
 powershell -Command "Get-WmiObject -Class Win32_QuickFixEngineering | Select-Object HotFixID,Description,InstalledOn | Export-Csv -Path '%LOGPATH%\\04_windows_updates.csv' -NoTypeInformation"
-type "%LOGPATH%\\04_windows_updates.csv" >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt" 2>nul
-echo. >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
-echo === SECURITY THREATS DETECTED (SO FAR) === >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
-powershell -Command "$threats = Get-MpThreatDetection; if ($threats) { $threats | Format-Table ThreatName, ActionSuccess, ProcessName -AutoSize | Out-String | Add-Content '%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt' } else { Add-Content '%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt' 'No active threats detected at this stage.' }" 2>nul
+type "%LOGPATH%\\04_windows_updates.csv" >> "%LOGPATH%\\%PRE_REPORT_NAME%" 2>nul
+echo. >> "%LOGPATH%\\%PRE_REPORT_NAME%"
+echo === SECURITY THREATS DETECTED (SO FAR) === >> "%LOGPATH%\\%PRE_REPORT_NAME%"
+powershell -Command "$threats = Get-MpThreatDetection; if ($threats) { $threats | Format-Table ThreatName, ActionSuccess, ProcessName -AutoSize | Out-String | Add-Content '%LOGPATH%\\%PRE_REPORT_NAME%' } else { Add-Content '%LOGPATH%\\%PRE_REPORT_NAME%' 'No active threats detected at this stage.' }" 2>nul
 powershell -Command "Get-MpThreatDetection | Export-Csv -Path '%LOGPATH%\\05_defender_threats_prefinal.csv' -NoTypeInformation" 2>nul
-echo. >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
-echo === STARTUP PROGRAMS === >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
+echo. >> "%LOGPATH%\\%PRE_REPORT_NAME%"
+echo === STARTUP PROGRAMS === >> "%LOGPATH%\\%PRE_REPORT_NAME%"
 wmic startup get caption,command,location,user /format:csv > "%LOGPATH%\\06_startup_programs.csv" 2>nul
-type "%LOGPATH%\\06_startup_programs.csv" >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt" 2>nul
-echo. >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
-echo === WINDOWS SERVICES === >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
+type "%LOGPATH%\\06_startup_programs.csv" >> "%LOGPATH%\\%PRE_REPORT_NAME%" 2>nul
+echo. >> "%LOGPATH%\\%PRE_REPORT_NAME%"
+echo === WINDOWS SERVICES === >> "%LOGPATH%\\%PRE_REPORT_NAME%"
 sc query state= all > "%LOGPATH%\\07_windows_services.txt"
-type "%LOGPATH%\\07_windows_services.txt" >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt" 2>nul
-echo. >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
-echo === NETWORK CONFIGURATION === >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
+type "%LOGPATH%\\07_windows_services.txt" >> "%LOGPATH%\\%PRE_REPORT_NAME%" 2>nul
+echo. >> "%LOGPATH%\\%PRE_REPORT_NAME%"
+echo === NETWORK CONFIGURATION === >> "%LOGPATH%\\%PRE_REPORT_NAME%"
 ipconfig /all > "%LOGPATH%\\08_network_config.txt"
-type "%LOGPATH%\\08_network_config.txt" >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
-echo. >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
-echo === NETWORK CONNECTIONS === >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
+type "%LOGPATH%\\08_network_config.txt" >> "%LOGPATH%\\%PRE_REPORT_NAME%"
+echo. >> "%LOGPATH%\\%PRE_REPORT_NAME%"
+echo === NETWORK CONNECTIONS === >> "%LOGPATH%\\%PRE_REPORT_NAME%"
 netstat -an > "%LOGPATH%\\09_network_connections.txt"
-type "%LOGPATH%\\09_network_connections.txt" >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
-echo. >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
-echo === DISK HEALTH === >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
+type "%LOGPATH%\\09_network_connections.txt" >> "%LOGPATH%\\%PRE_REPORT_NAME%"
+echo. >> "%LOGPATH%\\%PRE_REPORT_NAME%"
+echo === DISK HEALTH === >> "%LOGPATH%\\%PRE_REPORT_NAME%"
 wmic logicaldisk get size,freespace,caption /format:csv > "%LOGPATH%\\10_disk_space.csv"
-type "%LOGPATH%\\10_disk_space.csv" >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
-echo. >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
-echo === EXECUTED OPERATIONS LOG SUMMARY === >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
-echo Listing all operation logs generated so far: >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
-dir /b "%LOGPATH%\\*.log" >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt" 2>nul
-echo. >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
-echo === SUMMARY === >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
-echo Status: All operations up to this point completed >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
-echo Remaining: Defender Full Scan ^& Check Disk operations >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
-echo All findings consolidated in: %LOGPATH% >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
-echo For support, email all files to: scmyhelp@gmail.com and alerts@supportcall.co.za >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
-echo. >> "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt"
+type "%LOGPATH%\\10_disk_space.csv" >> "%LOGPATH%\\%PRE_REPORT_NAME%"
+echo. >> "%LOGPATH%\\%PRE_REPORT_NAME%"
+echo === EXECUTED OPERATIONS LOG SUMMARY === >> "%LOGPATH%\\%PRE_REPORT_NAME%"
+echo Listing all operation logs generated so far: >> "%LOGPATH%\\%PRE_REPORT_NAME%"
+dir /b "%LOGPATH%\\*.log" >> "%LOGPATH%\\%PRE_REPORT_NAME%" 2>nul
+echo. >> "%LOGPATH%\\%PRE_REPORT_NAME%"
+echo === SUMMARY === >> "%LOGPATH%\\%PRE_REPORT_NAME%"
+echo Status: All operations up to this point completed >> "%LOGPATH%\\%PRE_REPORT_NAME%"
+echo Remaining: Defender Full Scan ^& Check Disk operations >> "%LOGPATH%\\%PRE_REPORT_NAME%"
+echo All findings consolidated in: %LOGPATH% >> "%LOGPATH%\\%PRE_REPORT_NAME%"
+echo For support, email all files to: scmyhelp@gmail.com and alerts@supportcall.co.za >> "%LOGPATH%\\%PRE_REPORT_NAME%"
+echo. >> "%LOGPATH%\\%PRE_REPORT_NAME%"
 
 echo.
 echo *** HTML VERSION OF REPORT ***
 echo Creating formatted HTML report for easy viewing...
-powershell -Command "$reportPath = '%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.html'; $html = @'
+set "PRE_REPORT_HTML=SC-USCS-v2.9-PreFinalScans-%REPORT_TIMESTAMP%.html"
+powershell -Command "$reportPath = '%LOGPATH%\\%PRE_REPORT_HTML%'; $html = @'
 <!DOCTYPE html>
 <html>
 <head>
@@ -1239,7 +1243,7 @@ powershell -Command "$reportPath = '%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.html'; 
             <li>All Operation Logs</li>
         </ul>
         <h2>📁 Full Report Location</h2>
-        <p><code>%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt</code></p>
+        <p><code>%LOGPATH%\\%PRE_REPORT_NAME%</code></p>
         <h2>📧 Support Contact</h2>
         <p>For technical support, send all files from the log directory to:</p>
         <ul>
@@ -1255,8 +1259,8 @@ echo.
 echo =============================================================================
 echo  PRE-FINAL-SCANS REPORT COMPLETE
 echo =============================================================================
-echo Text Report: %LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt
-echo HTML Report: %LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.html
+echo Text Report: %LOGPATH%\\%PRE_REPORT_NAME%
+echo HTML Report: %LOGPATH%\\%PRE_REPORT_HTML%
 echo.
 echo This report captures all work completed so far.
 echo If you cancel during the final scans, this report will still be available.
@@ -1295,42 +1299,46 @@ echo ===========================================================================
 echo.
 
 echo [FINAL-REPORT] Generating updated comprehensive report...
-echo === FINAL CONSOLIDATED FINDINGS REPORT === > "%LOGPATH%\\00_FINAL_CONSOLIDATED_REPORT.txt"
-echo Script Version: SC-USCS v2.9 >> "%LOGPATH%\\00_FINAL_CONSOLIDATED_REPORT.txt"
-echo Report Type: Final Complete Report (All Operations) >> "%LOGPATH%\\00_FINAL_CONSOLIDATED_REPORT.txt"
-echo Execution Date: %DATE% %TIME% >> "%LOGPATH%\\00_FINAL_CONSOLIDATED_REPORT.txt"
-echo Functions Executed: ${selectedFunctionData.length} of ${functions.length} >> "%LOGPATH%\\00_FINAL_CONSOLIDATED_REPORT.txt"
-echo. >> "%LOGPATH%\\00_FINAL_CONSOLIDATED_REPORT.txt"
-echo === EXTENDED SCAN RESULTS === >> "%LOGPATH%\\00_FINAL_CONSOLIDATED_REPORT.txt"
+set "FINAL_REPORT_TIMESTAMP=%DATE:~10,4%%DATE:~4,2%%DATE:~7,2%-%TIME:~0,2%%TIME:~3,2%%TIME:~6,2%"
+set "FINAL_REPORT_TIMESTAMP=%FINAL_REPORT_TIMESTAMP: =0%"
+set "FINAL_REPORT_NAME=SC-USCS-v2.9-FinalComplete-%FINAL_REPORT_TIMESTAMP%.txt"
+echo === FINAL CONSOLIDATED FINDINGS REPORT === > "%LOGPATH%\\%FINAL_REPORT_NAME%"
+echo Script Version: SC-USCS v2.9 >> "%LOGPATH%\\%FINAL_REPORT_NAME%"
+echo Report Type: Final Complete Report (All Operations) >> "%LOGPATH%\\%FINAL_REPORT_NAME%"
+echo Execution Date: %DATE% %TIME% >> "%LOGPATH%\\%FINAL_REPORT_NAME%"
+echo Functions Executed: ${selectedFunctionData.length} of ${functions.length} >> "%LOGPATH%\\%FINAL_REPORT_NAME%"
+echo. >> "%LOGPATH%\\%FINAL_REPORT_NAME%"
+echo === EXTENDED SCAN RESULTS === >> "%LOGPATH%\\%FINAL_REPORT_NAME%"
 ${extendedScans.some(f => f.id === 'defender-scan') ? `
-echo --- Defender Full Scan Results --- >> "%LOGPATH%\\00_FINAL_CONSOLIDATED_REPORT.txt"
-powershell -Command "$threats = Get-MpThreatDetection; if ($threats) { Add-Content '%LOGPATH%\\00_FINAL_CONSOLIDATED_REPORT.txt' '=== THREATS DETECTED ==='; $threats | Format-Table ThreatName, ActionSuccess, ProcessName, Resources -AutoSize | Out-String | Add-Content '%LOGPATH%\\00_FINAL_CONSOLIDATED_REPORT.txt' } else { Add-Content '%LOGPATH%\\00_FINAL_CONSOLIDATED_REPORT.txt' '✓ No threats detected by full scan' }" 2>nul
+echo --- Defender Full Scan Results --- >> "%LOGPATH%\\%FINAL_REPORT_NAME%"
+powershell -Command "$threats = Get-MpThreatDetection; if ($threats) { Add-Content '%LOGPATH%\\%FINAL_REPORT_NAME%' '=== THREATS DETECTED ==='; $threats | Format-Table ThreatName, ActionSuccess, ProcessName, Resources -AutoSize | Out-String | Add-Content '%LOGPATH%\\%FINAL_REPORT_NAME%' } else { Add-Content '%LOGPATH%\\%FINAL_REPORT_NAME%' '✓ No threats detected by full scan' }" 2>nul
 powershell -Command "Get-MpThreatDetection | Export-Csv -Path '%LOGPATH%\\defender_threats_final.csv' -NoTypeInformation" 2>nul
-echo. >> "%LOGPATH%\\00_FINAL_CONSOLIDATED_REPORT.txt"
+echo. >> "%LOGPATH%\\%FINAL_REPORT_NAME%"
 ` : ''}
 ${extendedScans.some(f => f.id === 'chkdsk') ? `
-echo --- Check Disk Results --- >> "%LOGPATH%\\00_FINAL_CONSOLIDATED_REPORT.txt"
+echo --- Check Disk Results --- >> "%LOGPATH%\\%FINAL_REPORT_NAME%"
 if exist "%LOGPATH%\\*_chkdsk.log" (
-    type "%LOGPATH%\\*_chkdsk.log" >> "%LOGPATH%\\00_FINAL_CONSOLIDATED_REPORT.txt"
+    type "%LOGPATH%\\*_chkdsk.log" >> "%LOGPATH%\\%FINAL_REPORT_NAME%"
 ) else (
-    echo Check Disk log not found >> "%LOGPATH%\\00_FINAL_CONSOLIDATED_REPORT.txt"
+    echo Check Disk log not found >> "%LOGPATH%\\%FINAL_REPORT_NAME%"
 )
-echo. >> "%LOGPATH%\\00_FINAL_CONSOLIDATED_REPORT.txt"
+echo. >> "%LOGPATH%\\%FINAL_REPORT_NAME%"
 ` : ''}
-echo === COPYING DATA FROM PRE-SCAN REPORT === >> "%LOGPATH%\\00_FINAL_CONSOLIDATED_REPORT.txt"
-if exist "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt" (
-    type "%LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt" >> "%LOGPATH%\\00_FINAL_CONSOLIDATED_REPORT.txt"
+echo === COPYING DATA FROM PRE-SCAN REPORT === >> "%LOGPATH%\\%FINAL_REPORT_NAME%"
+if exist "%LOGPATH%\\%PRE_REPORT_NAME%" (
+    type "%LOGPATH%\\%PRE_REPORT_NAME%" >> "%LOGPATH%\\%FINAL_REPORT_NAME%"
 )
-echo. >> "%LOGPATH%\\00_FINAL_CONSOLIDATED_REPORT.txt"
-echo === FINAL SUMMARY === >> "%LOGPATH%\\00_FINAL_CONSOLIDATED_REPORT.txt"
-echo Status: ALL OPERATIONS COMPLETED >> "%LOGPATH%\\00_FINAL_CONSOLIDATED_REPORT.txt"
-echo Total Functions Executed: ${selectedFunctionData.length} >> "%LOGPATH%\\00_FINAL_CONSOLIDATED_REPORT.txt"
-echo All findings consolidated in: %LOGPATH% >> "%LOGPATH%\\00_FINAL_CONSOLIDATED_REPORT.txt"
-echo For support, email all files to: scmyhelp@gmail.com and alerts@supportcall.co.za >> "%LOGPATH%\\00_FINAL_CONSOLIDATED_REPORT.txt"
-echo. >> "%LOGPATH%\\00_FINAL_CONSOLIDATED_REPORT.txt"
+echo. >> "%LOGPATH%\\%FINAL_REPORT_NAME%"
+echo === FINAL SUMMARY === >> "%LOGPATH%\\%FINAL_REPORT_NAME%"
+echo Status: ALL OPERATIONS COMPLETED >> "%LOGPATH%\\%FINAL_REPORT_NAME%"
+echo Total Functions Executed: ${selectedFunctionData.length} >> "%LOGPATH%\\%FINAL_REPORT_NAME%"
+echo All findings consolidated in: %LOGPATH% >> "%LOGPATH%\\%FINAL_REPORT_NAME%"
+echo For support, email all files to: scmyhelp@gmail.com and alerts@supportcall.co.za >> "%LOGPATH%\\%FINAL_REPORT_NAME%"
+echo. >> "%LOGPATH%\\%FINAL_REPORT_NAME%"
 
 echo *** Creating final HTML report ***
-powershell -Command "$reportPath = '%LOGPATH%\\00_FINAL_CONSOLIDATED_REPORT.html'; $threats = Get-MpThreatDetection; $threatStatus = if ($threats) { '<span style=\"color: #d32f2f; font-weight: bold;\">⚠ THREATS DETECTED</span>' } else { '<span style=\"color: #388e3c; font-weight: bold;\">✓ System Clean</span>' }; $threatList = if ($threats) { ($threats | ForEach-Object { '<li style=\"color: #d32f2f; margin: 5px 0;\">' + $_.ThreatName + ' - ' + $_.Resources + '</li>' }) -join '' } else { '<li style=\"color: #388e3c;\">No threats detected</li>' }; $html = @'
+set "FINAL_REPORT_HTML=SC-USCS-v2.9-FinalComplete-%FINAL_REPORT_TIMESTAMP%.html"
+powershell -Command "$reportPath = '%LOGPATH%\\%FINAL_REPORT_HTML%'; $threats = Get-MpThreatDetection; $threatStatus = if ($threats) { '<span style=\"color: #d32f2f; font-weight: bold;\">⚠ THREATS DETECTED</span>' } else { '<span style=\"color: #388e3c; font-weight: bold;\">✓ System Clean</span>' }; $threatList = if ($threats) { ($threats | ForEach-Object { '<li style=\"color: #d32f2f; margin: 5px 0;\">' + $_.ThreatName + ' - ' + $_.Resources + '</li>' }) -join '' } else { '<li style=\"color: #388e3c;\">No threats detected</li>' }; $html = @'
 <!DOCTYPE html>
 <html>
 <head>
@@ -1363,7 +1371,7 @@ powershell -Command "$reportPath = '%LOGPATH%\\00_FINAL_CONSOLIDATED_REPORT.html
         <ul>$threatList</ul>
         <h2>📊 Complete Analysis Available</h2>
         <p>Full detailed report with all system information, scan results, and findings available at:</p>
-        <p><code>%LOGPATH%\\00_FINAL_CONSOLIDATED_REPORT.txt</code></p>
+        <p><code>%LOGPATH%\\%FINAL_REPORT_NAME%</code></p>
         <h2>📧 Support Contact</h2>
         <p>For technical support, send all files from the log directory to:</p>
         <ul>
@@ -1379,8 +1387,8 @@ echo.
 echo =============================================================================
 echo  FINAL REPORT COMPLETE
 echo =============================================================================
-echo Text Report: %LOGPATH%\\00_FINAL_CONSOLIDATED_REPORT.txt
-echo HTML Report: %LOGPATH%\\00_FINAL_CONSOLIDATED_REPORT.html
+echo Text Report: %LOGPATH%\\%FINAL_REPORT_NAME%
+echo HTML Report: %LOGPATH%\\%FINAL_REPORT_HTML%
 echo =============================================================================
 echo.
 ` : '';
@@ -1745,9 +1753,9 @@ echo Log Location: %LOGPATH%
 echo Functions Executed: ${selectedFunctionData.length}
 echo.
 echo ALL OPERATIONS LOGGED TO: %LOGPATH%
-echo PRE-FINAL REPORT: %LOGPATH%\\00_PRE_FINAL_SCANS_REPORT.txt
-echo FINAL REPORT: %LOGPATH%\\00_FINAL_CONSOLIDATED_REPORT.txt
-echo HTML REPORTS: %LOGPATH%\\*.html
+echo REPORTS: Check %LOGPATH% for SC-USCS-v2.9-*.txt and *.html files
+echo PRE-FINAL REPORT: SC-USCS-v2.9-PreFinalScans-[timestamp].txt
+echo FINAL REPORT: SC-USCS-v2.9-FinalComplete-[timestamp].txt
 echo.
 echo For support, send all files from %LOGPATH% to:
 echo - scmyhelp@gmail.com
