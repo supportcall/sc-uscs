@@ -559,7 +559,7 @@ const ScriptGenerator = () => {
       selectionType = "Recommended";
     }
     
-    a.download = `SC-USCS-v5.01-${selectionType}-Functions.bat`;
+    a.download = `SC-USCS-v5.37-${selectionType}-Functions.bat`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -567,7 +567,7 @@ const ScriptGenerator = () => {
     
     toast({
       title: "Script Downloaded",
-      description: `SC-USCS-v5.01-${selectionType}-Functions.bat has been downloaded to your device.`,
+      description: `SC-USCS-v5.37-${selectionType}-Functions.bat has been downloaded to your device.`,
     });
   };
 
@@ -1220,7 +1220,7 @@ echo.`;
 echo [${stageNum}.${funcNum}] COMPREHENSIVE SYSTEM REPORT - Complete system analysis
 echo *** Generating comprehensive system reports ***
 echo === CONSOLIDATED FINDINGS REPORT === > "%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt"
-echo Script Version: SC-USCS v5.01 >> "%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt"
+echo Script Version: SC-USCS v5.37 >> "%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt"
 echo Execution Date: %DATE% %TIME% >> "%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt"
 echo Functions Executed: ${selectedFunctionData.length} of ${functions.length} >> "%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt"
 echo. >> "%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt"
@@ -1292,7 +1292,7 @@ powershell -ExecutionPolicy Bypass -Command "$ErrorActionPreference='Continue'; 
     <div class='container'>
         <div class='header'>
             <h1>🛡️ SC-USCS System Report</h1>
-            <p>Windows Remediation & Security Scan v5.01</p>
+            <p>Windows Remediation & Security Scan v5.37</p>
         </div>
         <div class='content'>
             <div class='status-box'>
@@ -1409,9 +1409,9 @@ echo [REPORT] Generating comprehensive system report - This may take 2-5 minutes
 echo *** Creating consolidated findings report ***
 set "REPORT_TIMESTAMP=%DATE:~10,4%%DATE:~4,2%%DATE:~7,2%-%TIME:~0,2%%TIME:~3,2%%TIME:~6,2%"
 set "REPORT_TIMESTAMP=%REPORT_TIMESTAMP: =0%"
-set "PRE_REPORT_NAME=SC-USCS-v5.01-PreFinalScans-%REPORT_TIMESTAMP%.txt"
+set "PRE_REPORT_NAME=SC-USCS-v5.37-PreFinalScans-%REPORT_TIMESTAMP%.txt"
 echo === CONSOLIDATED FINDINGS REPORT (PRE-FINAL-SCANS) === > "%LOGPATH%\\%PRE_REPORT_NAME%"
-echo Script Version: SC-USCS v5.01 >> "%LOGPATH%\\%PRE_REPORT_NAME%"
+echo Script Version: SC-USCS v5.37 >> "%LOGPATH%\\%PRE_REPORT_NAME%"
 echo Report Type: Pre-Final-Scans (Before Defender Full Scan ^& CHKDSK) >> "%LOGPATH%\\%PRE_REPORT_NAME%"
 echo Execution Date: %DATE% %TIME% >> "%LOGPATH%\\%PRE_REPORT_NAME%"
 echo Functions Executed: ${regularFunctions.length} of ${selectedFunctionData.length} >> "%LOGPATH%\\%PRE_REPORT_NAME%"
@@ -1472,7 +1472,7 @@ echo. >> "%LOGPATH%\\%PRE_REPORT_NAME%"
 echo.
 echo *** HTML VERSION OF REPORT ***
 echo Creating formatted HTML report for easy viewing...
-set "PRE_REPORT_HTML=SC-USCS-v5.01-PreFinalScans-%REPORT_TIMESTAMP%.html"
+set "PRE_REPORT_HTML=SC-USCS-v5.37-PreFinalScans-%REPORT_TIMESTAMP%.html"
 powershell -Command "$reportPath = '%LOGPATH%\\%PRE_REPORT_HTML%'; $html = @'
 <!DOCTYPE html>
 <html>
@@ -1496,7 +1496,7 @@ powershell -Command "$reportPath = '%LOGPATH%\\%PRE_REPORT_HTML%'; $html = @'
     <div class=\"container\">
         <h1>🛡️ SC-USCS System Report (Pre-Final-Scans)</h1>
         <div class=\"info-box\">
-            <p><strong>Script Version:</strong> SC-USCS v5.01</p>
+            <p><strong>Script Version:</strong> SC-USCS v5.37</p>
             <p><strong>Report Type:</strong> Pre-Final-Scans Checkpoint</p>
             <p class=\"timestamp\"><strong>Generated:</strong> '+ (Get-Date -Format 'dddd, MMMM dd, yyyy - HH:mm:ss') +'</p>
             <p><strong>Status:</strong> <span class=\"status status-complete\">Completed ${regularFunctions.length} of ${selectedFunctionData.length} Operations</span></p>
@@ -1576,9 +1576,9 @@ echo.
 echo [FINAL-REPORT] Generating updated comprehensive report...
 set "FINAL_REPORT_TIMESTAMP=%DATE:~10,4%%DATE:~4,2%%DATE:~7,2%-%TIME:~0,2%%TIME:~3,2%%TIME:~6,2%"
 set "FINAL_REPORT_TIMESTAMP=%FINAL_REPORT_TIMESTAMP: =0%"
-set "FINAL_REPORT_NAME=SC-USCS-v5.01-FinalComplete-%FINAL_REPORT_TIMESTAMP%.txt"
+set "FINAL_REPORT_NAME=SC-USCS-v5.37-FinalComplete-%FINAL_REPORT_TIMESTAMP%.txt"
 echo === FINAL CONSOLIDATED FINDINGS REPORT === > "%LOGPATH%\\%FINAL_REPORT_NAME%"
-echo Script Version: SC-USCS v5.01 >> "%LOGPATH%\\%FINAL_REPORT_NAME%"
+echo Script Version: SC-USCS v5.37 >> "%LOGPATH%\\%FINAL_REPORT_NAME%"
 echo Report Type: Final Complete Report (All Operations) >> "%LOGPATH%\\%FINAL_REPORT_NAME%"
 echo Execution Date: %DATE% %TIME% >> "%LOGPATH%\\%FINAL_REPORT_NAME%"
 echo Functions Executed: ${selectedFunctionData.length} of ${functions.length} >> "%LOGPATH%\\%FINAL_REPORT_NAME%"
@@ -1612,7 +1612,7 @@ echo For support, email all files to: scmyhelp@gmail.com and alerts@supportcall.
 echo. >> "%LOGPATH%\\%FINAL_REPORT_NAME%"
 
 echo *** Creating final HTML report ***
-set "FINAL_REPORT_HTML=SC-USCS-v5.01-FinalComplete-%FINAL_REPORT_TIMESTAMP%.html"
+set "FINAL_REPORT_HTML=SC-USCS-v5.37-FinalComplete-%FINAL_REPORT_TIMESTAMP%.html"
 powershell -Command "$reportPath = '%LOGPATH%\\%FINAL_REPORT_HTML%'; $threats = Get-MpThreatDetection; $threatStatus = if ($threats) { '<span style=\"color: #d32f2f; font-weight: bold;\">⚠ THREATS DETECTED</span>' } else { '<span style=\"color: #388e3c; font-weight: bold;\">✓ System Clean</span>' }; $threatList = if ($threats) { ($threats | ForEach-Object { '<li style=\"color: #d32f2f; margin: 5px 0;\">' + $_.ThreatName + ' - ' + $_.Resources + '</li>' }) -join '' } else { '<li style=\"color: #388e3c;\">No threats detected</li>' }; $html = @'
 <!DOCTYPE html>
 <html>
@@ -1635,7 +1635,7 @@ powershell -Command "$reportPath = '%LOGPATH%\\%FINAL_REPORT_HTML%'; $threats = 
     <div class=\"container\">
         <h1>🛡️ SC-USCS Final Complete System Report</h1>
         <div class=\"info-box\">
-            <p><strong>Script Version:</strong> SC-USCS v5.01</p>
+            <p><strong>Script Version:</strong> SC-USCS v5.37</p>
             <p><strong>Report Type:</strong> Final Complete Report</p>
             <p><strong>Generated:</strong> '+ (Get-Date -Format 'dddd, MMMM dd, yyyy - HH:mm:ss') +'</p>
             <p><strong>Status:</strong> <span class=\"status status-complete\">✓ All ${selectedFunctionData.length} Operations Completed</span></p>
@@ -1672,7 +1672,7 @@ echo.
     
     return `@echo off
 REM =============================================================================
-REM SupportCALL - Ultimate Secure Clean Script (SC-USCS) v5.01
+REM SupportCALL - Ultimate Secure Clean Script (SC-USCS) v5.37
 REM Professional Windows Remediation Engine (SC-UWIRE)
 REM Generated: ${new Date().toLocaleString()}
 REM Functions Selected: ${selectedFunctionData.length} of ${functions.length}
@@ -1680,7 +1680,7 @@ REM Functions Selected: ${selectedFunctionData.length} of ${functions.length}
 REM =============================================================================
 
 setlocal EnableDelayedExpansion
-title SupportCALL - SC-USCS v5.01 - Professional Edition
+title SupportCALL - SC-USCS v5.37 - Professional Edition
 
 REM Check for Administrator privileges
 net session >nul 2>&1
@@ -1701,7 +1701,7 @@ mkdir "%LOGPATH%" 2>nul
 mkdir "%TOOLSPATH%" 2>nul
 
 echo =============================================================================
-echo  SupportCALL - Ultimate Secure Clean Script v5.01
+echo  SupportCALL - Ultimate Secure Clean Script v5.37
 echo  Professional Windows Remediation Engine
 echo =============================================================================
 echo.
@@ -1969,12 +1969,12 @@ echo.
 echo === INITIALIZING REPORTING SYSTEM ===
 echo Creating execution timeline tracking...
 echo === EXECUTION TIMELINE === > "%LOGPATH%\\\\execution-timeline.log"
-echo Script: SC-USCS v5.01 >> "%LOGPATH%\\\\execution-timeline.log"
+echo Script: SC-USCS v5.37 >> "%LOGPATH%\\\\execution-timeline.log"
 echo Start Time: %STARTTIME% >> "%LOGPATH%\\\\execution-timeline.log"
 echo Selected Functions: ${selectedFunctionData.length} >> "%LOGPATH%\\\\execution-timeline.log"
 echo. >> "%LOGPATH%\\\\execution-timeline.log"
 echo === PROGRESS SUMMARY === > "%LOGPATH%\\\\progress-summary.txt"
-echo SC-USCS v5.01 - Execution Progress Tracker >> "%LOGPATH%\\\\progress-summary.txt"
+echo SC-USCS v5.37 - Execution Progress Tracker >> "%LOGPATH%\\\\progress-summary.txt"
 echo Start Time: %STARTTIME% >> "%LOGPATH%\\\\progress-summary.txt"
 echo Total Functions: ${selectedFunctionData.length} >> "%LOGPATH%\\\\progress-summary.txt"
 echo. >> "%LOGPATH%\\\\progress-summary.txt"
@@ -2013,8 +2013,8 @@ net start "swprv"
 vssadmin resize shadowstorage /for=C: /on=C: /maxsize=10%%
 
 REM Create mandatory restore point with error checking
-echo Creating System Restore Point: SC-USCS-Pre-Run-v5.01...
-powershell -Command "$result = Checkpoint-Computer -Description 'SC-USCS-Pre-Run-v5.01' -RestorePointType 'MODIFY_SETTINGS' -Verbose; if ($result -eq $null) { Write-Host 'SUCCESS: System Restore Point Created' -ForegroundColor Green } else { Write-Host 'WARNING: Restore Point Creation Status Unknown' -ForegroundColor Yellow }"
+echo Creating System Restore Point: SC-USCS-Pre-Run-v5.37...
+powershell -Command "$result = Checkpoint-Computer -Description 'SC-USCS-Pre-Run-v5.37' -RestorePointType 'MODIFY_SETTINGS' -Verbose; if ($result -eq $null) { Write-Host 'SUCCESS: System Restore Point Created' -ForegroundColor Green } else { Write-Host 'WARNING: Restore Point Creation Status Unknown' -ForegroundColor Yellow }"
 
 REM Verify restore point was created
 echo Verifying restore point creation...
@@ -2058,10 +2058,10 @@ echo ✓ Progress Summary: %LOGPATH%\\\\progress-summary.txt
 echo ✓ Consolidated Findings: %LOGPATH%\\\\CONSOLIDATED_FINDINGS.txt
 echo ✓ Individual Function Logs: %LOGPATH%\\\\*.log
 ${selectedFunctionData.some(f => f.id === 'system-report' || f.id === 'email-report') ? `
-echo ✓ Pre-Final Report: %LOGPATH%\\\\SC-USCS-v5.01-PreFinalScans-*.txt
-echo ✓ Pre-Final HTML Report: %LOGPATH%\\\\SC-USCS-v5.01-PreFinalScans-*.html
-echo ✓ Final Complete Report: %LOGPATH%\\\\SC-USCS-v5.01-FinalComplete-*.txt
-echo ✓ Final Complete HTML Report: %LOGPATH%\\\\SC-USCS-v5.01-FinalComplete-*.html
+echo ✓ Pre-Final Report: %LOGPATH%\\\\SC-USCS-v5.37-PreFinalScans-*.txt
+echo ✓ Pre-Final HTML Report: %LOGPATH%\\\\SC-USCS-v5.37-PreFinalScans-*.html
+echo ✓ Final Complete Report: %LOGPATH%\\\\SC-USCS-v5.37-FinalComplete-*.txt
+echo ✓ Final Complete HTML Report: %LOGPATH%\\\\SC-USCS-v5.37-FinalComplete-*.html
 ` : ''}
 echo.
 echo ALL OPERATIONS LOGGED TO: %LOGPATH%
@@ -2111,7 +2111,7 @@ exit /b 0`;
                 Ultimate Secure Clean Script
               </div>
               <div className="text-xl md:text-2xl font-semibold text-primary">
-                v5.01 - Professional Edition
+                v5.37 - Professional Edition
               </div>
             </div>
             
@@ -2121,7 +2121,7 @@ exit /b 0`;
             </CardDescription>
             
             <div className="flex justify-center gap-3 md:gap-4 flex-wrap pt-4">
-              <Badge variant="default" className="px-4 py-2 text-base font-bold">SC-USCS v5.01</Badge>
+              <Badge variant="default" className="px-4 py-2 text-base font-bold">SC-USCS v5.37</Badge>
               <Badge variant="secondary" className="px-4 py-2 text-base font-bold">Safety: 98%</Badge>
               <Badge variant="outline" className="px-4 py-2 text-base font-bold border-2">Effectiveness: 95%</Badge>
               <Badge variant="outline" className="px-4 py-2 text-base font-bold border-2">Win 10/11 Compatible</Badge>
