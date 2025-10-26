@@ -585,6 +585,7 @@ echo START TIME: %STARTTIME%
 echo.
 echo *** READ-ONLY ASSESSMENT MODE ***
 echo This script will perform comprehensive security assessment including:
+echo  - System Restore Point creation (precautionary safety measure)
 echo  - Malware detection scan (REPORT ONLY - No removal or cleaning)
 echo  - Network security analysis (No changes)
 echo  - SIEM-style event log collection (Read-only)
@@ -593,16 +594,34 @@ echo  - Vulnerability assessment (Read-only)
 echo  - Comprehensive HTML/TXT reporting
 echo  - Automatic email delivery of reports
 echo.
-echo IMPORTANT: NO changes will be made to your system
-echo           This is assessment and reporting ONLY
+echo IMPORTANT: A restore point will be created as a precaution,
+echo           but NO other changes will be made to your system.
+echo           All assessment operations are READ-ONLY.
 echo.
 pause
 
 REM =============================================================================
-REM STAGE 1: DOWNLOAD READ-ONLY ANALYSIS TOOLS
+REM STAGE 1: SYSTEM RESTORE POINT
 REM =============================================================================
 echo.
-echo [Stage 1] Downloading Read-Only Assessment Tools...
+echo [Stage 1] Creating System Restore Point...
+echo.
+powershell -Command "Enable-ComputerRestore -Drive 'C:\\\\'"
+sc config "VSS" start= auto
+net start "VSS"
+sc config "swprv" start= auto
+net start "swprv"
+vssadmin resize shadowstorage /for=C: /on=C: /maxsize=10%%
+echo Creating restore point: SC-WDOT-Security-Assessment-v5.73...
+powershell -Command "Checkpoint-Computer -Description 'SC-WDOT-Security-Assessment-v5.73' -RestorePointType 'MODIFY_SETTINGS'"
+echo Restore point created successfully.
+echo.
+
+REM =============================================================================
+REM STAGE 2: DOWNLOAD READ-ONLY ANALYSIS TOOLS
+REM =============================================================================
+echo.
+echo [Stage 2] Downloading Read-Only Assessment Tools...
 echo NOTE: Only downloading tools for system analysis, not removal/cleaning
 echo.
 
@@ -615,10 +634,10 @@ echo Assessment tools ready.
 echo.
 
 REM =============================================================================
-REM STAGE 2: WINDOWS DEFENDER THREAT DETECTION (REPORT ONLY)
+REM STAGE 3: WINDOWS DEFENDER THREAT DETECTION (REPORT ONLY)
 REM =============================================================================
 echo.
-echo [Stage 2] Windows Defender Threat Detection (Report Only - No Removal)...
+echo [Stage 3] Windows Defender Threat Detection (Report Only - No Removal)...
 echo This may take 30-60 minutes depending on system size.
 echo.
 echo Updating Defender signatures...
@@ -636,10 +655,10 @@ echo Defender assessment complete (no removal performed).
 echo.
 
 REM =============================================================================
-REM STAGE 3: SYSTEM PROCESS AND STARTUP ANALYSIS
+REM STAGE 4: SYSTEM PROCESS AND STARTUP ANALYSIS
 REM =============================================================================
 echo.
-echo [Stage 3] System Process and Startup Analysis (Read-Only)...
+echo [Stage 4] System Process and Startup Analysis (Read-Only)...
 echo.
 
 echo Analyzing running processes...
@@ -660,10 +679,10 @@ echo System analysis complete (read-only).
 echo.
 
 REM =============================================================================
-REM STAGE 4: NETWORK SECURITY ANALYSIS (READ-ONLY)
+REM STAGE 5: NETWORK SECURITY ANALYSIS (READ-ONLY)
 REM =============================================================================
 echo.
-echo [Stage 4] Network Security Analysis (Read-Only)...
+echo [Stage 5] Network Security Analysis (Read-Only)...
 echo.
 
 echo Collecting network configuration...
@@ -685,10 +704,10 @@ echo Network analysis complete (read-only).
 echo.
 
 REM =============================================================================
-REM STAGE 5: SIEM-STYLE EVENT LOG COLLECTION (READ-ONLY)
+REM STAGE 6: SIEM-STYLE EVENT LOG COLLECTION (READ-ONLY)
 REM =============================================================================
 echo.
-echo [Stage 5] SIEM Event Log Collection (Read-Only)...
+echo [Stage 6] SIEM Event Log Collection (Read-Only)...
 echo.
 
 echo Collecting Security event logs...
@@ -707,10 +726,10 @@ echo Event log collection complete (read-only).
 echo.
 
 REM =============================================================================
-REM STAGE 6: SECURITY CONFIGURATION AUDIT (READ-ONLY)
+REM STAGE 7: SECURITY CONFIGURATION AUDIT (READ-ONLY)
 REM =============================================================================
 echo.
-echo [Stage 6] Security Configuration Audit (Read-Only)...
+echo [Stage 7] Security Configuration Audit (Read-Only)...
 echo.
 
 echo Auditing user accounts...
@@ -738,10 +757,10 @@ echo Security configuration audit complete (read-only).
 echo.
 
 REM =============================================================================
-REM STAGE 7: VULNERABILITY ASSESSMENT (READ-ONLY)
+REM STAGE 8: VULNERABILITY ASSESSMENT (READ-ONLY)
 REM =============================================================================
 echo.
-echo [Stage 7] Vulnerability Assessment (Read-Only)...
+echo [Stage 8] Vulnerability Assessment (Read-Only)...
 echo.
 
 echo Checking for missing Windows updates...
@@ -757,10 +776,10 @@ echo Vulnerability assessment complete (read-only).
 echo.
 
 REM =============================================================================
-REM STAGE 8: SYSTEM INFORMATION COLLECTION (READ-ONLY)
+REM STAGE 9: SYSTEM INFORMATION COLLECTION (READ-ONLY)
 REM =============================================================================
 echo.
-echo [Stage 8] System Information Collection (Read-Only)...
+echo [Stage 9] System Information Collection (Read-Only)...
 echo.
 
 systeminfo > "%LOGPATH%\\\\systeminfo.txt" 2>&1
@@ -775,10 +794,10 @@ echo System information collection complete (read-only).
 echo.
 
 REM =============================================================================
-REM STAGE 9: GENERATE REPORTS
+REM STAGE 10: GENERATE REPORTS
 REM =============================================================================
 echo.
-echo [Stage 9] Generating Comprehensive Reports...
+echo [Stage 10] Generating Comprehensive Reports...
 echo.
 
 set "TIMESTAMP=%DATE:/=-%_%TIME::=-%"
