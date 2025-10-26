@@ -6,50 +6,50 @@
 
 @layer base {
   :root {
-    /* Core brand colors - Professional tech theme */
-    --background: 210 11% 15%;
+    /* Core brand colors - SupportCALL inspired dark theme */
+    --background: 220 20% 8%;
     --foreground: 210 40% 98%;
 
-    --card: 210 13% 18%;
+    --card: 220 18% 12%;
     --card-foreground: 210 40% 98%;
 
-    --popover: 210 13% 18%;
+    --popover: 220 18% 12%;
     --popover-foreground: 210 40% 98%;
 
-    /* Primary - Clean blue for technical tools */
-    --primary: 200 100% 60%;
-    --primary-foreground: 210 11% 15%;
-    --primary-glow: 200 100% 75%;
+    /* Primary - Cyan accent matching SupportCALL */
+    --primary: 187 100% 42%;
+    --primary-foreground: 220 20% 8%;
+    --primary-glow: 187 100% 55%;
 
     /* Secondary - Muted professional */
-    --secondary: 210 13% 25%;
+    --secondary: 220 18% 18%;
     --secondary-foreground: 210 40% 98%;
 
-    --muted: 210 13% 22%;
+    --muted: 220 15% 16%;
     --muted-foreground: 210 20% 70%;
 
-    /* Accent - Green for safety indicators */
-    --accent: 150 70% 55%;
-    --accent-foreground: 210 11% 15%;
+    /* Accent - Cyan for interactive elements */
+    --accent: 187 100% 42%;
+    --accent-foreground: 220 20% 8%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 210 13% 25%;
-    --input: 210 13% 22%;
-    --ring: 200 100% 60%;
+    --border: 220 15% 20%;
+    --input: 220 15% 16%;
+    --ring: 187 100% 42%;
 
     --radius: 0.5rem;
 
-    /* Professional gradients for SC-UWIRE */
+    /* Professional gradients with cyan accents */
     --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
-    --gradient-hero: linear-gradient(135deg, hsl(var(--background)) 0%, hsl(210 13% 18%) 100%);
-    --gradient-card: linear-gradient(145deg, hsl(var(--card)), hsl(210 13% 20%));
+    --gradient-hero: linear-gradient(135deg, hsl(var(--background)) 0%, hsl(220 18% 12%) 100%);
+    --gradient-card: linear-gradient(145deg, hsl(var(--card)), hsl(220 15% 14%));
 
-    /* Professional shadows */
-    --shadow-elegant: 0 10px 30px -10px hsl(var(--primary) / 0.2);
-    --shadow-glow: 0 0 40px hsl(var(--primary-glow) / 0.15);
-    --shadow-card: 0 4px 20px -4px hsl(0 0% 0% / 0.3);
+    /* Cyan-accented shadows */
+    --shadow-elegant: 0 10px 30px -10px hsl(var(--primary) / 0.3);
+    --shadow-glow: 0 0 40px hsl(var(--primary-glow) / 0.2);
+    --shadow-card: 0 4px 20px -4px hsl(0 0% 0% / 0.4);
 
     /* Smooth animations */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);

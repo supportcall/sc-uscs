@@ -465,7 +465,7 @@ const ScriptGenerator = () => {
       selectionType = "Recommended";
     }
     
-    a.download = `SC-USCS-v3.13-${selectionType}-Functions.bat`;
+    a.download = `SC-USCS-v5.01-${selectionType}-Functions.bat`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -473,7 +473,7 @@ const ScriptGenerator = () => {
     
     toast({
       title: "Script Downloaded",
-      description: `SC-USCS-v3.13-${selectionType}-Functions.bat has been downloaded to your device.`,
+      description: `SC-USCS-v5.01-${selectionType}-Functions.bat has been downloaded to your device.`,
     });
   };
 
@@ -950,7 +950,7 @@ echo.`;
           return `echo [${stageNum}.${funcNum}] COMPREHENSIVE SYSTEM REPORT - Complete system analysis
 echo *** Generating comprehensive system reports ***
 echo === CONSOLIDATED FINDINGS REPORT === > "%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt"
-echo Script Version: SC-USCS v3.13 >> "%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt"
+echo Script Version: SC-USCS v5.01 >> "%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt"
 echo Execution Date: %DATE% %TIME% >> "%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt"
 echo Functions Executed: ${selectedFunctionData.length} of ${functions.length} >> "%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt"
 echo. >> "%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt"
@@ -1021,7 +1021,7 @@ powershell -ExecutionPolicy Bypass -Command "$ErrorActionPreference='Continue'; 
     <div class='container'>
         <div class='header'>
             <h1>🛡️ SC-USCS System Report</h1>
-            <p>Windows Remediation & Security Scan v3.13</p>
+            <p>Windows Remediation & Security Scan v5.01</p>
         </div>
         <div class='content'>
             <div class='status-box'>
@@ -1134,9 +1134,9 @@ echo [REPORT] Generating comprehensive system report - This may take 2-5 minutes
 echo *** Creating consolidated findings report ***
 set "REPORT_TIMESTAMP=%DATE:~10,4%%DATE:~4,2%%DATE:~7,2%-%TIME:~0,2%%TIME:~3,2%%TIME:~6,2%"
 set "REPORT_TIMESTAMP=%REPORT_TIMESTAMP: =0%"
-set "PRE_REPORT_NAME=SC-USCS-v3.13-PreFinalScans-%REPORT_TIMESTAMP%.txt"
+set "PRE_REPORT_NAME=SC-USCS-v5.01-PreFinalScans-%REPORT_TIMESTAMP%.txt"
 echo === CONSOLIDATED FINDINGS REPORT (PRE-FINAL-SCANS) === > "%LOGPATH%\\%PRE_REPORT_NAME%"
-echo Script Version: SC-USCS v3.13 >> "%LOGPATH%\\%PRE_REPORT_NAME%"
+echo Script Version: SC-USCS v5.01 >> "%LOGPATH%\\%PRE_REPORT_NAME%"
 echo Report Type: Pre-Final-Scans (Before Defender Full Scan ^& CHKDSK) >> "%LOGPATH%\\%PRE_REPORT_NAME%"
 echo Execution Date: %DATE% %TIME% >> "%LOGPATH%\\%PRE_REPORT_NAME%"
 echo Functions Executed: ${regularFunctions.length} of ${selectedFunctionData.length} >> "%LOGPATH%\\%PRE_REPORT_NAME%"
@@ -1197,7 +1197,7 @@ echo. >> "%LOGPATH%\\%PRE_REPORT_NAME%"
 echo.
 echo *** HTML VERSION OF REPORT ***
 echo Creating formatted HTML report for easy viewing...
-set "PRE_REPORT_HTML=SC-USCS-v3.13-PreFinalScans-%REPORT_TIMESTAMP%.html"
+set "PRE_REPORT_HTML=SC-USCS-v5.01-PreFinalScans-%REPORT_TIMESTAMP%.html"
 powershell -Command "$reportPath = '%LOGPATH%\\%PRE_REPORT_HTML%'; $html = @'
 <!DOCTYPE html>
 <html>
@@ -1221,7 +1221,7 @@ powershell -Command "$reportPath = '%LOGPATH%\\%PRE_REPORT_HTML%'; $html = @'
     <div class=\"container\">
         <h1>🛡️ SC-USCS System Report (Pre-Final-Scans)</h1>
         <div class=\"info-box\">
-            <p><strong>Script Version:</strong> SC-USCS v3.13</p>
+            <p><strong>Script Version:</strong> SC-USCS v5.01</p>
             <p><strong>Report Type:</strong> Pre-Final-Scans Checkpoint</p>
             <p class=\"timestamp\"><strong>Generated:</strong> '+ (Get-Date -Format 'dddd, MMMM dd, yyyy - HH:mm:ss') +'</p>
             <p><strong>Status:</strong> <span class=\"status status-complete\">Completed ${regularFunctions.length} of ${selectedFunctionData.length} Operations</span></p>
@@ -1301,9 +1301,9 @@ echo.
 echo [FINAL-REPORT] Generating updated comprehensive report...
 set "FINAL_REPORT_TIMESTAMP=%DATE:~10,4%%DATE:~4,2%%DATE:~7,2%-%TIME:~0,2%%TIME:~3,2%%TIME:~6,2%"
 set "FINAL_REPORT_TIMESTAMP=%FINAL_REPORT_TIMESTAMP: =0%"
-set "FINAL_REPORT_NAME=SC-USCS-v3.13-FinalComplete-%FINAL_REPORT_TIMESTAMP%.txt"
+set "FINAL_REPORT_NAME=SC-USCS-v5.01-FinalComplete-%FINAL_REPORT_TIMESTAMP%.txt"
 echo === FINAL CONSOLIDATED FINDINGS REPORT === > "%LOGPATH%\\%FINAL_REPORT_NAME%"
-echo Script Version: SC-USCS v3.13 >> "%LOGPATH%\\%FINAL_REPORT_NAME%"
+echo Script Version: SC-USCS v5.01 >> "%LOGPATH%\\%FINAL_REPORT_NAME%"
 echo Report Type: Final Complete Report (All Operations) >> "%LOGPATH%\\%FINAL_REPORT_NAME%"
 echo Execution Date: %DATE% %TIME% >> "%LOGPATH%\\%FINAL_REPORT_NAME%"
 echo Functions Executed: ${selectedFunctionData.length} of ${functions.length} >> "%LOGPATH%\\%FINAL_REPORT_NAME%"
@@ -1337,7 +1337,7 @@ echo For support, email all files to: scmyhelp@gmail.com and alerts@supportcall.
 echo. >> "%LOGPATH%\\%FINAL_REPORT_NAME%"
 
 echo *** Creating final HTML report ***
-set "FINAL_REPORT_HTML=SC-USCS-v3.13-FinalComplete-%FINAL_REPORT_TIMESTAMP%.html"
+set "FINAL_REPORT_HTML=SC-USCS-v5.01-FinalComplete-%FINAL_REPORT_TIMESTAMP%.html"
 powershell -Command "$reportPath = '%LOGPATH%\\%FINAL_REPORT_HTML%'; $threats = Get-MpThreatDetection; $threatStatus = if ($threats) { '<span style=\"color: #d32f2f; font-weight: bold;\">⚠ THREATS DETECTED</span>' } else { '<span style=\"color: #388e3c; font-weight: bold;\">✓ System Clean</span>' }; $threatList = if ($threats) { ($threats | ForEach-Object { '<li style=\"color: #d32f2f; margin: 5px 0;\">' + $_.ThreatName + ' - ' + $_.Resources + '</li>' }) -join '' } else { '<li style=\"color: #388e3c;\">No threats detected</li>' }; $html = @'
 <!DOCTYPE html>
 <html>
@@ -1360,7 +1360,7 @@ powershell -Command "$reportPath = '%LOGPATH%\\%FINAL_REPORT_HTML%'; $threats = 
     <div class=\"container\">
         <h1>🛡️ SC-USCS Final Complete System Report</h1>
         <div class=\"info-box\">
-            <p><strong>Script Version:</strong> SC-USCS v3.13</p>
+            <p><strong>Script Version:</strong> SC-USCS v5.01</p>
             <p><strong>Report Type:</strong> Final Complete Report</p>
             <p><strong>Generated:</strong> '+ (Get-Date -Format 'dddd, MMMM dd, yyyy - HH:mm:ss') +'</p>
             <p><strong>Status:</strong> <span class=\"status status-complete\">✓ All ${selectedFunctionData.length} Operations Completed</span></p>
@@ -1397,7 +1397,7 @@ echo.
     
     return `@echo off
 REM =============================================================================
-REM SupportCALL - Ultimate Secure Clean Script (SC-USCS) v3.13
+REM SupportCALL - Ultimate Secure Clean Script (SC-USCS) v5.01
 REM Professional Windows Remediation Engine (SC-UWIRE)
 REM Generated: ${new Date().toLocaleString()}
 REM Functions Selected: ${selectedFunctionData.length} of ${functions.length}
@@ -1405,7 +1405,7 @@ REM Functions Selected: ${selectedFunctionData.length} of ${functions.length}
 REM =============================================================================
 
 setlocal EnableDelayedExpansion
-title SupportCALL - SC-USCS v3.13 - Professional Edition
+title SupportCALL - SC-USCS v5.01 - Professional Edition
 
 REM Check for Administrator privileges
 net session >nul 2>&1
@@ -1426,7 +1426,7 @@ mkdir "%LOGPATH%" 2>nul
 mkdir "%TOOLSPATH%" 2>nul
 
 echo =============================================================================
-echo  SupportCALL - Ultimate Secure Clean Script v3.13
+echo  SupportCALL - Ultimate Secure Clean Script v5.01
 echo  Professional Windows Remediation Engine
 echo =============================================================================
 echo.
@@ -1723,8 +1723,8 @@ net start "swprv"
 vssadmin resize shadowstorage /for=C: /on=C: /maxsize=10%%
 
 REM Create mandatory restore point with error checking
-echo Creating System Restore Point: SC-USCS-Pre-Run-v3.13...
-powershell -Command "$result = Checkpoint-Computer -Description 'SC-USCS-Pre-Run-v3.13' -RestorePointType 'MODIFY_SETTINGS' -Verbose; if ($result -eq $null) { Write-Host 'SUCCESS: System Restore Point Created' -ForegroundColor Green } else { Write-Host 'WARNING: Restore Point Creation Status Unknown' -ForegroundColor Yellow }"
+echo Creating System Restore Point: SC-USCS-Pre-Run-v5.01...
+powershell -Command "$result = Checkpoint-Computer -Description 'SC-USCS-Pre-Run-v5.01' -RestorePointType 'MODIFY_SETTINGS' -Verbose; if ($result -eq $null) { Write-Host 'SUCCESS: System Restore Point Created' -ForegroundColor Green } else { Write-Host 'WARNING: Restore Point Creation Status Unknown' -ForegroundColor Yellow }"
 
 REM Verify restore point was created
 echo Verifying restore point creation...
@@ -1753,9 +1753,9 @@ echo Log Location: %LOGPATH%
 echo Functions Executed: ${selectedFunctionData.length}
 echo.
 echo ALL OPERATIONS LOGGED TO: %LOGPATH%
-echo REPORTS: Check %LOGPATH% for SC-USCS-v3.13-*.txt and *.html files
-echo PRE-FINAL REPORT: SC-USCS-v3.13-PreFinalScans-[timestamp].txt
-echo FINAL REPORT: SC-USCS-v3.13-FinalComplete-[timestamp].txt
+echo REPORTS: Check %LOGPATH% for SC-USCS-v5.01-*.txt and *.html files
+echo PRE-FINAL REPORT: SC-USCS-v5.01-PreFinalScans-[timestamp].txt
+echo FINAL REPORT: SC-USCS-v5.01-FinalComplete-[timestamp].txt
 echo.
 echo For support, send all files from %LOGPATH% to:
 echo - scmyhelp@gmail.com
@@ -1799,14 +1799,14 @@ exit /b 0`;
                 SupportCALL - Ultimate Secure Clean Script
               </h1>
               <div className="text-lg md:text-xl font-semibold text-muted-foreground">
-                v3.13 - Professional Edition
+                v5.01 - Professional Edition - Better Than CTT WinUtil
               </div>
             </div>
             <CardDescription className="text-base md:text-lg max-w-3xl mx-auto leading-relaxed">
               Professional Custom Script Generator for Windows System Cleaning, Security Enhancement & Optimization - Tailored PowerShell Solutions for Windows 10/11
             </CardDescription>
             <div className="flex justify-center gap-2 md:gap-4 flex-wrap">
-              <Badge variant="default" className="px-3 py-1 text-sm">SC-USCS v3.13</Badge>
+              <Badge variant="default" className="px-3 py-1 text-sm">SC-USCS v5.01</Badge>
               <Badge variant="secondary" className="px-3 py-1 text-sm">Safety: 98%</Badge>
               <Badge variant="outline" className="px-3 py-1 text-sm">Effectiveness: 95%</Badge>
               <Badge variant="outline" className="px-3 py-1 text-sm">Win 10/11 Compatible</Badge>
@@ -1814,6 +1814,95 @@ exit /b 0`;
           </CardHeader>
         </Card>
         </header>
+
+        {/* CTT WinUtil Alternative Section */}
+        <section aria-labelledby="ctt-alternative" className="mb-8">
+          <Card className="border-2 border-primary shadow-glow bg-gradient-to-br from-card to-secondary/10">
+            <CardHeader className="text-center pb-6">
+              <h2 id="ctt-alternative" className="text-2xl md:text-3xl font-black bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent mb-2">
+                The Ultimate CTT WinUtil Alternative
+              </h2>
+              <CardDescription className="text-base">
+                Why SC-USCS v5.01 is Better Than Chris Titus Tech's WinUtil
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                {/* Core Philosophy */}
+                <div className="p-5 bg-gradient-card rounded-lg border border-primary/20 hover:border-primary/40 transition-colors">
+                  <div className="text-primary text-2xl mb-3">🎯</div>
+                  <h3 className="font-bold text-lg mb-2 text-foreground">Built-In Tools Only</h3>
+                  <p className="text-sm text-muted-foreground">
+                    100% native Windows utilities - no dependencies, no third-party downloads, no trust issues. 
+                    Every function uses Microsoft's built-in tools.
+                  </p>
+                </div>
+
+                {/* Safety First */}
+                <div className="p-5 bg-gradient-card rounded-lg border border-primary/20 hover:border-primary/40 transition-colors">
+                  <div className="text-primary text-2xl mb-3">🛡️</div>
+                  <h3 className="font-bold text-lg mb-2 text-foreground">Transparent & Safe</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Full visibility into every command. No hidden operations, no registry hacks without disclosure. 
+                    Automatic system restore points before any changes.
+                  </p>
+                </div>
+
+                {/* Professional Grade */}
+                <div className="p-5 bg-gradient-card rounded-lg border border-primary/20 hover:border-primary/40 transition-colors">
+                  <div className="text-primary text-2xl mb-3">⚙️</div>
+                  <h3 className="font-bold text-lg mb-2 text-foreground">Enterprise Ready</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Professional-grade batch scripts with comprehensive logging, error handling, and detailed HTML reports. 
+                    Perfect for IT professionals.
+                  </p>
+                </div>
+
+                {/* Open Source */}
+                <div className="p-5 bg-gradient-card rounded-lg border border-primary/20 hover:border-primary/40 transition-colors">
+                  <div className="text-primary text-2xl mb-3">📖</div>
+                  <h3 className="font-bold text-lg mb-2 text-foreground">Truly Open Source</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Completely free and open. Inspect every line of code before running. No proprietary PowerShell modules 
+                    or obfuscated functions.
+                  </p>
+                </div>
+
+                {/* No GUI Bloat */}
+                <div className="p-5 bg-gradient-card rounded-lg border border-primary/20 hover:border-primary/40 transition-colors">
+                  <div className="text-primary text-2xl mb-3">⚡</div>
+                  <h3 className="font-bold text-lg mb-2 text-foreground">Lightweight & Fast</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Pure batch scripts - no GUI overhead, instant execution. Generate exactly what you need, nothing more. 
+                    Perfect for automation.
+                  </p>
+                </div>
+
+                {/* Customizable */}
+                <div className="p-5 bg-gradient-card rounded-lg border border-primary/20 hover:border-primary/40 transition-colors">
+                  <div className="text-primary text-2xl mb-3">🎨</div>
+                  <h3 className="font-bold text-lg mb-2 text-foreground">Fully Customizable</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Cherry-pick exactly the functions you need. No forced bundles, no unnecessary operations. 
+                    Your system, your choices.
+                  </p>
+                </div>
+              </div>
+
+              {/* Comparison Highlight */}
+              <div className="mt-6 p-4 bg-primary/5 border-l-4 border-primary rounded-r-lg">
+                <p className="text-sm font-semibold text-foreground mb-2">
+                  🔍 Key Difference from CTT WinUtil:
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  While CTT WinUtil is a comprehensive GUI tool with broad functionality, SC-USCS focuses on <strong>safe, 
+                  transparent, built-in Windows remediation</strong>. No external dependencies, no trust required—just 
+                  Microsoft's own tools orchestrated intelligently. Perfect for IT professionals who need reliability over features.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        </section>
 
         <main role="main">
 
