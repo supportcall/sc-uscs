@@ -2128,13 +2128,34 @@ exit /b 0`;
         <Card className="mb-8 shadow-lg">
           <CardContent className="pt-6">
             <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4 mb-4">
-              <Button onClick={handleSelectAll} size="lg" className="flex-1 sm:flex-none">
+              <Button 
+                onClick={handleSelectAll} 
+                variant={selectedFunctions.length === functions.length ? "default" : "outline"}
+                size="lg" 
+                className="flex-1 sm:flex-none"
+              >
                 Select All Functions
               </Button>
-              <Button onClick={handleClearAll} variant="outline" size="lg" className="flex-1 sm:flex-none">
+              <Button 
+                onClick={handleClearAll} 
+                variant={selectedFunctions.length === 0 ? "default" : "outline"}
+                size="lg" 
+                className="flex-1 sm:flex-none"
+              >
                 Clear All Selections
               </Button>
-              <Button onClick={handleSelectRecommended} variant="secondary" size="lg" className="flex-1 sm:flex-none">
+              <Button 
+                onClick={handleSelectRecommended} 
+                variant={
+                  selectedFunctions.length > 0 &&
+                  functions.filter(f => f.recommendation === "Recommended").length === selectedFunctions.length &&
+                  functions.filter(f => f.recommendation === "Recommended").every(f => selectedFunctions.includes(f.id))
+                    ? "default"
+                    : "outline"
+                }
+                size="lg" 
+                className="flex-1 sm:flex-none"
+              >
                 Recommended Only
               </Button>
               <Button 
@@ -2142,7 +2163,9 @@ exit /b 0`;
                 variant={
                   functions
                     .filter(f => f.category === "Windows Debloat & Privacy")
-                    .every(f => selectedFunctions.includes(f.id))
+                    .every(f => selectedFunctions.includes(f.id)) &&
+                  functions.filter(f => f.category === "Windows Debloat & Privacy").length > 0 &&
+                  selectedFunctions.some(id => functions.find(f => f.id === id)?.category === "Windows Debloat & Privacy")
                     ? "default"
                     : "outline"
                 }
@@ -2151,7 +2174,9 @@ exit /b 0`;
               >
                 {functions
                   .filter(f => f.category === "Windows Debloat & Privacy")
-                  .every(f => selectedFunctions.includes(f.id))
+                  .every(f => selectedFunctions.includes(f.id)) &&
+                  functions.filter(f => f.category === "Windows Debloat & Privacy").length > 0 &&
+                  selectedFunctions.some(id => functions.find(f => f.id === id)?.category === "Windows Debloat & Privacy")
                   ? "Deselect"
                   : "Select"} Debloat Functions
               </Button>
