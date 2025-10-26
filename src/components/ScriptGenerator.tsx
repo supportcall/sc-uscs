@@ -626,7 +626,7 @@ echo NOTE: Only downloading tools for system analysis, not removal/cleaning
 echo.
 
 echo Downloading Sysinternals Suite for system analysis...
-powershell -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; try { Invoke-WebRequest -Uri 'https://live.sysinternals.com/autoruns.exe' -OutFile '%TOOLSPATH%\\\\autoruns.exe' -UseBasicParsing -ErrorAction Stop } catch { Write-Host 'Download skipped, will use built-in tools only' }" 2>nul
+powershell -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; try { Invoke-WebRequest -Uri 'https://live.sysinternals.com/autorunsc.exe' -OutFile '%TOOLSPATH%\\\\autorunsc.exe' -UseBasicParsing -ErrorAction Stop } catch { Write-Host 'Download skipped, will use built-in tools only' }" 2>nul
 powershell -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; try { Invoke-WebRequest -Uri 'https://live.sysinternals.com/procexp.exe' -OutFile '%TOOLSPATH%\\\\procexp.exe' -UseBasicParsing -ErrorAction Stop } catch { Write-Host 'Download skipped, will use built-in tools only' }" 2>nul
 powershell -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; try { Invoke-WebRequest -Uri 'https://live.sysinternals.com/tcpview.exe' -OutFile '%TOOLSPATH%\\\\tcpview.exe' -UseBasicParsing -ErrorAction Stop } catch { Write-Host 'Download skipped, will use built-in tools only' }" 2>nul
 
@@ -740,8 +740,8 @@ echo Checking UAC settings...
 reg query "HKLM\\\\SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Policies\\\\System" /v EnableLUA > "%LOGPATH%\\\\uac-settings.txt" 2>&1
 
 echo Auditing startup programs...
-if exist "%TOOLSPATH%\\\\autoruns.exe" (
-    "%TOOLSPATH%\\\\autoruns.exe" -accepteula -a * -c -h -s > "%LOGPATH%\\\\autoruns.csv" 2>&1
+if exist "%TOOLSPATH%\\\\autorunsc.exe" (
+    "%TOOLSPATH%\\\\autorunsc.exe" -accepteula -a * -c -h -s > "%LOGPATH%\\\\autoruns.csv" 2>&1
 )
 
 echo Checking Windows Update status...
