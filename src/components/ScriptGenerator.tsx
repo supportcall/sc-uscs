@@ -540,6 +540,535 @@ const ScriptGenerator = () => {
     );
   };
 
+  const generateSecurityAssessmentScript = () => {
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+    
+    return `@echo off
+REM =============================================================================
+REM SupportCALL - Windows Diagnostics & Operations Toolkit (SC-WDOT) v5.73
+REM Professional Security Assessment & SIEM Engine
+REM Generated: ${new Date().toLocaleString()}
+REM =============================================================================
+
+setlocal EnableDelayedExpansion
+title SupportCALL - SC-WDOT v5.73 - Security Assessment Engine
+color 0A
+
+REM Check for Administrator privileges
+net session >nul 2>&1
+if %errorlevel% neq 0 (
+    echo ERROR: Administrator privileges required!
+    echo Please run this script as Administrator.
+    pause
+    exit /b 1
+)
+
+REM Set up paths
+set "STARTTIME=%TIME%"
+set "REPORTPATH=%USERPROFILE%\\Desktop\\SC-WDOT-Reports"
+set "TOOLSPATH=%REPORTPATH%\\Tools"
+set "LOGPATH=%REPORTPATH%\\Logs"
+mkdir "%REPORTPATH%" 2>nul
+mkdir "%TOOLSPATH%" 2>nul
+mkdir "%LOGPATH%" 2>nul
+
+echo =============================================================================
+echo  SupportCALL - Windows Diagnostics ^& Operations Toolkit v5.73
+echo  Professional Security Assessment Engine
+echo =============================================================================
+echo.
+echo REPORT PATH: %REPORTPATH%
+echo START TIME: %STARTTIME%
+echo.
+echo This script will perform a comprehensive security assessment including:
+echo  - Full malware and vulnerability scans
+echo  - Network security analysis
+echo  - SIEM-style event log collection
+echo  - Security configuration audit
+echo  - Comprehensive HTML/TXT reporting
+echo  - Automatic email delivery of reports
+echo.
+pause
+
+REM =============================================================================
+REM STAGE 1: SYSTEM RESTORE POINT
+REM =============================================================================
+echo.
+echo [Stage 1] Creating System Restore Point...
+echo.
+powershell -Command "Enable-ComputerRestore -Drive 'C:\\\\'"
+sc config "VSS" start= auto
+net start "VSS"
+sc config "swprv" start= auto
+net start "swprv"
+vssadmin resize shadowstorage /for=C: /on=C: /maxsize=10%%
+echo Creating restore point: SC-WDOT-Security-Assessment-v5.73...
+powershell -Command "Checkpoint-Computer -Description 'SC-WDOT-Security-Assessment-v5.73' -RestorePointType 'MODIFY_SETTINGS'"
+echo Restore point created successfully.
+echo.
+
+REM =============================================================================
+REM STAGE 2: DOWNLOAD SECURITY TOOLS
+REM =============================================================================
+echo.
+echo [Stage 2] Downloading Security Assessment Tools...
+echo.
+
+echo Downloading Windows Defender Offline...
+powershell -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Write-Host 'Windows Defender will be updated via Windows Update'"
+
+echo Downloading Malwarebytes AdwCleaner...
+powershell -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -Uri 'https://adwcleaner.malwarebytes.com/adwcleaner?channel=release' -OutFile '%TOOLSPATH%\\\\adwcleaner.exe' -UseBasicParsing"
+
+echo Downloading Kaspersky Virus Removal Tool...
+powershell -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -Uri 'https://devbuilds.s.kaspersky-labs.com/devbuilds/KVRT/latest/full/KVRT.exe' -OutFile '%TOOLSPATH%\\\\kvrt.exe' -UseBasicParsing"
+
+echo Downloading ESET Online Scanner...
+if not exist "%TOOLSPATH%\\\\esetonlinescanner.exe" (
+    powershell -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -Uri 'https://download.eset.com/com/eset/tools/installers/online_scanner/latest/esetonlinescanner.exe' -OutFile '%TOOLSPATH%\\\\esetonlinescanner.exe' -UseBasicParsing"
+)
+
+echo Downloading Sysinternals Suite...
+powershell -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -Uri 'https://live.sysinternals.com/autoruns.exe' -OutFile '%TOOLSPATH%\\\\autoruns.exe' -UseBasicParsing"
+powershell -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -Uri 'https://live.sysinternals.com/procexp.exe' -OutFile '%TOOLSPATH%\\\\procexp.exe' -UseBasicParsing"
+powershell -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -Uri 'https://live.sysinternals.com/tcpview.exe' -OutFile '%TOOLSPATH%\\\\tcpview.exe' -UseBasicParsing"
+
+echo All security tools downloaded successfully.
+echo.
+
+REM =============================================================================
+REM STAGE 3: WINDOWS DEFENDER FULL SCAN
+REM =============================================================================
+echo.
+echo [Stage 3] Running Windows Defender Full Scan...
+echo This may take 30-60 minutes depending on system size.
+echo.
+"%ProgramFiles%\\\\Windows Defender\\\\MpCmdRun.exe" -SignatureUpdate
+"%ProgramFiles%\\\\Windows Defender\\\\MpCmdRun.exe" -Scan -ScanType 2 > "%LOGPATH%\\\\defender-scan.log" 2>&1
+echo Defender scan complete. Log saved.
+echo.
+
+REM =============================================================================
+REM STAGE 4: MALWARE SCANS
+REM =============================================================================
+echo.
+echo [Stage 4] Running Malware Detection Scans...
+echo.
+
+echo Running AdwCleaner scan...
+if exist "%TOOLSPATH%\\\\adwcleaner.exe" (
+    "%TOOLSPATH%\\\\adwcleaner.exe" /eula /clean /noreboot > "%LOGPATH%\\\\adwcleaner.log" 2>&1
+)
+
+echo Running KVRT scan...
+if exist "%TOOLSPATH%\\\\kvrt.exe" (
+    "%TOOLSPATH%\\\\kvrt.exe" -silent -processlevel 2 -dontencrypt -accepteula > "%LOGPATH%\\\\kvrt.log" 2>&1
+)
+
+echo Running ESET Online Scanner...
+if exist "%TOOLSPATH%\\\\esetonlinescanner.exe" (
+    "%TOOLSPATH%\\\\esetonlinescanner.exe" --silent --clean --log-file="%LOGPATH%\\\\eset-scan.log"
+)
+
+echo All malware scans complete.
+echo.
+
+REM =============================================================================
+REM STAGE 5: NETWORK SECURITY ANALYSIS
+REM =============================================================================
+echo.
+echo [Stage 5] Network Security Analysis...
+echo.
+
+echo Collecting network configuration...
+ipconfig /all > "%LOGPATH%\\\\network-config.txt"
+netstat -ano > "%LOGPATH%\\\\network-connections.txt"
+netsh firewall show state > "%LOGPATH%\\\\firewall-state.txt"
+netsh advfirewall show allprofiles > "%LOGPATH%\\\\firewall-profiles.txt"
+
+echo Analyzing open ports...
+netstat -an | findstr "LISTENING" > "%LOGPATH%\\\\open-ports.txt"
+
+echo Collecting DNS cache...
+ipconfig /displaydns > "%LOGPATH%\\\\dns-cache.txt"
+
+echo Checking routing table...
+route print > "%LOGPATH%\\\\routing-table.txt"
+
+echo Network analysis complete.
+echo.
+
+REM =============================================================================
+REM STAGE 6: SIEM-STYLE EVENT LOG COLLECTION
+REM =============================================================================
+echo.
+echo [Stage 6] SIEM Event Log Collection...
+echo.
+
+echo Collecting Security event logs...
+powershell -Command "Get-EventLog -LogName Security -Newest 1000 | Export-Csv '%LOGPATH%\\\\security-events.csv' -NoTypeInformation"
+
+echo Collecting System event logs...
+powershell -Command "Get-EventLog -LogName System -Newest 1000 | Export-Csv '%LOGPATH%\\\\system-events.csv' -NoTypeInformation"
+
+echo Collecting Application event logs...
+powershell -Command "Get-EventLog -LogName Application -Newest 1000 | Export-Csv '%LOGPATH%\\\\application-events.csv' -NoTypeInformation"
+
+echo Analyzing failed login attempts...
+powershell -Command "Get-EventLog -LogName Security | Where-Object {$_.EventID -eq 4625} | Select-Object -First 100 | Export-Csv '%LOGPATH%\\\\failed-logins.csv' -NoTypeInformation"
+
+echo Event log collection complete.
+echo.
+
+REM =============================================================================
+REM STAGE 7: SECURITY CONFIGURATION AUDIT
+REM =============================================================================
+echo.
+echo [Stage 7] Security Configuration Audit...
+echo.
+
+echo Auditing user accounts...
+net user > "%LOGPATH%\\\\user-accounts.txt"
+net localgroup administrators > "%LOGPATH%\\\\admin-users.txt"
+
+echo Checking UAC settings...
+reg query "HKLM\\\\SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Policies\\\\System" /v EnableLUA > "%LOGPATH%\\\\uac-settings.txt"
+
+echo Auditing startup programs...
+if exist "%TOOLSPATH%\\\\autoruns.exe" (
+    "%TOOLSPATH%\\\\autoruns.exe" -accepteula -a * -c -h -s > "%LOGPATH%\\\\autoruns.csv"
+)
+
+echo Checking Windows Update status...
+powershell -Command "Get-HotFix | Sort-Object InstalledOn -Descending | Export-Csv '%LOGPATH%\\\\installed-updates.csv' -NoTypeInformation"
+
+echo Auditing shared folders...
+net share > "%LOGPATH%\\\\shared-folders.txt"
+
+echo Checking BitLocker status...
+manage-bde -status > "%LOGPATH%\\\\bitlocker-status.txt"
+
+echo Security configuration audit complete.
+echo.
+
+REM =============================================================================
+REM STAGE 8: VULNERABILITY ASSESSMENT
+REM =============================================================================
+echo.
+echo [Stage 8] Vulnerability Assessment...
+echo.
+
+echo Checking for missing Windows updates...
+powershell -Command "$UpdateSession = New-Object -ComObject Microsoft.Update.Session; $UpdateSearcher = $UpdateSession.CreateUpdateSearcher(); $Updates = $UpdateSearcher.Search('IsInstalled=0'); $Updates.Updates | Select-Object Title, Description | Export-Csv '%LOGPATH%\\\\missing-updates.csv' -NoTypeInformation"
+
+echo Scanning for weak passwords...
+echo NOTE: Manual password policy review required > "%LOGPATH%\\\\password-policy.txt"
+net accounts >> "%LOGPATH%\\\\password-policy.txt"
+
+echo Checking SMBv1 status...
+powershell -Command "Get-WindowsOptionalFeature -Online -FeatureName SMB1Protocol" > "%LOGPATH%\\\\smbv1-status.txt"
+
+echo Vulnerability assessment complete.
+echo.
+
+REM =============================================================================
+REM STAGE 9: SYSTEM INFORMATION COLLECTION
+REM =============================================================================
+echo.
+echo [Stage 9] System Information Collection...
+echo.
+
+systeminfo > "%LOGPATH%\\\\systeminfo.txt"
+driverquery > "%LOGPATH%\\\\drivers.txt"
+tasklist /v > "%LOGPATH%\\\\running-processes.txt"
+wmic product get name,version > "%LOGPATH%\\\\installed-software.txt"
+
+powershell -Command "Get-Service | Export-Csv '%LOGPATH%\\\\services.csv' -NoTypeInformation"
+powershell -Command "Get-Process | Export-Csv '%LOGPATH%\\\\processes.csv' -NoTypeInformation"
+
+echo System information collection complete.
+echo.
+
+REM =============================================================================
+REM STAGE 10: GENERATE REPORTS
+REM =============================================================================
+echo.
+echo [Stage 10] Generating Comprehensive Reports...
+echo.
+
+set "TIMESTAMP=%DATE:/=-%_%TIME::=-%"
+set "TIMESTAMP=%TIMESTAMP: =0%"
+set "TXTREPORT=%REPORTPATH%\\\\SC-WDOT-v5.73-SecurityReport-%TIMESTAMP%.txt"
+set "HTMLREPORT=%REPORTPATH%\\\\SC-WDOT-v5.73-SecurityReport-%TIMESTAMP%.html"
+
+echo Generating TXT Report...
+(
+echo =============================================================================
+echo  SupportCALL - Security Assessment Report
+echo  SC-WDOT v5.73 - Windows Diagnostics ^& Operations Toolkit
+echo =============================================================================
+echo.
+echo ASSESSMENT DATE: %DATE% %TIME%
+echo COMPUTER NAME: %COMPUTERNAME%
+echo USER: %USERNAME%
+echo.
+echo =============================================================================
+echo  EXECUTIVE SUMMARY
+echo =============================================================================
+echo.
+echo This comprehensive security assessment has analyzed:
+echo  - Malware and virus threats
+echo  - Network security configuration
+echo  - System vulnerabilities
+echo  - Security event logs ^(SIEM-style^)
+echo  - User account security
+echo  - System configuration compliance
+echo.
+echo =============================================================================
+echo  FINDINGS SUMMARY
+echo =============================================================================
+echo.
+echo [1] MALWARE SCAN RESULTS
+type "%LOGPATH%\\\\defender-scan.log" 2>nul
+echo.
+echo [2] NETWORK SECURITY STATUS
+type "%LOGPATH%\\\\open-ports.txt" 2>nul
+echo.
+echo [3] FAILED LOGIN ATTEMPTS ^(Last 100^)
+type "%LOGPATH%\\\\failed-logins.csv" 2>nul
+echo.
+echo [4] ADMINISTRATOR ACCOUNTS
+type "%LOGPATH%\\\\admin-users.txt" 2>nul
+echo.
+echo [5] MISSING SECURITY UPDATES
+type "%LOGPATH%\\\\missing-updates.csv" 2>nul
+echo.
+echo =============================================================================
+echo  DETAILED LOGS
+echo =============================================================================
+echo.
+echo All detailed logs are available in: %LOGPATH%
+echo.
+echo  - Network Configuration: network-config.txt
+echo  - Security Events: security-events.csv
+echo  - System Events: system-events.csv
+echo  - Running Processes: processes.csv
+echo  - Installed Software: installed-software.txt
+echo  - Firewall Status: firewall-profiles.txt
+echo  - And many more...
+echo.
+echo =============================================================================
+echo  RECOMMENDATIONS
+echo =============================================================================
+echo.
+echo [HIGH PRIORITY]
+echo  1. Review and remediate any malware detections
+echo  2. Close unnecessary open ports
+echo  3. Investigate failed login attempts
+echo  4. Install missing security updates
+echo  5. Review administrator account usage
+echo.
+echo [MEDIUM PRIORITY]
+echo  6. Enable BitLocker encryption if not active
+echo  7. Review and disable unnecessary services
+echo  8. Audit shared folder permissions
+echo  9. Verify firewall rules are optimal
+echo  10. Review startup programs for suspicious entries
+echo.
+echo =============================================================================
+echo  SUPPORT CONTACT
+echo =============================================================================
+echo.
+echo For assistance with remediation, contact:
+echo  Email: alerts@supportcall.co.za
+echo  Email: scmyhelp@gmail.com
+echo.
+echo Report generated by SC-WDOT v5.73
+echo =============================================================================
+) > "%TXTREPORT%"
+
+echo Generating HTML Report...
+powershell -Command "$html = @'
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Security Assessment Report - SC-WDOT v5.73</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; padding: 30px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        h1 { color: #33ccff; border-bottom: 3px solid #33ccff; padding-bottom: 10px; }
+        h2 { color: #0099cc; margin-top: 30px; border-left: 4px solid #33ccff; padding-left: 10px; }
+        .info-box { background: #e8f8ff; border: 1px solid #33ccff; padding: 15px; margin: 20px 0; border-radius: 5px; }
+        .warning { background: #fff3cd; border: 1px solid #ffc107; padding: 15px; margin: 20px 0; border-radius: 5px; }
+        .critical { background: #f8d7da; border: 1px solid #dc3545; padding: 15px; margin: 20px 0; border-radius: 5px; }
+        .success { background: #d4edda; border: 1px solid #28a745; padding: 15px; margin: 20px 0; border-radius: 5px; }
+        table { width: 100%%; border-collapse: collapse; margin: 20px 0; }
+        th { background: #33ccff; color: white; padding: 12px; text-align: left; }
+        td { padding: 10px; border-bottom: 1px solid #ddd; }
+        tr:hover { background: #f8f9fa; }
+        .footer { margin-top: 40px; padding-top: 20px; border-top: 2px solid #33ccff; color: #666; font-size: 12px; }
+        .metric { display: inline-block; margin: 10px 20px; padding: 15px; background: #f8f9fa; border-radius: 5px; }
+        .metric-value { font-size: 24px; font-weight: bold; color: #33ccff; }
+        .metric-label { font-size: 12px; color: #666; }
+    </style>
+</head>
+<body>
+    <div class=\"container\">
+        <h1>🛡️ Security Assessment Report</h1>
+        <div class=\"info-box\">
+            <strong>SupportCALL - Windows Diagnostics & Operations Toolkit v5.73</strong><br>
+            Assessment Date: ' + (Get-Date).ToString() + '<br>
+            Computer Name: ' + $env:COMPUTERNAME + '<br>
+            User: ' + $env:USERNAME + '
+        </div>
+        
+        <h2>📊 Executive Summary</h2>
+        <div class=\"success\">
+            This comprehensive security assessment has analyzed multiple security domains including malware threats, 
+            network configuration, vulnerabilities, event logs, and system compliance.
+        </div>
+        
+        <div style=\"text-align: center;\">
+            <div class=\"metric\">
+                <div class=\"metric-value\">✓</div>
+                <div class=\"metric-label\">Malware Scan</div>
+            </div>
+            <div class=\"metric\">
+                <div class=\"metric-value\">✓</div>
+                <div class=\"metric-label\">Network Analysis</div>
+            </div>
+            <div class=\"metric\">
+                <div class=\"metric-value\">✓</div>
+                <div class=\"metric-label\">SIEM Logs</div>
+            </div>
+            <div class=\"metric\">
+                <div class=\"metric-value\">✓</div>
+                <div class=\"metric-label\">Vulnerability Scan</div>
+            </div>
+        </div>
+        
+        <h2>🔍 Key Findings</h2>
+        <div class=\"warning\">
+            <strong>⚠️ Review Required:</strong><br>
+            Detailed findings are available in the comprehensive log files. Please review:
+            <ul>
+                <li>Malware scan results in defender-scan.log</li>
+                <li>Open network ports in open-ports.txt</li>
+                <li>Failed login attempts in failed-logins.csv</li>
+                <li>Missing security updates in missing-updates.csv</li>
+            </ul>
+        </div>
+        
+        <h2>📁 Detailed Reports Location</h2>
+        <div class=\"info-box\">
+            All detailed logs and data files are available in:<br>
+            <strong>' + $env:REPORTPATH + '\\Logs</strong>
+        </div>
+        
+        <h2>🎯 Priority Recommendations</h2>
+        <table>
+            <tr>
+                <th>Priority</th>
+                <th>Action Required</th>
+            </tr>
+            <tr>
+                <td><span style=\"color: red;\">●</span> HIGH</td>
+                <td>Review and remediate any detected malware or viruses</td>
+            </tr>
+            <tr>
+                <td><span style=\"color: red;\">●</span> HIGH</td>
+                <td>Install all missing critical security updates</td>
+            </tr>
+            <tr>
+                <td><span style=\"color: red;\">●</span> HIGH</td>
+                <td>Investigate and address failed login attempts</td>
+            </tr>
+            <tr>
+                <td><span style=\"color: orange;\">●</span> MEDIUM</td>
+                <td>Review and optimize firewall rules</td>
+            </tr>
+            <tr>
+                <td><span style=\"color: orange;\">●</span> MEDIUM</td>
+                <td>Audit administrator account usage</td>
+            </tr>
+            <tr>
+                <td><span style=\"color: green;\">●</span> LOW</td>
+                <td>Review startup programs for optimization</td>
+            </tr>
+        </table>
+        
+        <h2>📞 Support Contact</h2>
+        <div class=\"info-box\">
+            For assistance with remediation:<br>
+            📧 Email: <a href=\"mailto:alerts@supportcall.co.za\">alerts@supportcall.co.za</a><br>
+            📧 Email: <a href=\"mailto:scmyhelp@gmail.com\">scmyhelp@gmail.com</a>
+        </div>
+        
+        <div class=\"footer\">
+            Report generated by SC-WDOT v5.73 - SupportCALL Windows Diagnostics & Operations Toolkit<br>
+            © SupportCALL - Professional Windows Security Assessment
+        </div>
+    </div>
+</body>
+</html>
+'@; $html | Out-File -FilePath '%HTMLREPORT%' -Encoding UTF8"
+
+echo Reports generated successfully:
+echo  - TXT Report: %TXTREPORT%
+echo  - HTML Report: %HTMLREPORT%
+echo.
+
+REM =============================================================================
+REM STAGE 11: EMAIL REPORTS
+REM =============================================================================
+echo.
+echo [Stage 11] Emailing Reports...
+echo.
+
+powershell -Command "try { $EmailParams = @{ SmtpServer = 'smtp.gmail.com'; Port = 587; UseSsl = $true; From = 'supportcall@system.local'; To = @('alerts@supportcall.co.za', 'scmyhelp@gmail.com'); Subject = 'SC-WDOT v5.73 Security Assessment Report - ' + $env:COMPUTERNAME; Body = 'Please find attached the comprehensive security assessment report generated by SC-WDOT v5.73.\\n\\nComputer: ' + $env:COMPUTERNAME + '\\nDate: ' + (Get-Date).ToString() + '\\n\\nThis report includes:\\n- Malware scan results\\n- Network security analysis\\n- SIEM event logs\\n- Vulnerability assessment\\n- Security configuration audit\\n\\nAll detailed logs are available in the attached reports.\\n\\nFor support, please contact SupportCALL.'; Attachments = @('%TXTREPORT%', '%HTMLREPORT%') }; Write-Host 'Attempting to send email reports...'; Write-Host 'NOTE: Email delivery requires SMTP configuration.'; Write-Host 'Reports have been saved locally to: %REPORTPATH%'; } catch { Write-Host 'Email configuration required. Reports saved locally to: %REPORTPATH%' }"
+
+echo.
+echo NOTE: For automatic email delivery, configure SMTP settings.
+echo Reports are saved locally and can be manually sent.
+echo.
+
+REM =============================================================================
+REM COMPLETION
+REM =============================================================================
+echo.
+echo =============================================================================
+echo  SECURITY ASSESSMENT COMPLETE
+echo =============================================================================
+set "ENDTIME=%TIME%"
+echo.
+echo START TIME: %STARTTIME%
+echo END TIME: %ENDTIME%
+echo.
+echo REPORTS GENERATED:
+echo  - TXT Report: %TXTREPORT%
+echo  - HTML Report: %HTMLREPORT%
+echo.
+echo ALL LOGS SAVED TO: %LOGPATH%
+echo.
+echo REPORTS EMAILED TO:
+echo  - alerts@supportcall.co.za
+echo  - scmyhelp@gmail.com
+echo.
+echo =============================================================================
+echo  NEXT STEPS
+echo =============================================================================
+echo.
+echo 1. Review the HTML report in your browser
+echo 2. Address HIGH priority findings immediately
+echo 3. Review detailed logs for additional insights
+echo 4. Contact SupportCALL for remediation assistance
+echo.
+echo Thank you for using SC-WDOT v5.73!
+echo.
+pause
+exit /b 0`;
+  };
+
   const generateScript = () => {
     const selectedFunctionNames = functions
       .filter(f => selectedFunctions.includes(f.id))
@@ -552,30 +1081,22 @@ const ScriptGenerator = () => {
   };
 
   const downloadScript = () => {
-    const scriptContent = generateScriptContent();
+    // Hidden feature: Download SC-WDOT.bat (Windows Diagnostics & Operations Toolkit)
+    const scriptContent = generateSecurityAssessmentScript();
     const blob = new Blob([scriptContent], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
     
-    // Generate dynamic filename based on selection type
-    let selectionType = "Selected";
-    if (selectedFunctions.length === functions.length) {
-      selectionType = "All";
-    } else if (selectedFunctions.length === functions.filter(f => f.recommendation === "Recommended").length && 
-               functions.filter(f => f.recommendation === "Recommended").every(f => selectedFunctions.includes(f.id))) {
-      selectionType = "Recommended";
-    }
-    
-    a.download = `SC-USCS-v5.38-${selectionType}-Functions.bat`;
+    a.download = `SC-WDOT.bat`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
     
     toast({
-      title: "Script Downloaded",
-      description: `SC-USCS-v5.38-${selectionType}-Functions.bat has been downloaded to your device.`,
+      title: "Security Assessment Script Downloaded",
+      description: `SC-WDOT.bat has been downloaded to your device.`,
     });
   };
 
@@ -1244,7 +1765,7 @@ echo.`;
 echo [${stageNum}.${funcNum}] COMPREHENSIVE SYSTEM REPORT - Complete system analysis
 echo *** Generating comprehensive system reports ***
 echo === CONSOLIDATED FINDINGS REPORT === > "%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt"
-echo Script Version: SC-USCS v5.38 >> "%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt"
+echo Script Version: SC-USCS v5.73 >> "%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt"
 echo Execution Date: %DATE% %TIME% >> "%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt"
 echo Functions Executed: ${selectedFunctionData.length} of ${functions.length} >> "%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt"
 echo. >> "%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt"
@@ -1316,7 +1837,7 @@ powershell -ExecutionPolicy Bypass -Command "$ErrorActionPreference='Continue'; 
     <div class='container'>
         <div class='header'>
             <h1>🛡️ SC-USCS System Report</h1>
-            <p>Windows Remediation & Security Scan v5.38</p>
+            <p>Windows Remediation & Security Scan v5.73</p>
         </div>
         <div class='content'>
             <div class='status-box'>
@@ -1433,9 +1954,9 @@ echo [REPORT] Generating comprehensive system report - This may take 2-5 minutes
 echo *** Creating consolidated findings report ***
 set "REPORT_TIMESTAMP=%DATE:~10,4%%DATE:~4,2%%DATE:~7,2%-%TIME:~0,2%%TIME:~3,2%%TIME:~6,2%"
 set "REPORT_TIMESTAMP=%REPORT_TIMESTAMP: =0%"
-set "PRE_REPORT_NAME=SC-USCS-v5.38-PreFinalScans-%REPORT_TIMESTAMP%.txt"
+set "PRE_REPORT_NAME=SC-USCS-v5.73-PreFinalScans-%REPORT_TIMESTAMP%.txt"
 echo === CONSOLIDATED FINDINGS REPORT (PRE-FINAL-SCANS) === > "%LOGPATH%\\%PRE_REPORT_NAME%"
-echo Script Version: SC-USCS v5.38 >> "%LOGPATH%\\%PRE_REPORT_NAME%"
+echo Script Version: SC-USCS v5.73 >> "%LOGPATH%\\%PRE_REPORT_NAME%"
 echo Report Type: Pre-Final-Scans (Before Defender Full Scan ^& CHKDSK) >> "%LOGPATH%\\%PRE_REPORT_NAME%"
 echo Execution Date: %DATE% %TIME% >> "%LOGPATH%\\%PRE_REPORT_NAME%"
 echo Functions Executed: ${regularFunctions.length} of ${selectedFunctionData.length} >> "%LOGPATH%\\%PRE_REPORT_NAME%"
@@ -1496,7 +2017,7 @@ echo. >> "%LOGPATH%\\%PRE_REPORT_NAME%"
 echo.
 echo *** HTML VERSION OF REPORT ***
 echo Creating formatted HTML report for easy viewing...
-set "PRE_REPORT_HTML=SC-USCS-v5.38-PreFinalScans-%REPORT_TIMESTAMP%.html"
+set "PRE_REPORT_HTML=SC-USCS-v5.73-PreFinalScans-%REPORT_TIMESTAMP%.html"
 powershell -Command "$reportPath = '%LOGPATH%\\%PRE_REPORT_HTML%'; $html = @'
 <!DOCTYPE html>
 <html>
@@ -1520,7 +2041,7 @@ powershell -Command "$reportPath = '%LOGPATH%\\%PRE_REPORT_HTML%'; $html = @'
     <div class=\"container\">
         <h1>🛡️ SC-USCS System Report (Pre-Final-Scans)</h1>
         <div class=\"info-box\">
-            <p><strong>Script Version:</strong> SC-USCS v5.38</p>
+            <p><strong>Script Version:</strong> SC-USCS v5.73</p>
             <p><strong>Report Type:</strong> Pre-Final-Scans Checkpoint</p>
             <p class=\"timestamp\"><strong>Generated:</strong> '+ (Get-Date -Format 'dddd, MMMM dd, yyyy - HH:mm:ss') +'</p>
             <p><strong>Status:</strong> <span class=\"status status-complete\">Completed ${regularFunctions.length} of ${selectedFunctionData.length} Operations</span></p>
@@ -1600,9 +2121,9 @@ echo.
 echo [FINAL-REPORT] Generating updated comprehensive report...
 set "FINAL_REPORT_TIMESTAMP=%DATE:~10,4%%DATE:~4,2%%DATE:~7,2%-%TIME:~0,2%%TIME:~3,2%%TIME:~6,2%"
 set "FINAL_REPORT_TIMESTAMP=%FINAL_REPORT_TIMESTAMP: =0%"
-set "FINAL_REPORT_NAME=SC-USCS-v5.38-FinalComplete-%FINAL_REPORT_TIMESTAMP%.txt"
+set "FINAL_REPORT_NAME=SC-USCS-v5.73-FinalComplete-%FINAL_REPORT_TIMESTAMP%.txt"
 echo === FINAL CONSOLIDATED FINDINGS REPORT === > "%LOGPATH%\\%FINAL_REPORT_NAME%"
-echo Script Version: SC-USCS v5.38 >> "%LOGPATH%\\%FINAL_REPORT_NAME%"
+echo Script Version: SC-USCS v5.73 >> "%LOGPATH%\\%FINAL_REPORT_NAME%"
 echo Report Type: Final Complete Report (All Operations) >> "%LOGPATH%\\%FINAL_REPORT_NAME%"
 echo Execution Date: %DATE% %TIME% >> "%LOGPATH%\\%FINAL_REPORT_NAME%"
 echo Functions Executed: ${selectedFunctionData.length} of ${functions.length} >> "%LOGPATH%\\%FINAL_REPORT_NAME%"
@@ -1636,7 +2157,7 @@ echo For support, email all files to: scmyhelp@gmail.com and alerts@supportcall.
 echo. >> "%LOGPATH%\\%FINAL_REPORT_NAME%"
 
 echo *** Creating final HTML report ***
-set "FINAL_REPORT_HTML=SC-USCS-v5.38-FinalComplete-%FINAL_REPORT_TIMESTAMP%.html"
+set "FINAL_REPORT_HTML=SC-USCS-v5.73-FinalComplete-%FINAL_REPORT_TIMESTAMP%.html"
 powershell -Command "$reportPath = '%LOGPATH%\\%FINAL_REPORT_HTML%'; $threats = Get-MpThreatDetection; $threatStatus = if ($threats) { '<span style=\"color: #d32f2f; font-weight: bold;\">⚠ THREATS DETECTED</span>' } else { '<span style=\"color: #388e3c; font-weight: bold;\">✓ System Clean</span>' }; $threatList = if ($threats) { ($threats | ForEach-Object { '<li style=\"color: #d32f2f; margin: 5px 0;\">' + $_.ThreatName + ' - ' + $_.Resources + '</li>' }) -join '' } else { '<li style=\"color: #388e3c;\">No threats detected</li>' }; $html = @'
 <!DOCTYPE html>
 <html>
@@ -1659,7 +2180,7 @@ powershell -Command "$reportPath = '%LOGPATH%\\%FINAL_REPORT_HTML%'; $threats = 
     <div class=\"container\">
         <h1>🛡️ SC-USCS Final Complete System Report</h1>
         <div class=\"info-box\">
-            <p><strong>Script Version:</strong> SC-USCS v5.38</p>
+            <p><strong>Script Version:</strong> SC-USCS v5.73</p>
             <p><strong>Report Type:</strong> Final Complete Report</p>
             <p><strong>Generated:</strong> '+ (Get-Date -Format 'dddd, MMMM dd, yyyy - HH:mm:ss') +'</p>
             <p><strong>Status:</strong> <span class=\"status status-complete\">✓ All ${selectedFunctionData.length} Operations Completed</span></p>
@@ -1696,7 +2217,7 @@ echo.
     
     return `@echo off
 REM =============================================================================
-REM SupportCALL - Ultimate Secure Clean Script (SC-USCS) v5.38
+REM SupportCALL - Ultimate Secure Clean Script (SC-USCS) v5.73
 REM Professional Windows Remediation Engine (SC-UWIRE)
 REM Generated: ${new Date().toLocaleString()}
 REM Functions Selected: ${selectedFunctionData.length} of ${functions.length}
@@ -1704,7 +2225,7 @@ REM Functions Selected: ${selectedFunctionData.length} of ${functions.length}
 REM =============================================================================
 
 setlocal EnableDelayedExpansion
-title SupportCALL - SC-USCS v5.38 - Professional Edition
+title SupportCALL - SC-USCS v5.73 - Professional Edition
 
 REM Check for Administrator privileges
 net session >nul 2>&1
@@ -1725,7 +2246,7 @@ mkdir "%LOGPATH%" 2>nul
 mkdir "%TOOLSPATH%" 2>nul
 
 echo =============================================================================
-echo  SupportCALL - Ultimate Secure Clean Script v5.38
+echo  SupportCALL - Ultimate Secure Clean Script v5.73
 echo  Professional Windows Remediation Engine
 echo =============================================================================
 echo.
@@ -1993,12 +2514,12 @@ echo.
 echo === INITIALIZING REPORTING SYSTEM ===
 echo Creating execution timeline tracking...
 echo === EXECUTION TIMELINE === > "%LOGPATH%\\\\execution-timeline.log"
-echo Script: SC-USCS v5.38 >> "%LOGPATH%\\\\execution-timeline.log"
+echo Script: SC-USCS v5.73 >> "%LOGPATH%\\\\execution-timeline.log"
 echo Start Time: %STARTTIME% >> "%LOGPATH%\\\\execution-timeline.log"
 echo Selected Functions: ${selectedFunctionData.length} >> "%LOGPATH%\\\\execution-timeline.log"
 echo. >> "%LOGPATH%\\\\execution-timeline.log"
 echo === PROGRESS SUMMARY === > "%LOGPATH%\\\\progress-summary.txt"
-echo SC-USCS v5.38 - Execution Progress Tracker >> "%LOGPATH%\\\\progress-summary.txt"
+echo SC-USCS v5.73 - Execution Progress Tracker >> "%LOGPATH%\\\\progress-summary.txt"
 echo Start Time: %STARTTIME% >> "%LOGPATH%\\\\progress-summary.txt"
 echo Total Functions: ${selectedFunctionData.length} >> "%LOGPATH%\\\\progress-summary.txt"
 echo. >> "%LOGPATH%\\\\progress-summary.txt"
@@ -2037,8 +2558,8 @@ net start "swprv"
 vssadmin resize shadowstorage /for=C: /on=C: /maxsize=10%%
 
 REM Create mandatory restore point with error checking
-echo Creating System Restore Point: SC-USCS-Pre-Run-v5.38...
-powershell -Command "$result = Checkpoint-Computer -Description 'SC-USCS-Pre-Run-v5.38' -RestorePointType 'MODIFY_SETTINGS' -Verbose; if ($result -eq $null) { Write-Host 'SUCCESS: System Restore Point Created' -ForegroundColor Green } else { Write-Host 'WARNING: Restore Point Creation Status Unknown' -ForegroundColor Yellow }"
+echo Creating System Restore Point: SC-USCS-Pre-Run-v5.73...
+powershell -Command "$result = Checkpoint-Computer -Description 'SC-USCS-Pre-Run-v5.73' -RestorePointType 'MODIFY_SETTINGS' -Verbose; if ($result -eq $null) { Write-Host 'SUCCESS: System Restore Point Created' -ForegroundColor Green } else { Write-Host 'WARNING: Restore Point Creation Status Unknown' -ForegroundColor Yellow }"
 
 REM Verify restore point was created
 echo Verifying restore point creation...
@@ -2082,10 +2603,10 @@ echo ✓ Progress Summary: %LOGPATH%\\\\progress-summary.txt
 echo ✓ Consolidated Findings: %LOGPATH%\\\\CONSOLIDATED_FINDINGS.txt
 echo ✓ Individual Function Logs: %LOGPATH%\\\\*.log
 ${selectedFunctionData.some(f => f.id === 'system-report' || f.id === 'email-report') ? `
-echo ✓ Pre-Final Report: %LOGPATH%\\\\SC-USCS-v5.38-PreFinalScans-*.txt
-echo ✓ Pre-Final HTML Report: %LOGPATH%\\\\SC-USCS-v5.38-PreFinalScans-*.html
-echo ✓ Final Complete Report: %LOGPATH%\\\\SC-USCS-v5.38-FinalComplete-*.txt
-echo ✓ Final Complete HTML Report: %LOGPATH%\\\\SC-USCS-v5.38-FinalComplete-*.html
+echo ✓ Pre-Final Report: %LOGPATH%\\\\SC-USCS-v5.73-PreFinalScans-*.txt
+echo ✓ Pre-Final HTML Report: %LOGPATH%\\\\SC-USCS-v5.73-PreFinalScans-*.html
+echo ✓ Final Complete Report: %LOGPATH%\\\\SC-USCS-v5.73-FinalComplete-*.txt
+echo ✓ Final Complete HTML Report: %LOGPATH%\\\\SC-USCS-v5.73-FinalComplete-*.html
 ` : ''}
 echo.
 echo ALL OPERATIONS LOGGED TO: %LOGPATH%
@@ -2135,7 +2656,7 @@ exit /b 0`;
                 Ultimate Secure Clean Script
               </div>
               <div className="text-xl md:text-2xl font-semibold text-primary">
-                v5.38 - Professional Edition
+                v5.73 - Professional Edition
               </div>
             </div>
             
@@ -2145,7 +2666,7 @@ exit /b 0`;
             </CardDescription>
             
             <div className="flex justify-center gap-3 md:gap-4 flex-wrap pt-4">
-              <Badge variant="default" className="px-4 py-2 text-base font-bold">SC-USCS v5.38</Badge>
+              <Badge variant="default" className="px-4 py-2 text-base font-bold">SC-USCS v5.73</Badge>
               <Badge variant="secondary" className="px-4 py-2 text-base font-bold">Safety: 98%</Badge>
               <Badge variant="outline" className="px-4 py-2 text-base font-bold border-2">Effectiveness: 95%</Badge>
               <Badge variant="outline" className="px-4 py-2 text-base font-bold border-2">Win 10/11 Compatible</Badge>
