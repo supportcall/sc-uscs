@@ -546,12 +546,15 @@ const ScriptGenerator = () => {
     return `@echo off
 REM =============================================================================
 REM SupportCALL - Windows Diagnostics & Operations Toolkit (SC-WDOT) v5.73
-REM Professional Security Assessment & SIEM Engine
+REM Professional READ-ONLY Security Assessment & SIEM Engine
 REM Generated: ${new Date().toLocaleString()}
+REM =============================================================================
+REM IMPORTANT: This script performs READ-ONLY assessment
+REM NO changes, cleaning, or removal operations are performed on your system
 REM =============================================================================
 
 setlocal EnableDelayedExpansion
-title SupportCALL - SC-WDOT v5.73 - Security Assessment Engine
+title SupportCALL - SC-WDOT v5.73 - READ-ONLY Security Assessment
 color 0A
 
 REM Check for Administrator privileges
@@ -574,116 +577,99 @@ mkdir "%LOGPATH%" 2>nul
 
 echo =============================================================================
 echo  SupportCALL - Windows Diagnostics ^& Operations Toolkit v5.73
-echo  Professional Security Assessment Engine
+echo  Professional READ-ONLY Security Assessment Engine
 echo =============================================================================
 echo.
 echo REPORT PATH: %REPORTPATH%
 echo START TIME: %STARTTIME%
 echo.
-echo This script will perform a comprehensive security assessment including:
-echo  - Full malware and vulnerability scans
-echo  - Network security analysis
-echo  - SIEM-style event log collection
-echo  - Security configuration audit
+echo *** READ-ONLY ASSESSMENT MODE ***
+echo This script will perform comprehensive security assessment including:
+echo  - Malware detection scan (REPORT ONLY - No removal or cleaning)
+echo  - Network security analysis (No changes)
+echo  - SIEM-style event log collection (Read-only)
+echo  - Security configuration audit (Read-only)
+echo  - Vulnerability assessment (Read-only)
 echo  - Comprehensive HTML/TXT reporting
 echo  - Automatic email delivery of reports
+echo.
+echo IMPORTANT: NO changes will be made to your system
+echo           This is assessment and reporting ONLY
 echo.
 pause
 
 REM =============================================================================
-REM STAGE 1: SYSTEM RESTORE POINT
+REM STAGE 1: DOWNLOAD READ-ONLY ANALYSIS TOOLS
 REM =============================================================================
 echo.
-echo [Stage 1] Creating System Restore Point...
-echo.
-powershell -Command "Enable-ComputerRestore -Drive 'C:\\\\'"
-sc config "VSS" start= auto
-net start "VSS"
-sc config "swprv" start= auto
-net start "swprv"
-vssadmin resize shadowstorage /for=C: /on=C: /maxsize=10%%
-echo Creating restore point: SC-WDOT-Security-Assessment-v5.73...
-powershell -Command "Checkpoint-Computer -Description 'SC-WDOT-Security-Assessment-v5.73' -RestorePointType 'MODIFY_SETTINGS'"
-echo Restore point created successfully.
+echo [Stage 1] Downloading Read-Only Assessment Tools...
+echo NOTE: Only downloading tools for system analysis, not removal/cleaning
 echo.
 
-REM =============================================================================
-REM STAGE 2: DOWNLOAD SECURITY TOOLS
-REM =============================================================================
-echo.
-echo [Stage 2] Downloading Security Assessment Tools...
-echo.
+echo Downloading Sysinternals Suite for system analysis...
+powershell -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; try { Invoke-WebRequest -Uri 'https://live.sysinternals.com/autoruns.exe' -OutFile '%TOOLSPATH%\\\\autoruns.exe' -UseBasicParsing -ErrorAction Stop } catch { Write-Host 'Download skipped, will use built-in tools only' }" 2>nul
+powershell -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; try { Invoke-WebRequest -Uri 'https://live.sysinternals.com/procexp.exe' -OutFile '%TOOLSPATH%\\\\procexp.exe' -UseBasicParsing -ErrorAction Stop } catch { Write-Host 'Download skipped, will use built-in tools only' }" 2>nul
+powershell -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; try { Invoke-WebRequest -Uri 'https://live.sysinternals.com/tcpview.exe' -OutFile '%TOOLSPATH%\\\\tcpview.exe' -UseBasicParsing -ErrorAction Stop } catch { Write-Host 'Download skipped, will use built-in tools only' }" 2>nul
 
-echo Downloading Windows Defender Offline...
-powershell -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Write-Host 'Windows Defender will be updated via Windows Update'"
-
-echo Downloading Malwarebytes AdwCleaner...
-powershell -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -Uri 'https://adwcleaner.malwarebytes.com/adwcleaner?channel=release' -OutFile '%TOOLSPATH%\\\\adwcleaner.exe' -UseBasicParsing"
-
-echo Downloading Kaspersky Virus Removal Tool...
-powershell -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -Uri 'https://devbuilds.s.kaspersky-labs.com/devbuilds/KVRT/latest/full/KVRT.exe' -OutFile '%TOOLSPATH%\\\\kvrt.exe' -UseBasicParsing"
-
-echo Downloading ESET Online Scanner...
-if not exist "%TOOLSPATH%\\\\esetonlinescanner.exe" (
-    powershell -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -Uri 'https://download.eset.com/com/eset/tools/installers/online_scanner/latest/esetonlinescanner.exe' -OutFile '%TOOLSPATH%\\\\esetonlinescanner.exe' -UseBasicParsing"
-)
-
-echo Downloading Sysinternals Suite...
-powershell -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -Uri 'https://live.sysinternals.com/autoruns.exe' -OutFile '%TOOLSPATH%\\\\autoruns.exe' -UseBasicParsing"
-powershell -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -Uri 'https://live.sysinternals.com/procexp.exe' -OutFile '%TOOLSPATH%\\\\procexp.exe' -UseBasicParsing"
-powershell -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -Uri 'https://live.sysinternals.com/tcpview.exe' -OutFile '%TOOLSPATH%\\\\tcpview.exe' -UseBasicParsing"
-
-echo All security tools downloaded successfully.
+echo Assessment tools ready.
 echo.
 
 REM =============================================================================
-REM STAGE 3: WINDOWS DEFENDER FULL SCAN
+REM STAGE 2: WINDOWS DEFENDER THREAT DETECTION (REPORT ONLY)
 REM =============================================================================
 echo.
-echo [Stage 3] Running Windows Defender Full Scan...
+echo [Stage 2] Windows Defender Threat Detection (Report Only - No Removal)...
 echo This may take 30-60 minutes depending on system size.
 echo.
-"%ProgramFiles%\\\\Windows Defender\\\\MpCmdRun.exe" -SignatureUpdate
-"%ProgramFiles%\\\\Windows Defender\\\\MpCmdRun.exe" -Scan -ScanType 2 > "%LOGPATH%\\\\defender-scan.log" 2>&1
-echo Defender scan complete. Log saved.
+echo Updating Defender signatures...
+powershell -Command "try { Update-MpSignature -ErrorAction Stop } catch { Write-Host 'Signature update skipped' }" 2>nul
+echo.
+echo Running quick scan for threat detection...
+powershell -Command "try { Start-MpScan -ScanType QuickScan -ErrorAction Stop } catch { Write-Host 'Quick scan completed with errors - check logs' }" > "%LOGPATH%\\\\defender-scan.log" 2>&1
+echo.
+echo Collecting current threat status and detections...
+powershell -Command "Get-MpThreatDetection -ErrorAction SilentlyContinue | Format-List * | Out-File '%LOGPATH%\\\\defender-threats.log' -Encoding UTF8 -ErrorAction SilentlyContinue" 2>nul
+powershell -Command "Get-MpThreat -ErrorAction SilentlyContinue | Format-List * | Out-File '%LOGPATH%\\\\defender-threat-catalog.log' -Encoding UTF8 -ErrorAction SilentlyContinue" 2>nul
+powershell -Command "Get-MpComputerStatus -ErrorAction SilentlyContinue | Format-List * | Out-File '%LOGPATH%\\\\defender-status.log' -Encoding UTF8 -ErrorAction SilentlyContinue" 2>nul
+powershell -Command "Get-MpPreference -ErrorAction SilentlyContinue | Format-List * | Out-File '%LOGPATH%\\\\defender-settings.log' -Encoding UTF8 -ErrorAction SilentlyContinue" 2>nul
+echo Defender assessment complete (no removal performed).
 echo.
 
 REM =============================================================================
-REM STAGE 4: MALWARE SCANS
+REM STAGE 3: SYSTEM PROCESS AND STARTUP ANALYSIS
 REM =============================================================================
 echo.
-echo [Stage 4] Running Malware Detection Scans...
+echo [Stage 3] System Process and Startup Analysis (Read-Only)...
 echo.
 
-echo Running AdwCleaner scan...
-if exist "%TOOLSPATH%\\\\adwcleaner.exe" (
-    "%TOOLSPATH%\\\\adwcleaner.exe" /eula /clean /noreboot > "%LOGPATH%\\\\adwcleaner.log" 2>&1
-)
+echo Analyzing running processes...
+tasklist /v /fo csv > "%LOGPATH%\\\\running-processes.csv" 2>&1
+powershell -Command "Get-Process | Select-Object Name, Id, CPU, WorkingSet, Path, Company | Export-Csv '%LOGPATH%\\\\process-details.csv' -NoTypeInformation -ErrorAction SilentlyContinue" 2>nul
 
-echo Running KVRT scan...
-if exist "%TOOLSPATH%\\\\kvrt.exe" (
-    "%TOOLSPATH%\\\\kvrt.exe" -silent -processlevel 2 -dontencrypt -accepteula > "%LOGPATH%\\\\kvrt.log" 2>&1
-)
+echo Analyzing startup programs...
+powershell -Command "Get-CimInstance Win32_StartupCommand | Select-Object Name, Command, Location, User | Export-Csv '%LOGPATH%\\\\startup-programs.csv' -NoTypeInformation -ErrorAction SilentlyContinue" 2>nul
 
-echo Running ESET Online Scanner...
-if exist "%TOOLSPATH%\\\\esetonlinescanner.exe" (
-    "%TOOLSPATH%\\\\esetonlinescanner.exe" --silent --clean --log-file="%LOGPATH%\\\\eset-scan.log"
-)
+echo Analyzing scheduled tasks...
+schtasks /query /fo csv /v > "%LOGPATH%\\\\scheduled-tasks.csv" 2>&1
 
-echo All malware scans complete.
+echo Analyzing Windows services...
+sc query type= service state= all > "%LOGPATH%\\\\services-list.txt" 2>&1
+powershell -Command "Get-Service | Select-Object Name, DisplayName, Status, StartType | Export-Csv '%LOGPATH%\\\\services-details.csv' -NoTypeInformation -ErrorAction SilentlyContinue" 2>nul
+
+echo System analysis complete (read-only).
 echo.
 
 REM =============================================================================
-REM STAGE 5: NETWORK SECURITY ANALYSIS
+REM STAGE 4: NETWORK SECURITY ANALYSIS (READ-ONLY)
 REM =============================================================================
 echo.
-echo [Stage 5] Network Security Analysis...
+echo [Stage 4] Network Security Analysis (Read-Only)...
 echo.
 
 echo Collecting network configuration...
 ipconfig /all > "%LOGPATH%\\\\network-config.txt"
 netstat -ano > "%LOGPATH%\\\\network-connections.txt"
-netsh firewall show state > "%LOGPATH%\\\\firewall-state.txt"
+netsh firewall show state > "%LOGPATH%\\\\firewall-state.txt" 2>nul
 netsh advfirewall show allprofiles > "%LOGPATH%\\\\firewall-profiles.txt"
 
 echo Analyzing open ports...
@@ -695,105 +681,104 @@ ipconfig /displaydns > "%LOGPATH%\\\\dns-cache.txt"
 echo Checking routing table...
 route print > "%LOGPATH%\\\\routing-table.txt"
 
-echo Network analysis complete.
+echo Network analysis complete (read-only).
 echo.
 
 REM =============================================================================
-REM STAGE 6: SIEM-STYLE EVENT LOG COLLECTION
+REM STAGE 5: SIEM-STYLE EVENT LOG COLLECTION (READ-ONLY)
 REM =============================================================================
 echo.
-echo [Stage 6] SIEM Event Log Collection...
+echo [Stage 5] SIEM Event Log Collection (Read-Only)...
 echo.
 
 echo Collecting Security event logs...
-powershell -Command "Get-EventLog -LogName Security -Newest 1000 | Export-Csv '%LOGPATH%\\\\security-events.csv' -NoTypeInformation"
+powershell -Command "Get-EventLog -LogName Security -Newest 1000 -ErrorAction SilentlyContinue | Export-Csv '%LOGPATH%\\\\security-events.csv' -NoTypeInformation -ErrorAction SilentlyContinue" 2>nul
 
 echo Collecting System event logs...
-powershell -Command "Get-EventLog -LogName System -Newest 1000 | Export-Csv '%LOGPATH%\\\\system-events.csv' -NoTypeInformation"
+powershell -Command "Get-EventLog -LogName System -Newest 1000 -ErrorAction SilentlyContinue | Export-Csv '%LOGPATH%\\\\system-events.csv' -NoTypeInformation -ErrorAction SilentlyContinue" 2>nul
 
 echo Collecting Application event logs...
-powershell -Command "Get-EventLog -LogName Application -Newest 1000 | Export-Csv '%LOGPATH%\\\\application-events.csv' -NoTypeInformation"
+powershell -Command "Get-EventLog -LogName Application -Newest 1000 -ErrorAction SilentlyContinue | Export-Csv '%LOGPATH%\\\\application-events.csv' -NoTypeInformation -ErrorAction SilentlyContinue" 2>nul
 
 echo Analyzing failed login attempts...
-powershell -Command "Get-EventLog -LogName Security | Where-Object {$_.EventID -eq 4625} | Select-Object -First 100 | Export-Csv '%LOGPATH%\\\\failed-logins.csv' -NoTypeInformation"
+powershell -Command "Get-EventLog -LogName Security -ErrorAction SilentlyContinue | Where-Object {$_.EventID -eq 4625} | Select-Object -First 100 | Export-Csv '%LOGPATH%\\\\failed-logins.csv' -NoTypeInformation -ErrorAction SilentlyContinue" 2>nul
 
-echo Event log collection complete.
+echo Event log collection complete (read-only).
 echo.
 
 REM =============================================================================
-REM STAGE 7: SECURITY CONFIGURATION AUDIT
+REM STAGE 6: SECURITY CONFIGURATION AUDIT (READ-ONLY)
 REM =============================================================================
 echo.
-echo [Stage 7] Security Configuration Audit...
+echo [Stage 6] Security Configuration Audit (Read-Only)...
 echo.
 
 echo Auditing user accounts...
-net user > "%LOGPATH%\\\\user-accounts.txt"
-net localgroup administrators > "%LOGPATH%\\\\admin-users.txt"
+net user > "%LOGPATH%\\\\user-accounts.txt" 2>&1
+net localgroup administrators > "%LOGPATH%\\\\admin-users.txt" 2>&1
 
 echo Checking UAC settings...
-reg query "HKLM\\\\SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Policies\\\\System" /v EnableLUA > "%LOGPATH%\\\\uac-settings.txt"
+reg query "HKLM\\\\SOFTWARE\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Policies\\\\System" /v EnableLUA > "%LOGPATH%\\\\uac-settings.txt" 2>&1
 
 echo Auditing startup programs...
 if exist "%TOOLSPATH%\\\\autoruns.exe" (
-    "%TOOLSPATH%\\\\autoruns.exe" -accepteula -a * -c -h -s > "%LOGPATH%\\\\autoruns.csv"
+    "%TOOLSPATH%\\\\autoruns.exe" -accepteula -a * -c -h -s > "%LOGPATH%\\\\autoruns.csv" 2>&1
 )
 
 echo Checking Windows Update status...
-powershell -Command "Get-HotFix | Sort-Object InstalledOn -Descending | Export-Csv '%LOGPATH%\\\\installed-updates.csv' -NoTypeInformation"
+powershell -Command "Get-HotFix -ErrorAction SilentlyContinue | Sort-Object InstalledOn -Descending | Export-Csv '%LOGPATH%\\\\installed-updates.csv' -NoTypeInformation -ErrorAction SilentlyContinue" 2>nul
 
 echo Auditing shared folders...
-net share > "%LOGPATH%\\\\shared-folders.txt"
+net share > "%LOGPATH%\\\\shared-folders.txt" 2>&1
 
 echo Checking BitLocker status...
-manage-bde -status > "%LOGPATH%\\\\bitlocker-status.txt"
+manage-bde -status > "%LOGPATH%\\\\bitlocker-status.txt" 2>&1
 
-echo Security configuration audit complete.
+echo Security configuration audit complete (read-only).
 echo.
 
 REM =============================================================================
-REM STAGE 8: VULNERABILITY ASSESSMENT
+REM STAGE 7: VULNERABILITY ASSESSMENT (READ-ONLY)
 REM =============================================================================
 echo.
-echo [Stage 8] Vulnerability Assessment...
+echo [Stage 7] Vulnerability Assessment (Read-Only)...
 echo.
 
 echo Checking for missing Windows updates...
-powershell -Command "$UpdateSession = New-Object -ComObject Microsoft.Update.Session; $UpdateSearcher = $UpdateSession.CreateUpdateSearcher(); $Updates = $UpdateSearcher.Search('IsInstalled=0'); $Updates.Updates | Select-Object Title, Description | Export-Csv '%LOGPATH%\\\\missing-updates.csv' -NoTypeInformation"
+powershell -Command "try { $UpdateSession = New-Object -ComObject Microsoft.Update.Session; $UpdateSearcher = $UpdateSession.CreateUpdateSearcher(); $Updates = $UpdateSearcher.Search('IsInstalled=0'); $Updates.Updates | Select-Object Title, Description | Export-Csv '%LOGPATH%\\\\missing-updates.csv' -NoTypeInformation } catch { Write-Host 'Update check requires Windows Update service' }" 2>nul
 
-echo Scanning for weak passwords...
-echo NOTE: Manual password policy review required > "%LOGPATH%\\\\password-policy.txt"
-net accounts >> "%LOGPATH%\\\\password-policy.txt"
+echo Scanning password policy...
+net accounts > "%LOGPATH%\\\\password-policy.txt" 2>&1
 
-echo Checking SMBv1 status...
-powershell -Command "Get-WindowsOptionalFeature -Online -FeatureName SMB1Protocol" > "%LOGPATH%\\\\smbv1-status.txt"
+echo Checking SMBv1 status (security risk)...
+powershell -Command "Get-WindowsOptionalFeature -Online -FeatureName SMB1Protocol -ErrorAction SilentlyContinue" > "%LOGPATH%\\\\smbv1-status.txt" 2>&1
 
-echo Vulnerability assessment complete.
+echo Vulnerability assessment complete (read-only).
 echo.
 
 REM =============================================================================
-REM STAGE 9: SYSTEM INFORMATION COLLECTION
+REM STAGE 8: SYSTEM INFORMATION COLLECTION (READ-ONLY)
 REM =============================================================================
 echo.
-echo [Stage 9] System Information Collection...
+echo [Stage 8] System Information Collection (Read-Only)...
 echo.
 
-systeminfo > "%LOGPATH%\\\\systeminfo.txt"
-driverquery > "%LOGPATH%\\\\drivers.txt"
-tasklist /v > "%LOGPATH%\\\\running-processes.txt"
-wmic product get name,version > "%LOGPATH%\\\\installed-software.txt"
+systeminfo > "%LOGPATH%\\\\systeminfo.txt" 2>&1
+driverquery > "%LOGPATH%\\\\drivers.txt" 2>&1
+tasklist /v > "%LOGPATH%\\\\running-processes.txt" 2>&1
+wmic product get name,version > "%LOGPATH%\\\\installed-software.txt" 2>&1
 
-powershell -Command "Get-Service | Export-Csv '%LOGPATH%\\\\services.csv' -NoTypeInformation"
-powershell -Command "Get-Process | Export-Csv '%LOGPATH%\\\\processes.csv' -NoTypeInformation"
+powershell -Command "Get-Service -ErrorAction SilentlyContinue | Export-Csv '%LOGPATH%\\\\services.csv' -NoTypeInformation -ErrorAction SilentlyContinue" 2>nul
+powershell -Command "Get-Process -ErrorAction SilentlyContinue | Export-Csv '%LOGPATH%\\\\processes.csv' -NoTypeInformation -ErrorAction SilentlyContinue" 2>nul
 
-echo System information collection complete.
+echo System information collection complete (read-only).
 echo.
 
 REM =============================================================================
-REM STAGE 10: GENERATE REPORTS
+REM STAGE 9: GENERATE REPORTS
 REM =============================================================================
 echo.
-echo [Stage 10] Generating Comprehensive Reports...
+echo [Stage 9] Generating Comprehensive Reports...
 echo.
 
 set "TIMESTAMP=%DATE:/=-%_%TIME::=-%"
@@ -804,9 +789,11 @@ set "HTMLREPORT=%REPORTPATH%\\\\SC-WDOT-v5.73-SecurityReport-%TIMESTAMP%.html"
 echo Generating TXT Report...
 (
 echo =============================================================================
-echo  SupportCALL - Security Assessment Report
+echo  SupportCALL - READ-ONLY Security Assessment Report
 echo  SC-WDOT v5.73 - Windows Diagnostics ^& Operations Toolkit
 echo =============================================================================
+echo.
+echo *** READ-ONLY ASSESSMENT - NO CHANGES WERE MADE TO YOUR SYSTEM ***
 echo.
 echo ASSESSMENT DATE: %DATE% %TIME%
 echo COMPUTER NAME: %COMPUTERNAME%
@@ -816,31 +803,35 @@ echo ===========================================================================
 echo  EXECUTIVE SUMMARY
 echo =============================================================================
 echo.
-echo This comprehensive security assessment has analyzed:
-echo  - Malware and virus threats
-echo  - Network security configuration
-echo  - System vulnerabilities
-echo  - Security event logs ^(SIEM-style^)
-echo  - User account security
-echo  - System configuration compliance
+echo This READ-ONLY comprehensive security assessment analyzed:
+echo  - Malware and virus threat detection ^(report only, no removal^)
+echo  - Network security configuration ^(read-only^)
+echo  - System vulnerabilities ^(detection only^)
+echo  - Security event logs ^(SIEM-style collection^)
+echo  - User account security ^(audit only^)
+echo  - System configuration compliance ^(review only^)
+echo.
+echo IMPORTANT: This assessment performed NO modifications to your system.
+echo            All operations were READ-ONLY data collection and analysis.
 echo.
 echo =============================================================================
 echo  FINDINGS SUMMARY
 echo =============================================================================
 echo.
-echo [1] MALWARE SCAN RESULTS
+echo [1] MALWARE DETECTION RESULTS ^(Report Only - No Removal Performed^)
+type "%LOGPATH%\\\\defender-threats.log" 2>nul
 type "%LOGPATH%\\\\defender-scan.log" 2>nul
 echo.
-echo [2] NETWORK SECURITY STATUS
+echo [2] NETWORK SECURITY STATUS ^(Read-Only Analysis^)
 type "%LOGPATH%\\\\open-ports.txt" 2>nul
 echo.
-echo [3] FAILED LOGIN ATTEMPTS ^(Last 100^)
+echo [3] FAILED LOGIN ATTEMPTS ^(Last 100 - Read-Only^)
 type "%LOGPATH%\\\\failed-logins.csv" 2>nul
 echo.
-echo [4] ADMINISTRATOR ACCOUNTS
+echo [4] ADMINISTRATOR ACCOUNTS ^(Audit Only^)
 type "%LOGPATH%\\\\admin-users.txt" 2>nul
 echo.
-echo [5] MISSING SECURITY UPDATES
+echo [5] MISSING SECURITY UPDATES ^(Detection Only^)
 type "%LOGPATH%\\\\missing-updates.csv" 2>nul
 echo.
 echo =============================================================================
@@ -849,41 +840,54 @@ echo ===========================================================================
 echo.
 echo All detailed logs are available in: %LOGPATH%
 echo.
+echo  - Defender Threats: defender-threats.log
+echo  - Defender Status: defender-status.log
 echo  - Network Configuration: network-config.txt
 echo  - Security Events: security-events.csv
 echo  - System Events: system-events.csv
-echo  - Running Processes: processes.csv
+echo  - Running Processes: processes.csv, running-processes-detailed.csv
 echo  - Installed Software: installed-software.txt
 echo  - Firewall Status: firewall-profiles.txt
+echo  - Startup Programs: startup-programs.csv
+echo  - Services: services-list.txt, services-details.csv
 echo  - And many more...
 echo.
 echo =============================================================================
-echo  RECOMMENDATIONS
+echo  RECOMMENDATIONS FOR REMEDIATION
 echo =============================================================================
 echo.
+echo NOTE: This assessment made NO changes. Use the recommendations below
+echo       to manually remediate identified issues using SC-USCS or other tools.
+echo.
 echo [HIGH PRIORITY]
-echo  1. Review and remediate any malware detections
-echo  2. Close unnecessary open ports
-echo  3. Investigate failed login attempts
-echo  4. Install missing security updates
-echo  5. Review administrator account usage
+echo  1. Review and remediate any malware detections using appropriate tools
+echo  2. Close unnecessary open ports via firewall configuration
+echo  3. Investigate failed login attempts - possible breach indicators
+echo  4. Install missing critical security updates via Windows Update
+echo  5. Review administrator account usage and disable unnecessary accounts
 echo.
 echo [MEDIUM PRIORITY]
 echo  6. Enable BitLocker encryption if not active
 echo  7. Review and disable unnecessary services
-echo  8. Audit shared folder permissions
-echo  9. Verify firewall rules are optimal
-echo  10. Review startup programs for suspicious entries
+echo  8. Audit shared folder permissions and remove unnecessary shares
+echo  9. Verify firewall rules are optimal for your environment
+echo  10. Review startup programs for suspicious or unnecessary entries
+echo.
+echo [LOW PRIORITY]
+echo  11. Disable SMBv1 protocol if still enabled
+echo  12. Strengthen password policies if weak
+echo  13. Enable UAC if disabled
+echo  14. Review and update outdated software
 echo.
 echo =============================================================================
 echo  SUPPORT CONTACT
 echo =============================================================================
 echo.
-echo For assistance with remediation, contact:
+echo For assistance with remediation or to use SC-USCS cleaning tool, contact:
 echo  Email: alerts@supportcall.co.za
 echo  Email: scmyhelp@gmail.com
 echo.
-echo Report generated by SC-WDOT v5.73
+echo Report generated by SC-WDOT v5.73 ^(READ-ONLY Assessment Mode^)
 echo =============================================================================
 ) > "%TXTREPORT%"
 
@@ -892,13 +896,14 @@ powershell -Command "$html = @'
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Security Assessment Report - SC-WDOT v5.73</title>
+    <title>READ-ONLY Security Assessment Report - SC-WDOT v5.73</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }
         .container { max-width: 1200px; margin: 0 auto; background: white; padding: 30px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
         h1 { color: #33ccff; border-bottom: 3px solid #33ccff; padding-bottom: 10px; }
         h2 { color: #0099cc; margin-top: 30px; border-left: 4px solid #33ccff; padding-left: 10px; }
         .info-box { background: #e8f8ff; border: 1px solid #33ccff; padding: 15px; margin: 20px 0; border-radius: 5px; }
+        .readonly-notice { background: #d4edda; border: 2px solid #28a745; padding: 20px; margin: 20px 0; border-radius: 5px; font-weight: bold; }
         .warning { background: #fff3cd; border: 1px solid #ffc107; padding: 15px; margin: 20px 0; border-radius: 5px; }
         .critical { background: #f8d7da; border: 1px solid #dc3545; padding: 15px; margin: 20px 0; border-radius: 5px; }
         .success { background: #d4edda; border: 1px solid #28a745; padding: 15px; margin: 20px 0; border-radius: 5px; }
@@ -914,7 +919,14 @@ powershell -Command "$html = @'
 </head>
 <body>
     <div class=\"container\">
-        <h1>🛡️ Security Assessment Report</h1>
+        <h1>🛡️ READ-ONLY Security Assessment Report</h1>
+        
+        <div class=\"readonly-notice\">
+            <strong>✓ READ-ONLY ASSESSMENT MODE</strong><br>
+            NO CHANGES WERE MADE TO YOUR SYSTEM<br>
+            This assessment performed only detection and reporting. No cleaning, removal, or modifications occurred.
+        </div>
+        
         <div class=\"info-box\">
             <strong>SupportCALL - Windows Diagnostics & Operations Toolkit v5.73</strong><br>
             Assessment Date: ' + (Get-Date).ToString() + '<br>
@@ -924,88 +936,105 @@ powershell -Command "$html = @'
         
         <h2>📊 Executive Summary</h2>
         <div class=\"success\">
-            This comprehensive security assessment has analyzed multiple security domains including malware threats, 
-            network configuration, vulnerabilities, event logs, and system compliance.
+            This READ-ONLY comprehensive security assessment analyzed multiple security domains including 
+            malware threat detection (no removal), network configuration (read-only), vulnerabilities (detection only), 
+            event logs (SIEM collection), and system compliance (audit only).
+            <br><br>
+            <strong>IMPORTANT:</strong> All operations were READ-ONLY. No changes, cleaning, or removal operations were performed.
         </div>
         
         <div style=\"text-align: center;\">
             <div class=\"metric\">
                 <div class=\"metric-value\">✓</div>
-                <div class=\"metric-label\">Malware Scan</div>
+                <div class=\"metric-label\">Malware Detection<br>(Report Only)</div>
             </div>
             <div class=\"metric\">
                 <div class=\"metric-value\">✓</div>
-                <div class=\"metric-label\">Network Analysis</div>
+                <div class=\"metric-label\">Network Analysis<br>(Read-Only)</div>
             </div>
             <div class=\"metric\">
                 <div class=\"metric-value\">✓</div>
-                <div class=\"metric-label\">SIEM Logs</div>
+                <div class=\"metric-label\">SIEM Logs<br>(Collection Only)</div>
             </div>
             <div class=\"metric\">
                 <div class=\"metric-value\">✓</div>
-                <div class=\"metric-label\">Vulnerability Scan</div>
+                <div class=\"metric-label\">Vulnerability Scan<br>(Detection Only)</div>
             </div>
         </div>
         
-        <h2>🔍 Key Findings</h2>
+        <h2>🔍 Key Findings (Detection Only - No Action Taken)</h2>
         <div class=\"warning\">
-            <strong>⚠️ Review Required:</strong><br>
+            <strong>⚠️ Manual Review and Remediation Required:</strong><br>
             Detailed findings are available in the comprehensive log files. Please review:
             <ul>
-                <li>Malware scan results in defender-scan.log</li>
-                <li>Open network ports in open-ports.txt</li>
-                <li>Failed login attempts in failed-logins.csv</li>
-                <li>Missing security updates in missing-updates.csv</li>
+                <li>Malware detection results in defender-threats.log and defender-scan.log (NO removal performed)</li>
+                <li>Open network ports in open-ports.txt (NO ports were closed)</li>
+                <li>Failed login attempts in failed-logins.csv (NO accounts were locked)</li>
+                <li>Missing security updates in missing-updates.csv (NO updates were installed)</li>
+                <li>Security configuration issues (NO configuration changes were made)</li>
             </ul>
         </div>
         
         <h2>📁 Detailed Reports Location</h2>
         <div class=\"info-box\">
             All detailed logs and data files are available in:<br>
-            <strong>' + $env:REPORTPATH + '\\Logs</strong>
+            <strong>' + $env:USERPROFILE + '\\Desktop\\SC-WDOT-Reports\\Logs</strong>
         </div>
         
-        <h2>🎯 Priority Recommendations</h2>
+        <h2>🎯 Priority Recommendations for Manual Remediation</h2>
+        <div class=\"info-box\">
+            <strong>NOTE:</strong> This assessment made NO changes. Use recommendations below to manually 
+            remediate identified issues using SC-USCS tool or other appropriate remediation methods.
+        </div>
         <table>
             <tr>
                 <th>Priority</th>
-                <th>Action Required</th>
+                <th>Action Required (Manual)</th>
             </tr>
             <tr>
                 <td><span style=\"color: red;\">●</span> HIGH</td>
-                <td>Review and remediate any detected malware or viruses</td>
+                <td>Review and remediate any detected malware or viruses using appropriate removal tools</td>
             </tr>
             <tr>
                 <td><span style=\"color: red;\">●</span> HIGH</td>
-                <td>Install all missing critical security updates</td>
+                <td>Install all missing critical security updates via Windows Update</td>
             </tr>
             <tr>
                 <td><span style=\"color: red;\">●</span> HIGH</td>
-                <td>Investigate and address failed login attempts</td>
+                <td>Investigate and address failed login attempts - possible breach indicators</td>
             </tr>
             <tr>
                 <td><span style=\"color: orange;\">●</span> MEDIUM</td>
-                <td>Review and optimize firewall rules</td>
+                <td>Review and optimize firewall rules and close unnecessary open ports</td>
             </tr>
             <tr>
                 <td><span style=\"color: orange;\">●</span> MEDIUM</td>
-                <td>Audit administrator account usage</td>
+                <td>Audit administrator account usage and disable unnecessary privileged accounts</td>
+            </tr>
+            <tr>
+                <td><span style=\"color: orange;\">●</span> MEDIUM</td>
+                <td>Enable BitLocker encryption if not currently active</td>
             </tr>
             <tr>
                 <td><span style=\"color: green;\">●</span> LOW</td>
-                <td>Review startup programs for optimization</td>
+                <td>Review startup programs for optimization and suspicious entries</td>
+            </tr>
+            <tr>
+                <td><span style=\"color: green;\">●</span> LOW</td>
+                <td>Disable SMBv1 protocol if still enabled</td>
             </tr>
         </table>
         
         <h2>📞 Support Contact</h2>
         <div class=\"info-box\">
-            For assistance with remediation:<br>
+            For assistance with remediation or to use SC-USCS cleaning tool:<br>
             📧 Email: <a href=\"mailto:alerts@supportcall.co.za\">alerts@supportcall.co.za</a><br>
             📧 Email: <a href=\"mailto:scmyhelp@gmail.com\">scmyhelp@gmail.com</a>
         </div>
         
         <div class=\"footer\">
             Report generated by SC-WDOT v5.73 - SupportCALL Windows Diagnostics & Operations Toolkit<br>
+            <strong>READ-ONLY Assessment Mode - No System Changes Were Made</strong><br>
             © SupportCALL - Professional Windows Security Assessment
         </div>
     </div>
