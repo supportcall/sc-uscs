@@ -2102,23 +2102,29 @@ exit /b 0`;
         <header role="banner">
         {/* Header */}
         <Card className="mb-6 border-0 shadow-2xl bg-gradient-to-r from-primary/10 to-secondary/10 backdrop-blur-xl">
-          <CardHeader className="text-center space-y-4 py-8">
-            <div className="space-y-2">
-              <h1 className="text-3xl md:text-5xl font-black bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-                SupportCALL - Ultimate Secure Clean Script
+          <CardHeader className="text-center space-y-6 py-10">
+            <div className="space-y-4">
+              <h1 className="text-4xl md:text-6xl font-black bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent leading-tight">
+                SupportCALL
               </h1>
-              <div className="text-lg md:text-xl font-semibold text-muted-foreground">
+              <div className="text-2xl md:text-4xl font-bold text-foreground">
+                Ultimate Secure Clean Script
+              </div>
+              <div className="text-xl md:text-2xl font-semibold text-primary">
                 v5.01 - Professional Edition
               </div>
             </div>
-            <CardDescription className="text-base md:text-lg max-w-3xl mx-auto leading-relaxed">
-              Professional Custom Script Generator for Windows System Cleaning, Security Enhancement & Optimization - Tailored PowerShell Solutions for Windows 10/11
+            
+            <CardDescription className="text-lg md:text-xl max-w-4xl mx-auto leading-relaxed text-foreground/90 font-medium px-4">
+              Professional Custom Script Generator for Windows System Cleaning, Security Enhancement & 
+              Optimization - Tailored PowerShell Solutions for Windows 10/11
             </CardDescription>
-            <div className="flex justify-center gap-2 md:gap-4 flex-wrap">
-              <Badge variant="default" className="px-3 py-1 text-sm">SC-USCS v5.01</Badge>
-              <Badge variant="secondary" className="px-3 py-1 text-sm">Safety: 98%</Badge>
-              <Badge variant="outline" className="px-3 py-1 text-sm">Effectiveness: 95%</Badge>
-              <Badge variant="outline" className="px-3 py-1 text-sm">Win 10/11 Compatible</Badge>
+            
+            <div className="flex justify-center gap-3 md:gap-4 flex-wrap pt-4">
+              <Badge variant="default" className="px-4 py-2 text-base font-bold">SC-USCS v5.01</Badge>
+              <Badge variant="secondary" className="px-4 py-2 text-base font-bold">Safety: 98%</Badge>
+              <Badge variant="outline" className="px-4 py-2 text-base font-bold border-2">Effectiveness: 95%</Badge>
+              <Badge variant="outline" className="px-4 py-2 text-base font-bold border-2">Win 10/11 Compatible</Badge>
             </div>
           </CardHeader>
         </Card>
@@ -2130,16 +2136,20 @@ exit /b 0`;
         <section aria-labelledby="critical-warnings" className="grid gap-4 mb-8 lg:grid-cols-2">
           <h2 id="critical-warnings" className="sr-only">Critical System Warnings</h2>
            <Alert className="border-destructive/50 bg-destructive/5 shadow-lg">
-             <AlertDescription className="font-medium">
-               <strong className="text-destructive">ADMINISTRATOR REQUIRED:</strong> This script must run with full Administrator privileges. 
-               Save all work and close applications before execution. System restart may be required.
+             <AlertDescription className="font-semibold text-base leading-relaxed">
+               <strong className="text-destructive text-lg block mb-1">ADMINISTRATOR REQUIRED:</strong>
+               <span className="text-foreground/90">
+                 This script must run with full Administrator privileges. Save all work and close applications before execution. System restart may be required.
+               </span>
              </AlertDescription>
            </Alert>
 
            <Alert className="border-destructive bg-destructive/10 shadow-lg">
-             <AlertDescription className="font-medium">
-               <strong className="text-destructive">BACKUP MANDATORY:</strong> Create system backup and restore point before running. 
-               While extensively tested, system modifications carry inherent risks.
+             <AlertDescription className="font-semibold text-base leading-relaxed">
+               <strong className="text-destructive text-lg block mb-1">BACKUP MANDATORY:</strong>
+               <span className="text-foreground/90">
+                 Create system backup and restore point before running. While extensively tested, system modifications carry inherent risks.
+               </span>
              </AlertDescription>
            </Alert>
         </section>
@@ -2150,61 +2160,61 @@ exit /b 0`;
           <div className="absolute inset-0 bg-gradient-to-r from-amber-400/20 to-orange-400/20 animate-pulse"></div>
           <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-amber-500 via-yellow-500 to-orange-500"></div>
           
-          <CardHeader className="relative z-10 text-center pb-4">
-            <h2 id="pre-execution-checklist" className="flex items-center justify-center gap-3 text-2xl md:text-3xl font-black text-amber-900">
+          <CardHeader className="relative z-10 text-center pb-6">
+            <h2 id="pre-execution-checklist" className="flex items-center justify-center gap-3 text-2xl md:text-4xl font-black text-amber-900 mb-3">
               MANDATORY PRE-EXECUTION CHECKLIST
             </h2>
-            <div className="text-lg font-bold text-amber-800 mt-2 animate-pulse">
+            <div className="text-xl md:text-2xl font-bold text-amber-800 animate-pulse">
               COMPLETE ALL ITEMS BEFORE RUNNING SCRIPT
             </div>
           </CardHeader>
           
           <CardContent className="relative z-10">
             <div className="grid gap-6 md:grid-cols-2">
-              <div className="space-y-3 p-4 bg-white/60 rounded-lg border border-amber-300">
-                 <h4 className="font-black text-xl text-amber-900 flex items-center gap-2">
+              <div className="space-y-4 p-5 bg-white/70 rounded-lg border-2 border-amber-300 shadow-md">
+                 <h3 className="font-black text-xl md:text-2xl text-amber-900 flex items-center gap-2 pb-2 border-b-2 border-amber-300">
                    CRITICAL SYSTEM PREPARATION
-                 </h4>
-                <ul className="space-y-2">
+                 </h3>
+                <ul className="space-y-3">
                   {[
-                    "✅ Full system backup to EXTERNAL drive",
-                    "✅ Windows System Restore Point created", 
-                    "✅ Administrator account access CONFIRMED",
-                    "✅ ALL critical applications CLOSED"
+                    "Full system backup to EXTERNAL drive",
+                    "Windows System Restore Point created", 
+                    "Administrator account access CONFIRMED",
+                    "ALL critical applications CLOSED"
                   ].map((item, index) => (
-                    <li key={index} className="flex items-center gap-2 text-amber-800 font-semibold text-sm bg-amber-100/50 p-2 rounded border border-amber-200">
-                      <span className="text-lg">{item.split(' ')[0]}</span>
-                      <span>{item.substring(item.indexOf(' ') + 1)}</span>
+                    <li key={index} className="flex items-start gap-3 text-amber-900 font-semibold text-base bg-amber-100/70 p-3 rounded-md border border-amber-300 shadow-sm">
+                      <span className="text-2xl flex-shrink-0">✅</span>
+                      <span className="leading-snug">{item}</span>
                     </li>
                   ))}
                 </ul>
               </div>
               
-              <div className="space-y-3 p-4 bg-white/60 rounded-lg border border-amber-300">
-                 <h4 className="font-black text-xl text-amber-900 flex items-center gap-2">
+              <div className="space-y-4 p-5 bg-white/70 rounded-lg border-2 border-amber-300 shadow-md">
+                 <h3 className="font-black text-xl md:text-2xl text-amber-900 flex items-center gap-2 pb-2 border-b-2 border-amber-300">
                    ENVIRONMENT REQUIREMENTS
-                 </h4>
-                <ul className="space-y-2">
+                 </h3>
+                <ul className="space-y-3">
                   {[
-                    "✅ Device connected to POWER source",
-                    "✅ Stable internet connection ACTIVE", 
-                    "✅ Minimum 5GB free disk space",
-                    "✅ NO competing security scans running"
+                    "Device connected to POWER source",
+                    "Stable internet connection ACTIVE", 
+                    "Minimum 5GB free disk space",
+                    "NO competing security scans running"
                   ].map((item, index) => (
-                    <li key={index} className="flex items-center gap-2 text-amber-800 font-semibold text-sm bg-amber-100/50 p-2 rounded border border-amber-200">
-                      <span className="text-lg">{item.split(' ')[0]}</span>
-                      <span>{item.substring(item.indexOf(' ') + 1)}</span>
+                    <li key={index} className="flex items-start gap-3 text-amber-900 font-semibold text-base bg-amber-100/70 p-3 rounded-md border border-amber-300 shadow-sm">
+                      <span className="text-2xl flex-shrink-0">✅</span>
+                      <span className="leading-snug">{item}</span>
                     </li>
                   ))}
                 </ul>
               </div>
             </div>
             
-            <div className="mt-6 p-4 bg-red-100 border-2 border-red-400 rounded-lg">
-              <div className="text-center text-red-900 font-black text-lg">
+            <div className="mt-6 p-5 bg-red-100 border-2 border-red-500 rounded-lg shadow-md">
+              <div className="text-center text-red-900 font-black text-xl md:text-2xl mb-2">
                 🔥 FAILURE TO COMPLETE CHECKLIST MAY RESULT IN SYSTEM DAMAGE 🔥
               </div>
-              <div className="text-center text-red-800 font-bold mt-2">
+              <div className="text-center text-red-800 font-bold text-lg">
                 SupportCALL is NOT responsible for damage caused by improper preparation
               </div>
             </div>
