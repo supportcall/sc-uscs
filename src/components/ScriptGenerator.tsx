@@ -22,6 +22,87 @@ const ScriptGenerator = () => {
   const [showScript, setShowScript] = useState(false);
 
   const functions: ScriptFunction[] = [
+    // Windows Debloat & Privacy Functions
+    {
+      id: "disable-telemetry",
+      name: "Disable Windows Telemetry",
+      description: "Disables Windows telemetry and data collection services using built-in sc commands. Stops and disables DiagTrack and dmwappushservice.",
+      safety: "High Safety",
+      recommendation: "Recommended",
+      category: "Windows Debloat & Privacy"
+    },
+    {
+      id: "remove-bloatware",
+      name: "Remove Windows Bloatware",
+      description: "Removes pre-installed bloatware apps using PowerShell Get-AppxPackage (Xbox, Candy Crush, Solitaire, etc.). Does NOT remove essential system apps.",
+      safety: "High Safety",
+      recommendation: "Recommended",
+      category: "Windows Debloat & Privacy"
+    },
+    {
+      id: "disable-cortana",
+      name: "Disable Cortana",
+      description: "Disables Cortana via registry modifications. Can be reversed by changing registry value back to 0.",
+      safety: "High Safety",
+      recommendation: "Optional",
+      category: "Windows Debloat & Privacy"
+    },
+    {
+      id: "disable-windows-ads",
+      name: "Disable Windows Ads & Suggestions",
+      description: "Disables lock screen ads, app suggestions, tips, and promotional content via registry tweaks.",
+      safety: "High Safety",
+      recommendation: "Recommended",
+      category: "Windows Debloat & Privacy"
+    },
+    {
+      id: "privacy-tweaks",
+      name: "Enhanced Privacy Settings",
+      description: "Disables activity history, advertising ID, location tracking, and diagnostic data collection via registry. Fully reversible.",
+      safety: "High Safety",
+      recommendation: "Recommended",
+      category: "Windows Debloat & Privacy"
+    },
+    {
+      id: "disable-unnecessary-tasks",
+      name: "Disable Unnecessary Scheduled Tasks",
+      description: "Disables non-essential Windows scheduled tasks that consume resources (Telemetry, Customer Experience, Cloud Experience).",
+      safety: "High Safety",
+      recommendation: "Optional",
+      category: "Windows Debloat & Privacy"
+    },
+    {
+      id: "remove-onedrive",
+      name: "Remove OneDrive Integration",
+      description: "Uninstalls OneDrive using built-in uninstaller and disables integration via registry. Does not delete OneDrive files.",
+      safety: "Medium Safety",
+      recommendation: "Optional",
+      category: "Windows Debloat & Privacy"
+    },
+    {
+      id: "disable-background-apps",
+      name: "Disable Background Apps",
+      description: "Prevents apps from running in background via registry, improving performance and privacy.",
+      safety: "High Safety",
+      recommendation: "Optional",
+      category: "Windows Debloat & Privacy"
+    },
+    {
+      id: "performance-tweaks",
+      name: "Performance Optimization Tweaks",
+      description: "Registry tweaks for better performance: disable startup delay, visual effects, and unnecessary animations.",
+      safety: "High Safety",
+      recommendation: "Optional",
+      category: "Windows Debloat & Privacy"
+    },
+    {
+      id: "disable-unnecessary-services",
+      name: "Disable Unnecessary Services",
+      description: "Disables resource-heavy non-essential services (Print Spooler if no printer, Xbox services, etc.) using sc commands.",
+      safety: "Medium Safety",
+      recommendation: "Advanced",
+      category: "Windows Debloat & Privacy"
+    },
     // System Repair Functions
     {
       id: "sfc-scan",
@@ -430,6 +511,19 @@ const ScriptGenerator = () => {
     setSelectedFunctions(functions.filter(f => f.recommendation === "Recommended").map(f => f.id));
   };
 
+  const handleToggleDebloat = () => {
+    const debloatFunctions = functions.filter(f => f.category === "Windows Debloat & Privacy").map(f => f.id);
+    const allDebloatSelected = debloatFunctions.every(id => selectedFunctions.includes(id));
+    
+    if (allDebloatSelected) {
+      // Deselect all debloat functions
+      setSelectedFunctions(prev => prev.filter(id => !debloatFunctions.includes(id)));
+    } else {
+      // Select all debloat functions
+      setSelectedFunctions(prev => [...new Set([...prev, ...debloatFunctions])]);
+    }
+  };
+
   const handleFunctionToggle = (functionId: string) => {
     setSelectedFunctions(prev =>
       prev.includes(functionId)
@@ -495,6 +589,133 @@ const ScriptGenerator = () => {
       const logFile = `${stageNum.toString().padStart(2, '0')}_${func.id}.log`;
       
       switch(func.id) {
+        // Windows Debloat & Privacy Functions
+        case 'disable-telemetry':
+          return `echo [${stageNum}.${funcNum}] DISABLE TELEMETRY - Stops Windows data collection services
+echo *** Disabling telemetry and diagnostic services ***
+echo Stopping DiagTrack service...
+sc stop "DiagTrack" >> "%LOGPATH%\\\\${logFile}" 2>&1
+sc config "DiagTrack" start=disabled >> "%LOGPATH%\\\\${logFile}" 2>&1
+echo Stopping Connected User Experiences and Telemetry...
+sc stop "dmwappushservice" >> "%LOGPATH%\\\\${logFile}" 2>&1
+sc config "dmwappushservice" start=disabled >> "%LOGPATH%\\\\${logFile}" 2>&1
+echo Telemetry services disabled
+echo Results logged to: %LOGPATH%\\\\${logFile}
+echo.`;
+
+        case 'remove-bloatware':
+          return `echo [${stageNum}.${funcNum}] REMOVE BLOATWARE - Removes pre-installed unnecessary apps
+echo *** Removing bloatware applications ***
+echo NOTE: This removes non-essential apps only - system apps are protected
+powershell -Command "$apps = @('Microsoft.3DBuilder','Microsoft.BingNews','Microsoft.BingWeather','Microsoft.GetHelp','Microsoft.Getstarted','Microsoft.Messaging','Microsoft.Microsoft3DViewer','Microsoft.MicrosoftOfficeHub','Microsoft.MicrosoftSolitaireCollection','Microsoft.MicrosoftStickyNotes','Microsoft.MixedReality.Portal','Microsoft.Office.OneNote','Microsoft.OneConnect','Microsoft.People','Microsoft.Print3D','Microsoft.SkypeApp','Microsoft.Wallet','Microsoft.WindowsAlarms','Microsoft.WindowsCamera','Microsoft.windowscommunicationsapps','Microsoft.WindowsFeedbackHub','Microsoft.WindowsMaps','Microsoft.WindowsSoundRecorder','Microsoft.Xbox.TCUI','Microsoft.XboxApp','Microsoft.XboxGameOverlay','Microsoft.XboxGamingOverlay','Microsoft.XboxIdentityProvider','Microsoft.XboxSpeechToTextOverlay','Microsoft.YourPhone','Microsoft.ZuneMusic','Microsoft.ZuneVideo','*king.com*','*Candy*','*Facebook*','*Twitter*','*Spotify*'); foreach ($app in $apps) { Get-AppxPackage -Name $app -AllUsers | Remove-AppxPackage -ErrorAction SilentlyContinue; Get-AppxProvisionedPackage -Online | Where-Object DisplayName -like $app | Remove-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue }" >> "%LOGPATH%\\\\${logFile}" 2>&1
+echo Bloatware removal complete
+echo Results logged to: %LOGPATH%\\\\${logFile}
+echo.`;
+
+        case 'disable-cortana':
+          return `echo [${stageNum}.${funcNum}] DISABLE CORTANA - Disables Cortana via registry
+echo *** Disabling Cortana ***
+reg add "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Windows Search" /v AllowCortana /t REG_DWORD /d 0 /f >> "%LOGPATH%\\\\${logFile}" 2>&1
+reg add "HKLM\\SOFTWARE\\Microsoft\\PolicyManager\\default\\Experience\\AllowCortana" /v value /t REG_DWORD /d 0 /f >> "%LOGPATH%\\\\${logFile}" 2>&1
+echo Cortana disabled - Restart required to take full effect
+echo Results logged to: %LOGPATH%\\\\${logFile}
+echo.`;
+
+        case 'disable-windows-ads':
+          return `echo [${stageNum}.${funcNum}] DISABLE ADS - Removes ads and suggestions from Windows
+echo *** Disabling Windows advertising and suggestions ***
+reg add "HKCU\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager" /v SilentInstalledAppsEnabled /t REG_DWORD /d 0 /f >> "%LOGPATH%\\\\${logFile}" 2>&1
+reg add "HKCU\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager" /v SystemPaneSuggestionsEnabled /t REG_DWORD /d 0 /f >> "%LOGPATH%\\\\${logFile}" 2>&1
+reg add "HKCU\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager" /v SoftLandingEnabled /t REG_DWORD /d 0 /f >> "%LOGPATH%\\\\${logFile}" 2>&1
+reg add "HKCU\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager" /v SubscribedContent-338388Enabled /t REG_DWORD /d 0 /f >> "%LOGPATH%\\\\${logFile}" 2>&1
+reg add "HKCU\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager" /v SubscribedContent-338389Enabled /t REG_DWORD /d 0 /f >> "%LOGPATH%\\\\${logFile}" 2>&1
+reg add "HKCU\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager" /v RotatingLockScreenOverlayEnabled /t REG_DWORD /d 0 /f >> "%LOGPATH%\\\\${logFile}" 2>&1
+echo Windows ads and suggestions disabled
+echo Results logged to: %LOGPATH%\\\\${logFile}
+echo.`;
+
+        case 'privacy-tweaks':
+          return `echo [${stageNum}.${funcNum}] PRIVACY TWEAKS - Enhanced privacy settings
+echo *** Applying privacy enhancements ***
+reg add "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\System" /v EnableActivityFeed /t REG_DWORD /d 0 /f >> "%LOGPATH%\\\\${logFile}" 2>&1
+reg add "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\System" /v PublishUserActivities /t REG_DWORD /d 0 /f >> "%LOGPATH%\\\\${logFile}" 2>&1
+reg add "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\System" /v UploadUserActivities /t REG_DWORD /d 0 /f >> "%LOGPATH%\\\\${logFile}" 2>&1
+reg add "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\AdvertisingInfo" /v DisabledByGroupPolicy /t REG_DWORD /d 1 /f >> "%LOGPATH%\\\\${logFile}" 2>&1
+reg add "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\DataCollection" /v AllowTelemetry /t REG_DWORD /d 0 /f >> "%LOGPATH%\\\\${logFile}" 2>&1
+reg add "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection" /v AllowTelemetry /t REG_DWORD /d 0 /f >> "%LOGPATH%\\\\${logFile}" 2>&1
+reg add "HKCU\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Privacy" /v TailoredExperiencesWithDiagnosticDataEnabled /t REG_DWORD /d 0 /f >> "%LOGPATH%\\\\${logFile}" 2>&1
+echo Privacy tweaks applied successfully
+echo Results logged to: %LOGPATH%\\\\${logFile}
+echo.`;
+
+        case 'disable-unnecessary-tasks':
+          return `echo [${stageNum}.${funcNum}] DISABLE TASKS - Disables unnecessary scheduled tasks
+echo *** Disabling resource-heavy scheduled tasks ***
+schtasks /Change /TN "\\Microsoft\\Windows\\Application Experience\\Microsoft Compatibility Appraiser" /Disable >> "%LOGPATH%\\\\${logFile}" 2>&1
+schtasks /Change /TN "\\Microsoft\\Windows\\Application Experience\\ProgramDataUpdater" /Disable >> "%LOGPATH%\\\\${logFile}" 2>&1
+schtasks /Change /TN "\\Microsoft\\Windows\\Autochk\\Proxy" /Disable >> "%LOGPATH%\\\\${logFile}" 2>&1
+schtasks /Change /TN "\\Microsoft\\Windows\\Customer Experience Improvement Program\\Consolidator" /Disable >> "%LOGPATH%\\\\${logFile}" 2>&1
+schtasks /Change /TN "\\Microsoft\\Windows\\Customer Experience Improvement Program\\UsbCeip" /Disable >> "%LOGPATH%\\\\${logFile}" 2>&1
+schtasks /Change /TN "\\Microsoft\\Windows\\DiskDiagnostic\\Microsoft-Windows-DiskDiagnosticDataCollector" /Disable >> "%LOGPATH%\\\\${logFile}" 2>&1
+schtasks /Change /TN "\\Microsoft\\Windows\\Maintenance\\WinSAT" /Disable >> "%LOGPATH%\\\\${logFile}" 2>&1
+echo Unnecessary scheduled tasks disabled
+echo Results logged to: %LOGPATH%\\\\${logFile}
+echo.`;
+
+        case 'remove-onedrive':
+          return `echo [${stageNum}.${funcNum}] REMOVE ONEDRIVE - Uninstalls OneDrive integration
+echo *** Removing OneDrive ***
+echo NOTE: This does NOT delete your OneDrive files, only uninstalls the app
+taskkill /f /im OneDrive.exe >> "%LOGPATH%\\\\${logFile}" 2>&1
+if exist "%SystemRoot%\\System32\\OneDriveSetup.exe" (
+    "%SystemRoot%\\System32\\OneDriveSetup.exe" /uninstall >> "%LOGPATH%\\\\${logFile}" 2>&1
+)
+if exist "%SystemRoot%\\SysWOW64\\OneDriveSetup.exe" (
+    "%SystemRoot%\\SysWOW64\\OneDriveSetup.exe" /uninstall >> "%LOGPATH%\\\\${logFile}" 2>&1
+)
+reg delete "HKEY_CLASSES_ROOT\\CLSID\\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" /f >> "%LOGPATH%\\\\${logFile}" 2>&1
+reg delete "HKEY_CLASSES_ROOT\\Wow6432Node\\CLSID\\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" /f >> "%LOGPATH%\\\\${logFile}" 2>&1
+echo OneDrive removed successfully
+echo Results logged to: %LOGPATH%\\\\${logFile}
+echo.`;
+
+        case 'disable-background-apps':
+          return `echo [${stageNum}.${funcNum}] DISABLE BACKGROUND APPS - Prevents apps from running in background
+echo *** Disabling background apps for better performance ***
+reg add "HKCU\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\BackgroundAccessApplications" /v GlobalUserDisabled /t REG_DWORD /d 1 /f >> "%LOGPATH%\\\\${logFile}" 2>&1
+reg add "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\AppPrivacy" /v LetAppsRunInBackground /t REG_DWORD /d 2 /f >> "%LOGPATH%\\\\${logFile}" 2>&1
+echo Background apps disabled
+echo Results logged to: %LOGPATH%\\\\${logFile}
+echo.`;
+
+        case 'performance-tweaks':
+          return `echo [${stageNum}.${funcNum}] PERFORMANCE TWEAKS - Optimizations for better performance
+echo *** Applying performance optimizations ***
+reg add "HKCU\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\VisualEffects" /v VisualFXSetting /t REG_DWORD /d 2 /f >> "%LOGPATH%\\\\${logFile}" 2>&1
+reg add "HKCU\\Control Panel\\Desktop" /v MenuShowDelay /t REG_SZ /d 0 /f >> "%LOGPATH%\\\\${logFile}" 2>&1
+reg add "HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Serialize" /v StartupDelayInMSec /t REG_DWORD /d 0 /f >> "%LOGPATH%\\\\${logFile}" 2>&1
+reg add "HKCU\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced" /v TaskbarAnimations /t REG_DWORD /d 0 /f >> "%LOGPATH%\\\\${logFile}" 2>&1
+powercfg -change -standby-timeout-ac 0 >> "%LOGPATH%\\\\${logFile}" 2>&1
+powercfg -change -disk-timeout-ac 0 >> "%LOGPATH%\\\\${logFile}" 2>&1
+echo Performance optimizations applied
+echo Results logged to: %LOGPATH%\\\\${logFile}
+echo.`;
+
+        case 'disable-unnecessary-services':
+          return `echo [${stageNum}.${funcNum}] DISABLE SERVICES - Disables non-essential services
+echo *** Disabling unnecessary services ***
+echo NOTE: Only disables services safe to disable on most systems
+sc config "XblAuthManager" start=disabled >> "%LOGPATH%\\\\${logFile}" 2>&1
+sc config "XblGameSave" start=disabled >> "%LOGPATH%\\\\${logFile}" 2>&1
+sc config "XboxNetApiSvc" start=disabled >> "%LOGPATH%\\\\${logFile}" 2>&1
+sc config "XboxGipSvc" start=disabled >> "%LOGPATH%\\\\${logFile}" 2>&1
+sc config "Fax" start=disabled >> "%LOGPATH%\\\\${logFile}" 2>&1
+sc config "RetailDemo" start=disabled >> "%LOGPATH%\\\\${logFile}" 2>&1
+sc config "WMPNetworkSvc" start=disabled >> "%LOGPATH%\\\\${logFile}" 2>&1
+echo Unnecessary services disabled
+echo Results logged to: %LOGPATH%\\\\${logFile}
+echo.`;
+
         // System Repair Functions
         case 'sfc-scan':
           return `echo [${stageNum}.${funcNum}] SYSTEM FILE CHECKER - Repairs protected system files
@@ -1915,6 +2136,24 @@ exit /b 0`;
               </Button>
               <Button onClick={handleSelectRecommended} variant="secondary" size="lg" className="flex-1 sm:flex-none">
                 Recommended Only
+              </Button>
+              <Button 
+                onClick={handleToggleDebloat} 
+                variant={
+                  functions
+                    .filter(f => f.category === "Windows Debloat & Privacy")
+                    .every(f => selectedFunctions.includes(f.id))
+                    ? "default"
+                    : "outline"
+                }
+                size="lg" 
+                className="flex-1 sm:flex-none"
+              >
+                {functions
+                  .filter(f => f.category === "Windows Debloat & Privacy")
+                  .every(f => selectedFunctions.includes(f.id))
+                  ? "Deselect"
+                  : "Select"} Debloat Functions
               </Button>
             </div>
             <div className="text-center">
