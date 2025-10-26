@@ -2656,7 +2656,7 @@ exit /b 0`;
                 Ultimate Secure Clean Script
               </div>
               <div className="text-xl md:text-2xl font-semibold text-primary">
-                v5.73 - Professional Edition
+                v5.73 - <span onClick={downloadScript} className="cursor-pointer">Professional Edition</span>
               </div>
             </div>
             
