@@ -5,11 +5,7 @@ const Navigation = () => {
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
-      // Always scroll to absolute top for consistency
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-      });
+      element.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   };
 
@@ -17,16 +13,21 @@ const Navigation = () => {
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border" role="navigation" aria-label="Main navigation">
       <div className="container mx-auto px-6">
         <div className="flex items-center justify-between h-16">
-          <div className="flex items-center gap-2">
+          <button 
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+            aria-label="Scroll to top"
+          >
             <Terminal className="w-6 h-6 text-primary" aria-hidden="true" />
             <span className="font-bold text-lg">SupportCALL</span>
-          </div>
+          </button>
           
           <div className="flex items-center gap-4">
             <Button 
               variant="ghost" 
               onClick={() => scrollToSection('sc-uwire')}
               className="hover:bg-primary/10 hover:text-primary"
+              aria-label="Navigate to SC-UWIRE section"
             >
               <Terminal className="w-4 h-4 mr-2" aria-hidden="true" />
               SC-UWIRE
@@ -35,6 +36,7 @@ const Navigation = () => {
               variant="ghost" 
               onClick={() => scrollToSection('sc-uscs')}
               className="hover:bg-primary/10 hover:text-primary"
+              aria-label="Navigate to SC-USCS section"
             >
               <FileCode className="w-4 h-4 mr-2" aria-hidden="true" />
               SC-USCS
