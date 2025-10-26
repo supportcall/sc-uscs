@@ -588,10 +588,38 @@ const ScriptGenerator = () => {
     const generateFunctionImplementation = (func: ScriptFunction, stageNum: number, funcNum: number) => {
       const logFile = `${stageNum.toString().padStart(2, '0')}_${func.id}.log`;
       
+      // Generate pre-function report entry
+      const preReport = `
+REM === PRE-EXECUTION REPORT UPDATE ===
+echo [${stageNum}.${funcNum}] PRE-EXECUTION: ${func.name} >> "%LOGPATH%\\\\execution-timeline.log"
+echo Status: STARTING >> "%LOGPATH%\\\\execution-timeline.log"
+echo Function: ${func.name} >> "%LOGPATH%\\\\execution-timeline.log"
+echo Category: ${func.category} >> "%LOGPATH%\\\\execution-timeline.log"
+echo Safety: ${func.safety} >> "%LOGPATH%\\\\execution-timeline.log"
+echo Timestamp: %DATE% %TIME% >> "%LOGPATH%\\\\execution-timeline.log"
+echo Log File: ${logFile} >> "%LOGPATH%\\\\execution-timeline.log"
+echo. >> "%LOGPATH%\\\\execution-timeline.log"
+`;
+
+      // Generate post-function report entry
+      const postReport = `
+REM === POST-EXECUTION REPORT UPDATE ===
+echo [${stageNum}.${funcNum}] POST-EXECUTION: ${func.name} >> "%LOGPATH%\\\\execution-timeline.log"
+echo Status: COMPLETED >> "%LOGPATH%\\\\execution-timeline.log"
+echo Timestamp: %DATE% %TIME% >> "%LOGPATH%\\\\execution-timeline.log"
+echo Results logged to: %LOGPATH%\\\\${logFile} >> "%LOGPATH%\\\\execution-timeline.log"
+echo ================================================================ >> "%LOGPATH%\\\\execution-timeline.log"
+echo. >> "%LOGPATH%\\\\execution-timeline.log"
+REM Update consolidated progress report
+echo [${stageNum}.${funcNum}] ${func.name} - COMPLETED at %TIME% >> "%LOGPATH%\\\\progress-summary.txt"
+echo.
+`;
+      
       switch(func.id) {
         // Windows Debloat & Privacy Functions
         case 'disable-telemetry':
-          return `echo [${stageNum}.${funcNum}] DISABLE TELEMETRY - Stops Windows data collection services
+          return `${preReport}
+echo [${stageNum}.${funcNum}] DISABLE TELEMETRY - Stops Windows data collection services
 echo *** Disabling telemetry and diagnostic services ***
 echo Stopping DiagTrack service...
 sc stop "DiagTrack" >> "%LOGPATH%\\\\${logFile}" 2>&1
@@ -601,28 +629,31 @@ sc stop "dmwappushservice" >> "%LOGPATH%\\\\${logFile}" 2>&1
 sc config "dmwappushservice" start=disabled >> "%LOGPATH%\\\\${logFile}" 2>&1
 echo Telemetry services disabled
 echo Results logged to: %LOGPATH%\\\\${logFile}
-echo.`;
+${postReport}`;
 
         case 'remove-bloatware':
-          return `echo [${stageNum}.${funcNum}] REMOVE BLOATWARE - Removes pre-installed unnecessary apps
+          return `${preReport}
+echo [${stageNum}.${funcNum}] REMOVE BLOATWARE - Removes pre-installed unnecessary apps
 echo *** Removing bloatware applications ***
 echo NOTE: This removes non-essential apps only - system apps are protected
 powershell -Command "$apps = @('Microsoft.3DBuilder','Microsoft.BingNews','Microsoft.BingWeather','Microsoft.GetHelp','Microsoft.Getstarted','Microsoft.Messaging','Microsoft.Microsoft3DViewer','Microsoft.MicrosoftOfficeHub','Microsoft.MicrosoftSolitaireCollection','Microsoft.MicrosoftStickyNotes','Microsoft.MixedReality.Portal','Microsoft.Office.OneNote','Microsoft.OneConnect','Microsoft.People','Microsoft.Print3D','Microsoft.SkypeApp','Microsoft.Wallet','Microsoft.WindowsAlarms','Microsoft.WindowsCamera','Microsoft.windowscommunicationsapps','Microsoft.WindowsFeedbackHub','Microsoft.WindowsMaps','Microsoft.WindowsSoundRecorder','Microsoft.Xbox.TCUI','Microsoft.XboxApp','Microsoft.XboxGameOverlay','Microsoft.XboxGamingOverlay','Microsoft.XboxIdentityProvider','Microsoft.XboxSpeechToTextOverlay','Microsoft.YourPhone','Microsoft.ZuneMusic','Microsoft.ZuneVideo','*king.com*','*Candy*','*Facebook*','*Twitter*','*Spotify*'); foreach ($app in $apps) { Get-AppxPackage -Name $app -AllUsers | Remove-AppxPackage -ErrorAction SilentlyContinue; Get-AppxProvisionedPackage -Online | Where-Object DisplayName -like $app | Remove-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue }" >> "%LOGPATH%\\\\${logFile}" 2>&1
 echo Bloatware removal complete
 echo Results logged to: %LOGPATH%\\\\${logFile}
-echo.`;
+${postReport}`;
 
         case 'disable-cortana':
-          return `echo [${stageNum}.${funcNum}] DISABLE CORTANA - Disables Cortana via registry
+          return `${preReport}
+echo [${stageNum}.${funcNum}] DISABLE CORTANA - Disables Cortana via registry
 echo *** Disabling Cortana ***
 reg add "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\Windows Search" /v AllowCortana /t REG_DWORD /d 0 /f >> "%LOGPATH%\\\\${logFile}" 2>&1
 reg add "HKLM\\SOFTWARE\\Microsoft\\PolicyManager\\default\\Experience\\AllowCortana" /v value /t REG_DWORD /d 0 /f >> "%LOGPATH%\\\\${logFile}" 2>&1
 echo Cortana disabled - Restart required to take full effect
 echo Results logged to: %LOGPATH%\\\\${logFile}
-echo.`;
+${postReport}`;
 
         case 'disable-windows-ads':
-          return `echo [${stageNum}.${funcNum}] DISABLE ADS - Removes ads and suggestions from Windows
+          return `${preReport}
+echo [${stageNum}.${funcNum}] DISABLE ADS - Removes ads and suggestions from Windows
 echo *** Disabling Windows advertising and suggestions ***
 reg add "HKCU\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager" /v SilentInstalledAppsEnabled /t REG_DWORD /d 0 /f >> "%LOGPATH%\\\\${logFile}" 2>&1
 reg add "HKCU\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager" /v SystemPaneSuggestionsEnabled /t REG_DWORD /d 0 /f >> "%LOGPATH%\\\\${logFile}" 2>&1
@@ -632,10 +663,11 @@ reg add "HKCU\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryMana
 reg add "HKCU\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager" /v RotatingLockScreenOverlayEnabled /t REG_DWORD /d 0 /f >> "%LOGPATH%\\\\${logFile}" 2>&1
 echo Windows ads and suggestions disabled
 echo Results logged to: %LOGPATH%\\\\${logFile}
-echo.`;
+${postReport}`;
 
         case 'privacy-tweaks':
-          return `echo [${stageNum}.${funcNum}] PRIVACY TWEAKS - Enhanced privacy settings
+          return `${preReport}
+echo [${stageNum}.${funcNum}] PRIVACY TWEAKS - Enhanced privacy settings
 echo *** Applying privacy enhancements ***
 reg add "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\System" /v EnableActivityFeed /t REG_DWORD /d 0 /f >> "%LOGPATH%\\\\${logFile}" 2>&1
 reg add "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\System" /v PublishUserActivities /t REG_DWORD /d 0 /f >> "%LOGPATH%\\\\${logFile}" 2>&1
@@ -646,10 +678,11 @@ reg add "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection" /v AllowT
 reg add "HKCU\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Privacy" /v TailoredExperiencesWithDiagnosticDataEnabled /t REG_DWORD /d 0 /f >> "%LOGPATH%\\\\${logFile}" 2>&1
 echo Privacy tweaks applied successfully
 echo Results logged to: %LOGPATH%\\\\${logFile}
-echo.`;
+${postReport}`;
 
         case 'disable-unnecessary-tasks':
-          return `echo [${stageNum}.${funcNum}] DISABLE TASKS - Disables unnecessary scheduled tasks
+          return `${preReport}
+echo [${stageNum}.${funcNum}] DISABLE TASKS - Disables unnecessary scheduled tasks
 echo *** Disabling resource-heavy scheduled tasks ***
 schtasks /Change /TN "\\Microsoft\\Windows\\Application Experience\\Microsoft Compatibility Appraiser" /Disable >> "%LOGPATH%\\\\${logFile}" 2>&1
 schtasks /Change /TN "\\Microsoft\\Windows\\Application Experience\\ProgramDataUpdater" /Disable >> "%LOGPATH%\\\\${logFile}" 2>&1
@@ -660,10 +693,11 @@ schtasks /Change /TN "\\Microsoft\\Windows\\DiskDiagnostic\\Microsoft-Windows-Di
 schtasks /Change /TN "\\Microsoft\\Windows\\Maintenance\\WinSAT" /Disable >> "%LOGPATH%\\\\${logFile}" 2>&1
 echo Unnecessary scheduled tasks disabled
 echo Results logged to: %LOGPATH%\\\\${logFile}
-echo.`;
+${postReport}`;
 
         case 'remove-onedrive':
-          return `echo [${stageNum}.${funcNum}] REMOVE ONEDRIVE - Uninstalls OneDrive integration
+          return `${preReport}
+echo [${stageNum}.${funcNum}] REMOVE ONEDRIVE - Uninstalls OneDrive integration
 echo *** Removing OneDrive ***
 echo NOTE: This does NOT delete your OneDrive files, only uninstalls the app
 taskkill /f /im OneDrive.exe >> "%LOGPATH%\\\\${logFile}" 2>&1
@@ -677,19 +711,21 @@ reg delete "HKEY_CLASSES_ROOT\\CLSID\\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" /f
 reg delete "HKEY_CLASSES_ROOT\\Wow6432Node\\CLSID\\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" /f >> "%LOGPATH%\\\\${logFile}" 2>&1
 echo OneDrive removed successfully
 echo Results logged to: %LOGPATH%\\\\${logFile}
-echo.`;
+${postReport}`;
 
         case 'disable-background-apps':
-          return `echo [${stageNum}.${funcNum}] DISABLE BACKGROUND APPS - Prevents apps from running in background
+          return `${preReport}
+echo [${stageNum}.${funcNum}] DISABLE BACKGROUND APPS - Prevents apps from running in background
 echo *** Disabling background apps for better performance ***
 reg add "HKCU\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\BackgroundAccessApplications" /v GlobalUserDisabled /t REG_DWORD /d 1 /f >> "%LOGPATH%\\\\${logFile}" 2>&1
 reg add "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\AppPrivacy" /v LetAppsRunInBackground /t REG_DWORD /d 2 /f >> "%LOGPATH%\\\\${logFile}" 2>&1
 echo Background apps disabled
 echo Results logged to: %LOGPATH%\\\\${logFile}
-echo.`;
+${postReport}`;
 
         case 'performance-tweaks':
-          return `echo [${stageNum}.${funcNum}] PERFORMANCE TWEAKS - Optimizations for better performance
+          return `${preReport}
+echo [${stageNum}.${funcNum}] PERFORMANCE TWEAKS - Optimizations for better performance
 echo *** Applying performance optimizations ***
 reg add "HKCU\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\VisualEffects" /v VisualFXSetting /t REG_DWORD /d 2 /f >> "%LOGPATH%\\\\${logFile}" 2>&1
 reg add "HKCU\\Control Panel\\Desktop" /v MenuShowDelay /t REG_SZ /d 0 /f >> "%LOGPATH%\\\\${logFile}" 2>&1
@@ -699,10 +735,11 @@ powercfg -change -standby-timeout-ac 0 >> "%LOGPATH%\\\\${logFile}" 2>&1
 powercfg -change -disk-timeout-ac 0 >> "%LOGPATH%\\\\${logFile}" 2>&1
 echo Performance optimizations applied
 echo Results logged to: %LOGPATH%\\\\${logFile}
-echo.`;
+${postReport}`;
 
         case 'disable-unnecessary-services':
-          return `echo [${stageNum}.${funcNum}] DISABLE SERVICES - Disables non-essential services
+          return `${preReport}
+echo [${stageNum}.${funcNum}] DISABLE SERVICES - Disables non-essential services
 echo *** Disabling unnecessary services ***
 echo NOTE: Only disables services safe to disable on most systems
 sc config "XblAuthManager" start=disabled >> "%LOGPATH%\\\\${logFile}" 2>&1
@@ -714,11 +751,12 @@ sc config "RetailDemo" start=disabled >> "%LOGPATH%\\\\${logFile}" 2>&1
 sc config "WMPNetworkSvc" start=disabled >> "%LOGPATH%\\\\${logFile}" 2>&1
 echo Unnecessary services disabled
 echo Results logged to: %LOGPATH%\\\\${logFile}
-echo.`;
+${postReport}`;
 
         // System Repair Functions
         case 'sfc-scan':
-          return `echo [${stageNum}.${funcNum}] SYSTEM FILE CHECKER - Repairs protected system files
+          return `${preReport}
+echo [${stageNum}.${funcNum}] SYSTEM FILE CHECKER - Repairs protected system files
 echo ----------------------------------------------------------------
 echo ^|^| SYSTEM FILE CHECKER - Full scan ^| STARTED %TIME% %DATE% ^|^|
 echo ^|^| *Press [Ctrl] + [C] to cancel and proceed to the next     ^|^|
@@ -735,10 +773,11 @@ if %errorlevel% equ 0 (
     "%windir%\\system32\\sfc.exe" /scannow >> "%LOGPATH%\\\\${logFile}" 2>&1
 )
 echo Results logged to: %LOGPATH%\\\\${logFile}
-echo.`;
+${postReport}`;
         
         case 'dism-restore':
-          return `echo [${stageNum}.${funcNum}] DISM RESTORE HEALTH - Repairs component store; fixes servicing stack
+          return `${preReport}
+echo [${stageNum}.${funcNum}] DISM RESTORE HEALTH - Repairs component store; fixes servicing stack
 echo ----------------------------------------------------------------
 echo ^|^| DISM RESTORE HEALTH - Component repair ^| STARTED %TIME% %DATE% ^|^|
 echo ^|^| *Press [Ctrl] + [C] to cancel and proceed to the next     ^|^|
@@ -755,10 +794,11 @@ if %errorlevel% equ 0 (
     "%windir%\\system32\\Dism.exe" /Online /Cleanup-Image /RestoreHealth /LogPath:"%LOGPATH%\\\\${logFile}"
 )
 echo Results logged to: %LOGPATH%\\\\${logFile}
-echo.`;
+${postReport}`;
         
         case 'dism-cleanup':
-          return `echo [${stageNum}.${funcNum}] DISM COMPONENT CLEANUP - Removes superseded WinSxS components
+          return `${preReport}
+echo [${stageNum}.${funcNum}] DISM COMPONENT CLEANUP - Removes superseded WinSxS components
 echo *** Removing old component versions to free disk space ***
 REM Try PATH first, fallback to full path
 where dism.exe >nul 2>&1
@@ -769,10 +809,11 @@ if %errorlevel% equ 0 (
     "%windir%\\system32\\Dism.exe" /Online /Cleanup-Image /StartComponentCleanup /LogPath:"%LOGPATH%\\\\${logFile}"
 )
 echo Results logged to: %LOGPATH%\\\\${logFile}
-echo.`;
+${postReport}`;
         
         case 'chkdsk':
-          return `echo [${stageNum}.${funcNum}] CHECK DISK - Scans/fixes filesystem errors and bad sectors
+          return `${preReport}
+echo [${stageNum}.${funcNum}] CHECK DISK - Scans/fixes filesystem errors and bad sectors
 echo ----------------------------------------------------------------
 echo ^|^| CHECK DISK - Filesystem scan ^| STARTED %TIME% %DATE% ^|^|
 echo ^|^| *Press [Ctrl] + [C] to cancel and proceed to the next     ^|^|
@@ -789,18 +830,20 @@ if %errorlevel% equ 0 (
     "%windir%\\system32\\chkdsk.exe" C: >> "%LOGPATH%\\\\${logFile}" 2>&1
 )
 echo Results logged to: %LOGPATH%\\\\${logFile}
-echo.`;
+${postReport}`;
         
         case 'repair-volume':
-          return `echo [${stageNum}.${funcNum}] REPAIR VOLUME - Online/offline volume scan and repair
+          return `${preReport}
+echo [${stageNum}.${funcNum}] REPAIR VOLUME - Online/offline volume scan and repair
 echo *** PowerShell volume repair operations ***
 powershell -Command "Repair-Volume -DriveLetter C -Scan; Repair-Volume -DriveLetter C -OfflineScanAndFix" >> "%LOGPATH%\\\\${logFile}" 2>&1
 echo Results logged to: %LOGPATH%\\\\${logFile}
-echo.`;
+${postReport}`;
 
         // System Cleaning Functions
         case 'cleanmgr':
-          return `echo [${stageNum}.${funcNum}] DISK CLEANUP - Legacy Disk Cleanup; scripted space reclaim
+          return `${preReport}
+echo [${stageNum}.${funcNum}] DISK CLEANUP - Legacy Disk Cleanup; scripted space reclaim
 echo *** Running Windows Disk Cleanup utility ***
 REM Try PATH first, fallback to full path or PowerShell alternative
 where cleanmgr.exe >nul 2>&1
@@ -816,17 +859,19 @@ if %errorlevel% equ 0 (
     )
 )
 echo Results logged to: %LOGPATH%\\\\${logFile}
-echo.`;
+${postReport}`;
         
         case 'optimize-volume':
-          return `echo [${stageNum}.${funcNum}] OPTIMIZE VOLUME - TRIM/defrag per-drive type
+          return `${preReport}
+echo [${stageNum}.${funcNum}] OPTIMIZE VOLUME - TRIM/defrag per-drive type
 echo *** Auto-detecting drive type and optimizing ***
 powershell -Command "Get-Volume | Where-Object {$_.DriveLetter -eq 'C'} | Optimize-Volume -Verbose" >> "%LOGPATH%\\\\${logFile}" 2>&1
 echo Results logged to: %LOGPATH%\\\\${logFile}
-echo.`;
+${postReport}`;
         
         case 'bleachbit':
-          return `echo [${stageNum}.${funcNum}] BLEACHBIT - Deep system/browser cleanup
+          return `${preReport}
+echo [${stageNum}.${funcNum}] BLEACHBIT - Deep system/browser cleanup
 echo *** Checking for BleachBit portable ***
 if exist "%TOOLSPATH%\\\\bleachbit_portable\\\\bleachbit_console.exe" (
     echo Running BleachBit deep clean...
@@ -836,30 +881,33 @@ if exist "%TOOLSPATH%\\\\bleachbit_portable\\\\bleachbit_console.exe" (
     echo Extract to: %TOOLSPATH%\\\\bleachbit_portable\\\\
 )
 echo Results logged to: %LOGPATH%\\\\${logFile}
-echo.`;
+${postReport}`;
 
         // Event Logs Management
         case 'wevtutil':
-          return `echo [${stageNum}.${funcNum}] EVENT LOG MANAGEMENT - Query/export/clear Windows event logs
+          return `${preReport}
+echo [${stageNum}.${funcNum}] EVENT LOG MANAGEMENT - Query/export/clear Windows event logs
 echo *** Exporting Windows Event Logs ***
 wevtutil qe System /c:100 /f:text > "%LOGPATH%\\\\${logFile}"
 wevtutil qe Application /c:100 /f:text >> "%LOGPATH%\\\\${logFile}"
 wevtutil qe Security /c:100 /f:text >> "%LOGPATH%\\\\${logFile}"
 echo Logs exported to: %LOGPATH%\\\\${logFile}
-echo.`;
+${postReport}`;
 
         // Network Repair Functions
         case 'dns-flush':
-          return `echo [${stageNum}.${funcNum}] DNS FLUSH - Flushes DNS resolver cache
+          return `${preReport}
+echo [${stageNum}.${funcNum}] DNS FLUSH - Flushes DNS resolver cache
 ipconfig /flushdns >> "%LOGPATH%\\\\${logFile}" 2>&1
 echo Results logged to: %LOGPATH%\\\\${logFile}
-echo.`;
+${postReport}`;
         
         case 'winsock-reset':
-          return `echo [${stageNum}.${funcNum}] WINSOCK RESET - Resets Winsock/LSP
+          return `${preReport}
+echo [${stageNum}.${funcNum}] WINSOCK RESET - Resets Winsock/LSP
 netsh winsock reset >> "%LOGPATH%\\\\${logFile}" 2>&1
 echo Results logged to: %LOGPATH%\\\\${logFile}
-echo.`;
+${postReport}`;
         
         case 'tcpip-reset':
           return `echo [${stageNum}.${funcNum}] TCP/IP RESET - Rebuilds TCP/IP stack
@@ -1168,7 +1216,8 @@ echo.`;
 
         // Reporting & Notifications
         case 'system-report':
-          return `echo [${stageNum}.${funcNum}] COMPREHENSIVE SYSTEM REPORT - Complete system analysis
+          return `${preReport}
+echo [${stageNum}.${funcNum}] COMPREHENSIVE SYSTEM REPORT - Complete system analysis
 echo *** Generating comprehensive system reports ***
 echo === CONSOLIDATED FINDINGS REPORT === > "%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt"
 echo Script Version: SC-USCS v5.01 >> "%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt"
@@ -1203,10 +1252,11 @@ echo === SUMMARY === >> "%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt"
 echo All findings consolidated in: %LOGPATH% >> "%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt"
 echo For support, email all files to: scmyhelp@gmail.com and alerts@supportcall.co.za >> "%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt"
 echo Comprehensive system report generated
-echo.`;
+${postReport}`;
         
         case 'email-report':
-          return `echo [${stageNum}.${funcNum}] EMAIL REPORT - Send reports to support team
+          return `${preReport}
+echo [${stageNum}.${funcNum}] EMAIL REPORT - Send reports to support team
 echo *** Preparing and sending email report ***
 powershell -ExecutionPolicy Bypass -Command "$ErrorActionPreference='Continue'; try { $computerName = $env:COMPUTERNAME; $logPath = '%LOGPATH%'; $threats = try { Get-MpThreatDetection -ErrorAction SilentlyContinue } catch { $null }; $threatList = if ($threats) { ($threats | ForEach-Object { '<li style=\\"color: #d32f2f; margin: 5px 0;\\">' + $_.ThreatName + '</li>' }) -join '' } else { '<li style=\\"color: #388e3c;\\">No threats detected</li>' }; $threatStatus = if ($threats) { '<span style=\\"color: #d32f2f; font-weight: bold;\\">⚠ THREATS DETECTED</span>' } else { '<span style=\\"color: #388e3c; font-weight: bold;\\">✓ System Clean</span>' }; $htmlBody = @\\\"
 <!DOCTYPE html>
@@ -1293,12 +1343,16 @@ powershell -ExecutionPolicy Bypass -Command "$ErrorActionPreference='Continue'; 
 </body>
 </html>
 \\"@; Write-Host 'Configuring email parameters...' -ForegroundColor Cyan; $smtpServer = 'mail.supportcall.co.za'; $smtpPort = 465; $smtpUser = 'sendserver@supportcall.co.za'; $smtpPass = '74Dhm28#74Dhm28#'; $fromEmail = 'sendserver@supportcall.co.za'; $toEmails = @('alerts@supportcall.co.za', 'scmyhelp@gmail.com'); $subject = \\\"SC-USCS Report: $computerName - $(Get-Date -Format 'yyyy-MM-dd HH:mm')\\\"; Write-Host \\\"SMTP Server: $smtpServer:$smtpPort\\\" -ForegroundColor Cyan; Write-Host \\\"From: $fromEmail\\\" -ForegroundColor Cyan; Write-Host \\\"To: $($toEmails -join ', ')\\\" -ForegroundColor Cyan; Write-Host 'Creating SMTP client with SSL/TLS...' -ForegroundColor Cyan; try { [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12 -bor [System.Net.SecurityProtocolType]::Tls11 -bor [System.Net.SecurityProtocolType]::Tls; Write-Host 'Security protocol set to TLS 1.2/1.1/1.0' -ForegroundColor Green; } catch { Write-Host \\\"Warning: Could not set security protocol: $($_.Exception.Message)\\\" -ForegroundColor Yellow; }; $smtp = New-Object System.Net.Mail.SmtpClient($smtpServer, $smtpPort); $smtp.EnableSsl = $true; $smtp.Timeout = 60000; $smtp.Credentials = New-Object System.Net.NetworkCredential($smtpUser, $smtpPass); Write-Host 'SMTP client configured successfully' -ForegroundColor Green; $message = New-Object System.Net.Mail.MailMessage; $message.From = $fromEmail; $message.Subject = $subject; $message.Body = $htmlBody; $message.IsBodyHtml = $true; $message.Priority = [System.Net.Mail.MailPriority]::High; foreach ($toEmail in $toEmails) { $message.To.Add($toEmail); Write-Host \\\"Added recipient: $toEmail\\\" -ForegroundColor Cyan; }; Write-Host 'Attempting to send email via SMTP...' -ForegroundColor Yellow; Write-Host 'This may take 30-60 seconds...' -ForegroundColor Yellow; try { $smtp.Send($message); Write-Host '========================================' -ForegroundColor Green; Write-Host '✓✓✓ EMAIL SENT SUCCESSFULLY! ✓✓✓' -ForegroundColor Green; Write-Host '========================================' -ForegroundColor Green; Write-Host 'Email delivered to:' -ForegroundColor Green; Write-Host \\\"  → alerts@supportcall.co.za\\\" -ForegroundColor Green; Write-Host \\\"  → scmyhelp@gmail.com\\\" -ForegroundColor Green; Write-Host '========================================' -ForegroundColor Green; } catch { Write-Host '========================================' -ForegroundColor Red; Write-Host '✗✗✗ EMAIL SEND FAILED ✗✗✗' -ForegroundColor Red; Write-Host '========================================' -ForegroundColor Red; Write-Host \\\"Error Type: $($_.Exception.GetType().FullName)\\\" -ForegroundColor Red; Write-Host \\\"Error Message: $($_.Exception.Message)\\\" -ForegroundColor Red; if ($_.Exception.InnerException) { Write-Host \\\"Inner Error: $($_.Exception.InnerException.Message)\\\" -ForegroundColor Red; }; Write-Host '----------------------------------------' -ForegroundColor Yellow; Write-Host 'Possible causes:' -ForegroundColor Yellow; Write-Host '  1. Firewall blocking port 465' -ForegroundColor Yellow; Write-Host '  2. SMTP server credentials changed' -ForegroundColor Yellow; Write-Host '  3. Network connectivity issues' -ForegroundColor Yellow; Write-Host '  4. SMTP server down or unreachable' -ForegroundColor Yellow; Write-Host '----------------------------------------' -ForegroundColor Yellow; Write-Host 'Saving email content to local file...' -ForegroundColor Cyan; $htmlBody | Out-File \\\"$logPath\\\\EMAIL_REPORT.html\\\" -Encoding UTF8; Write-Host \\\"✓ Email content saved to: $logPath\\\\EMAIL_REPORT.html\\\" -ForegroundColor Green; Write-Host 'Please manually send this file to support.' -ForegroundColor Yellow; Write-Host '========================================' -ForegroundColor Red; } finally { if ($message) { $message.Dispose(); }; if ($smtp) { $smtp.Dispose(); }; }; } catch { Write-Host '========================================' -ForegroundColor Red; Write-Host \\\"CRITICAL ERROR in email process: $($_.Exception.Message)\\\" -ForegroundColor Red; Write-Host \\\"Stack Trace: $($_.ScriptStackTrace)\\\" -ForegroundColor Red; Write-Host '========================================' -ForegroundColor Red; }" 2>&1
-echo.`;
+${postReport}`;
         default:
-          return `echo [${stageNum}.${funcNum}] ${func.name.toUpperCase()} - ${func.description}
-echo >> "%LOGPATH%\\\\${logFile}" 2>&1
+          return `${preReport}
+echo [${stageNum}.${funcNum}] ${func.name.toUpperCase()} - ${func.description}
+echo Operation starting...
+echo Executing: ${func.name} >> "%LOGPATH%\\\\${logFile}" 2>&1
+echo Description: ${func.description} >> "%LOGPATH%\\\\${logFile}" 2>&1
+echo Safety Level: ${func.safety} >> "%LOGPATH%\\\\${logFile}" 2>&1
 echo Operation completed
-echo.`;
+${postReport}`;
       }
     };
 
@@ -1912,6 +1966,21 @@ echo - If any CRITICAL tools failed, the script will attempt fallbacks
 echo - For severely corrupted systems, Windows repair may be required
 echo - All external tools are from official vendor sources
 echo.
+echo === INITIALIZING REPORTING SYSTEM ===
+echo Creating execution timeline tracking...
+echo === EXECUTION TIMELINE === > "%LOGPATH%\\\\execution-timeline.log"
+echo Script: SC-USCS v5.01 >> "%LOGPATH%\\\\execution-timeline.log"
+echo Start Time: %STARTTIME% >> "%LOGPATH%\\\\execution-timeline.log"
+echo Selected Functions: ${selectedFunctionData.length} >> "%LOGPATH%\\\\execution-timeline.log"
+echo. >> "%LOGPATH%\\\\execution-timeline.log"
+echo === PROGRESS SUMMARY === > "%LOGPATH%\\\\progress-summary.txt"
+echo SC-USCS v5.01 - Execution Progress Tracker >> "%LOGPATH%\\\\progress-summary.txt"
+echo Start Time: %STARTTIME% >> "%LOGPATH%\\\\progress-summary.txt"
+echo Total Functions: ${selectedFunctionData.length} >> "%LOGPATH%\\\\progress-summary.txt"
+echo. >> "%LOGPATH%\\\\progress-summary.txt"
+echo Reporting system initialized successfully
+echo All function execution will be tracked in real-time
+echo.
 echo Press any key to continue with system preparation...
 pause
 echo.
@@ -1973,10 +2042,29 @@ echo End Time: %ENDTIME%
 echo Log Location: %LOGPATH%
 echo Functions Executed: ${selectedFunctionData.length}
 echo.
+echo === FINALIZING EXECUTION TIMELINE ===
+echo. >> "%LOGPATH%\\\\execution-timeline.log"
+echo === EXECUTION COMPLETE === >> "%LOGPATH%\\\\execution-timeline.log"
+echo End Time: %ENDTIME% >> "%LOGPATH%\\\\execution-timeline.log"
+echo Total Functions Completed: ${selectedFunctionData.length} >> "%LOGPATH%\\\\execution-timeline.log"
+echo. >> "%LOGPATH%\\\\execution-timeline.log"
+echo === CREATING CONSOLIDATED FINDINGS REPORT ===
+echo Generating comprehensive system report with all findings...
+copy /Y "%LOGPATH%\\\\execution-timeline.log" + "%LOGPATH%\\\\progress-summary.txt" "%LOGPATH%\\\\CONSOLIDATED_FINDINGS.txt"
+echo.
+echo === REPORTS GENERATED ===
+echo ✓ Execution Timeline: %LOGPATH%\\\\execution-timeline.log
+echo ✓ Progress Summary: %LOGPATH%\\\\progress-summary.txt
+echo ✓ Consolidated Findings: %LOGPATH%\\\\CONSOLIDATED_FINDINGS.txt
+echo ✓ Individual Function Logs: %LOGPATH%\\\\*.log
+${selectedFunctionData.some(f => f.id === 'system-report' || f.id === 'email-report') ? `
+echo ✓ Pre-Final Report: %LOGPATH%\\\\SC-USCS-v5.01-PreFinalScans-*.txt
+echo ✓ Pre-Final HTML Report: %LOGPATH%\\\\SC-USCS-v5.01-PreFinalScans-*.html
+echo ✓ Final Complete Report: %LOGPATH%\\\\SC-USCS-v5.01-FinalComplete-*.txt
+echo ✓ Final Complete HTML Report: %LOGPATH%\\\\SC-USCS-v5.01-FinalComplete-*.html
+` : ''}
+echo.
 echo ALL OPERATIONS LOGGED TO: %LOGPATH%
-echo REPORTS: Check %LOGPATH% for SC-USCS-v5.01-*.txt and *.html files
-echo PRE-FINAL REPORT: SC-USCS-v5.01-PreFinalScans-[timestamp].txt
-echo FINAL REPORT: SC-USCS-v5.01-FinalComplete-[timestamp].txt
 echo.
 echo For support, send all files from %LOGPATH% to:
 echo - scmyhelp@gmail.com
