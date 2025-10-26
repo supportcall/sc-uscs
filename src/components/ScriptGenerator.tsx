@@ -1799,7 +1799,7 @@ exit /b 0`;
                 SupportCALL - Ultimate Secure Clean Script
               </h1>
               <div className="text-lg md:text-xl font-semibold text-muted-foreground">
-                v5.01 - Professional Edition - Better Than CTT WinUtil
+                v5.01 - Professional Edition
               </div>
             </div>
             <CardDescription className="text-base md:text-lg max-w-3xl mx-auto leading-relaxed">
@@ -1814,95 +1814,6 @@ exit /b 0`;
           </CardHeader>
         </Card>
         </header>
-
-        {/* CTT WinUtil Alternative Section */}
-        <section aria-labelledby="ctt-alternative" className="mb-8">
-          <Card className="border-2 border-primary shadow-glow bg-gradient-to-br from-card to-secondary/10">
-            <CardHeader className="text-center pb-6">
-              <h2 id="ctt-alternative" className="text-2xl md:text-3xl font-black bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent mb-2">
-                The Ultimate CTT WinUtil Alternative
-              </h2>
-              <CardDescription className="text-base">
-                Why SC-USCS v5.01 is Better Than Chris Titus Tech's WinUtil
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                {/* Core Philosophy */}
-                <div className="p-5 bg-gradient-card rounded-lg border border-primary/20 hover:border-primary/40 transition-colors">
-                  <div className="text-primary text-2xl mb-3">🎯</div>
-                  <h3 className="font-bold text-lg mb-2 text-foreground">Built-In Tools Only</h3>
-                  <p className="text-sm text-muted-foreground">
-                    100% native Windows utilities - no dependencies, no third-party downloads, no trust issues. 
-                    Every function uses Microsoft's built-in tools.
-                  </p>
-                </div>
-
-                {/* Safety First */}
-                <div className="p-5 bg-gradient-card rounded-lg border border-primary/20 hover:border-primary/40 transition-colors">
-                  <div className="text-primary text-2xl mb-3">🛡️</div>
-                  <h3 className="font-bold text-lg mb-2 text-foreground">Transparent & Safe</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Full visibility into every command. No hidden operations, no registry hacks without disclosure. 
-                    Automatic system restore points before any changes.
-                  </p>
-                </div>
-
-                {/* Professional Grade */}
-                <div className="p-5 bg-gradient-card rounded-lg border border-primary/20 hover:border-primary/40 transition-colors">
-                  <div className="text-primary text-2xl mb-3">⚙️</div>
-                  <h3 className="font-bold text-lg mb-2 text-foreground">Enterprise Ready</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Professional-grade batch scripts with comprehensive logging, error handling, and detailed HTML reports. 
-                    Perfect for IT professionals.
-                  </p>
-                </div>
-
-                {/* Open Source */}
-                <div className="p-5 bg-gradient-card rounded-lg border border-primary/20 hover:border-primary/40 transition-colors">
-                  <div className="text-primary text-2xl mb-3">📖</div>
-                  <h3 className="font-bold text-lg mb-2 text-foreground">Truly Open Source</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Completely free and open. Inspect every line of code before running. No proprietary PowerShell modules 
-                    or obfuscated functions.
-                  </p>
-                </div>
-
-                {/* No GUI Bloat */}
-                <div className="p-5 bg-gradient-card rounded-lg border border-primary/20 hover:border-primary/40 transition-colors">
-                  <div className="text-primary text-2xl mb-3">⚡</div>
-                  <h3 className="font-bold text-lg mb-2 text-foreground">Lightweight & Fast</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Pure batch scripts - no GUI overhead, instant execution. Generate exactly what you need, nothing more. 
-                    Perfect for automation.
-                  </p>
-                </div>
-
-                {/* Customizable */}
-                <div className="p-5 bg-gradient-card rounded-lg border border-primary/20 hover:border-primary/40 transition-colors">
-                  <div className="text-primary text-2xl mb-3">🎨</div>
-                  <h3 className="font-bold text-lg mb-2 text-foreground">Fully Customizable</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Cherry-pick exactly the functions you need. No forced bundles, no unnecessary operations. 
-                    Your system, your choices.
-                  </p>
-                </div>
-              </div>
-
-              {/* Comparison Highlight */}
-              <div className="mt-6 p-4 bg-primary/5 border-l-4 border-primary rounded-r-lg">
-                <p className="text-sm font-semibold text-foreground mb-2">
-                  🔍 Key Difference from CTT WinUtil:
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  While CTT WinUtil is a comprehensive GUI tool with broad functionality, SC-USCS focuses on <strong>safe, 
-                  transparent, built-in Windows remediation</strong>. No external dependencies, no trust required—just 
-                  Microsoft's own tools orchestrated intelligently. Perfect for IT professionals who need reliability over features.
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-        </section>
 
         <main role="main">
 
