@@ -486,6 +486,14 @@ const ScriptGenerator = () => {
       recommendation: "Recommended",
       category: "Reporting & Notifications"
     },
+    {
+      id: "xdr-siem-report",
+      name: "XDR/SIEM Security Report",
+      description: "Generates comprehensive Extended Detection and Response (XDR) and SIEM report using all default available Windows tools. Includes threat detection, event logs, network analysis, security configuration audit, vulnerability assessment, and compliance checks in both JSON and text formats.",
+      safety: "High Safety",
+      recommendation: "Optional",
+      category: "Reporting & Notifications"
+    },
     // Extended Scans - Long Running Operations (Execute Last)
     {
       id: "defender-scan",
@@ -807,344 +815,10 @@ echo System information collection complete (read-only).
 echo.
 
 REM =============================================================================
-REM STAGE 10: GENERATE XDR/SIEM COMPREHENSIVE REPORT
+REM STAGE 10: GENERATE STANDARD REPORTS
 REM =============================================================================
 echo.
-echo [Stage 10] Generating XDR/SIEM Comprehensive Security Report...
-echo.
-
-set "XDRREPORT=%LOGPATH%\\\\SC-USCS-XDR-SIEM-Report-%TIMESTAMP%.json"
-set "XDRTXTREPORT=%LOGPATH%\\\\SC-USCS-XDR-SIEM-Report-%TIMESTAMP%.txt"
-
-echo Creating structured XDR/SIEM report with all security data...
-(
-echo {
-echo   "report_metadata": {
-echo     "report_type": "XDR_SIEM_Security_Assessment",
-echo     "version": "5.74",
-echo     "script_name": "SC-USCS",
-echo     "generated_date": "%DATE%",
-echo     "generated_time": "%TIME%",
-echo     "computer_name": "%COMPUTERNAME%",
-echo     "username": "%USERNAME%",
-echo     "assessment_mode": "READ_ONLY"
-echo   },
-echo   "system_information": {
-echo     "hostname": "%COMPUTERNAME%",
-echo     "user": "%USERNAME%",
-echo     "domain": "%USERDOMAIN%",
-echo     "os_info": "See systeminfo.txt",
-echo     "log_location": "%LOGPATH%"
-echo   },
-echo   "security_events": {
-echo     "security_log_file": "security-events.csv",
-echo     "system_log_file": "system-events.csv",
-echo     "application_log_file": "application-events.csv",
-echo     "failed_logins_file": "failed-logins.csv",
-echo     "event_summary": "1000 most recent events collected per log"
-echo   },
-echo   "threat_detection": {
-echo     "defender_threats_file": "defender-threats.log",
-echo     "defender_scan_file": "defender-scan.log",
-echo     "defender_status_file": "defender-status.log",
-echo     "threat_catalog_file": "defender-threat-catalog.log",
-echo     "scan_type": "Quick Scan",
-echo     "removal_performed": false
-echo   },
-echo   "network_analysis": {
-echo     "network_config_file": "network-config.txt",
-echo     "active_connections_file": "network-connections.txt",
-echo     "open_ports_file": "open-ports.txt",
-echo     "firewall_state_file": "firewall-state.txt",
-echo     "firewall_profiles_file": "firewall-profiles.txt",
-echo     "dns_cache_file": "dns-cache.txt",
-echo     "routing_table_file": "routing-table.txt"
-echo   },
-echo   "process_analysis": {
-echo     "running_processes_csv": "running-processes.csv",
-echo     "process_details_csv": "process-details.csv",
-echo     "processes_csv": "processes.csv",
-echo     "startup_programs_csv": "startup-programs.csv",
-echo     "scheduled_tasks_csv": "scheduled-tasks.csv"
-echo   },
-echo   "service_analysis": {
-echo     "services_list_file": "services-list.txt",
-echo     "services_details_csv": "services-details.csv",
-echo     "services_csv": "services.csv"
-echo   },
-echo   "security_configuration": {
-echo     "user_accounts_file": "user-accounts.txt",
-echo     "admin_users_file": "admin-users.txt",
-echo     "uac_settings_file": "uac-settings.txt",
-echo     "autoruns_file": "autoruns.csv",
-echo     "installed_updates_file": "installed-updates.csv",
-echo     "shared_folders_file": "shared-folders.txt",
-echo     "bitlocker_status_file": "bitlocker-status.txt",
-echo     "password_policy_file": "password-policy.txt"
-echo   },
-echo   "vulnerability_assessment": {
-echo     "missing_updates_file": "missing-updates.csv",
-echo     "smbv1_status_file": "smbv1-status.txt",
-echo     "password_policy_file": "password-policy.txt"
-echo   },
-echo   "system_state": {
-echo     "systeminfo_file": "systeminfo.txt",
-echo     "drivers_file": "drivers.txt",
-echo     "installed_software_file": "installed-software.txt",
-echo     "running_processes_file": "running-processes.txt"
-echo   },
-echo   "indicators_of_compromise": {
-echo     "high_priority_review": [
-echo       "failed-logins.csv - Check for unauthorized access attempts",
-echo       "defender-threats.log - Check for malware detections",
-echo       "open-ports.txt - Check for unexpected listening ports",
-echo       "security-events.csv - Check for security event anomalies"
-echo     ],
-echo     "medium_priority_review": [
-echo       "startup-programs.csv - Check for suspicious startup items",
-echo       "autoruns.csv - Check for persistence mechanisms",
-echo       "network-connections.txt - Check for suspicious connections",
-echo       "admin-users.txt - Check for unauthorized admin accounts"
-echo     ]
-echo   },
-echo   "compliance_checks": {
-echo     "uac_enabled": "See uac-settings.txt",
-echo     "firewall_enabled": "See firewall-profiles.txt",
-echo     "antivirus_status": "See defender-status.log",
-echo     "updates_status": "See missing-updates.csv",
-echo     "encryption_status": "See bitlocker-status.txt"
-echo   },
-echo   "remediation_status": {
-echo     "changes_made": false,
-echo     "assessment_only": true,
-echo     "manual_remediation_required": true
-echo   }
-echo }
-) > "%XDRREPORT%"
-
-echo Generating XDR/SIEM Text Report...
-(
-echo =============================================================================
-echo  XDR/SIEM COMPREHENSIVE SECURITY REPORT
-echo  SC-USCS v5.74 - SupportCALL Professional Edition
-echo =============================================================================
-echo.
-echo REPORT TYPE: Extended Detection and Response / Security Information and Event Management
-echo ASSESSMENT MODE: READ-ONLY ^(No System Changes^)
-echo GENERATED: %DATE% %TIME%
-echo COMPUTER: %COMPUTERNAME%
-echo USER: %USERNAME%
-echo.
-echo =============================================================================
-echo  REPORT SUMMARY
-echo =============================================================================
-echo.
-echo This XDR/SIEM report consolidates comprehensive security data from multiple
-echo sources using default Windows tools. All data was collected in READ-ONLY mode.
-echo.
-echo DATA SOURCES ANALYZED:
-echo  [✓] Windows Defender Threat Detection
-echo  [✓] Security Event Logs ^(Last 1000 events^)
-echo  [✓] System Event Logs ^(Last 1000 events^)
-echo  [✓] Application Event Logs ^(Last 1000 events^)
-echo  [✓] Failed Authentication Attempts
-echo  [✓] Network Configuration and Connections
-echo  [✓] Active Network Ports and Services
-echo  [✓] Firewall Configuration and Rules
-echo  [✓] Running Processes and Services
-echo  [✓] Startup Programs and Scheduled Tasks
-echo  [✓] User Accounts and Privileges
-echo  [✓] Security Configuration Settings
-echo  [✓] System Vulnerabilities and Updates
-echo  [✓] BitLocker Encryption Status
-echo  [✓] DNS Cache and Routing Tables
-echo.
-echo =============================================================================
-echo  SECURITY POSTURE ASSESSMENT
-echo =============================================================================
-echo.
-echo [THREAT DETECTION]
-echo Location: %LOGPATH%\\\\defender-threats.log
-echo Status: Scan completed in READ-ONLY mode
-echo Action: Review threat log for any detected malware
-echo.
-echo [AUTHENTICATION SECURITY]
-echo Location: %LOGPATH%\\\\failed-logins.csv
-echo Status: Failed login attempts collected
-echo Action: Investigate any suspicious authentication failures
-echo.
-echo [NETWORK SECURITY]
-echo Location: %LOGPATH%\\\\open-ports.txt
-echo Status: Network ports and connections analyzed
-echo Action: Verify all open ports are authorized
-echo.
-echo [SYSTEM UPDATES]
-echo Location: %LOGPATH%\\\\missing-updates.csv
-echo Status: Missing updates identified
-echo Action: Install critical security updates
-echo.
-echo [ACCESS CONTROL]
-echo Location: %LOGPATH%\\\\admin-users.txt
-echo Status: Administrator accounts audited
-echo Action: Verify all admin accounts are authorized
-echo.
-echo [ENCRYPTION]
-echo Location: %LOGPATH%\\\\bitlocker-status.txt
-echo Status: Disk encryption status checked
-echo Action: Enable BitLocker if not active
-echo.
-echo =============================================================================
-echo  INDICATORS OF COMPROMISE ^(IOC^) ANALYSIS
-echo =============================================================================
-echo.
-echo HIGH PRIORITY REVIEW:
-echo  1. Failed Logins: %LOGPATH%\\\\failed-logins.csv
-echo     - Check for brute force attempts or unauthorized access
-echo  2. Defender Threats: %LOGPATH%\\\\defender-threats.log
-echo     - Review any malware or threat detections
-echo  3. Open Ports: %LOGPATH%\\\\open-ports.txt
-echo     - Verify all listening ports are expected services
-echo  4. Security Events: %LOGPATH%\\\\security-events.csv
-echo     - Look for Event IDs 4625, 4648, 4719, 4738, 4740
-echo.
-echo MEDIUM PRIORITY REVIEW:
-echo  5. Startup Programs: %LOGPATH%\\\\startup-programs.csv
-echo     - Check for suspicious persistence mechanisms
-echo  6. Autoruns: %LOGPATH%\\\\autoruns.csv
-echo     - Verify all auto-start programs are legitimate
-echo  7. Network Connections: %LOGPATH%\\\\network-connections.txt
-echo     - Look for connections to unknown external IPs
-echo  8. Admin Accounts: %LOGPATH%\\\\admin-users.txt
-echo     - Verify no unauthorized elevated accounts exist
-echo.
-echo =============================================================================
-echo  COMPLIANCE STATUS
-echo =============================================================================
-echo.
-echo [User Account Control]
-echo File: %LOGPATH%\\\\uac-settings.txt
-echo Required: UAC should be enabled ^(EnableLUA = 1^)
-echo.
-echo [Windows Firewall]
-echo File: %LOGPATH%\\\\firewall-profiles.txt
-echo Required: Firewall should be ON for all profiles
-echo.
-echo [Antivirus Protection]
-echo File: %LOGPATH%\\\\defender-status.log
-echo Required: Real-time protection should be enabled
-echo.
-echo [Security Updates]
-echo File: %LOGPATH%\\\\missing-updates.csv
-echo Required: All critical updates should be installed
-echo.
-echo [Disk Encryption]
-echo File: %LOGPATH%\\\\bitlocker-status.txt
-echo Required: BitLocker recommended for sensitive data
-echo.
-echo [Password Policy]
-echo File: %LOGPATH%\\\\password-policy.txt
-echo Required: Strong password policy should be enforced
-echo.
-echo [SMBv1 Protocol]
-echo File: %LOGPATH%\\\\smbv1-status.txt
-echo Required: SMBv1 should be disabled ^(security risk^)
-echo.
-echo =============================================================================
-echo  SIEM EVENT CORRELATION
-echo =============================================================================
-echo.
-echo Security event logs have been collected and exported to CSV format for
-echo analysis in your SIEM platform or security analytics tools.
-echo.
-echo Key event log files:
-echo  - Security Events: %LOGPATH%\\\\security-events.csv
-echo  - System Events: %LOGPATH%\\\\system-events.csv
-echo  - Application Events: %LOGPATH%\\\\application-events.csv
-echo.
-echo Critical Security Event IDs to investigate:
-echo  - 4625: Failed logon attempts
-echo  - 4648: Logon using explicit credentials
-echo  - 4672: Special privileges assigned to logon
-echo  - 4719: System audit policy changed
-echo  - 4738: User account changed
-echo  - 4740: User account locked out
-echo  - 4768: Kerberos TGT requested
-echo  - 4771: Kerberos pre-authentication failed
-echo  - 7045: New service installed
-echo.
-echo =============================================================================
-echo  DATA FILES REFERENCE
-echo =============================================================================
-echo.
-echo All collected data files are located in: %LOGPATH%
-echo.
-echo JSON Report: %XDRREPORT%
-echo.
-echo Structured data format enables easy import into SIEM platforms,
-echo XDR solutions, or security analytics tools for further analysis.
-echo.
-echo =============================================================================
-echo  RECOMMENDATIONS
-echo =============================================================================
-echo.
-echo [IMMEDIATE ACTIONS REQUIRED]
-echo 1. Review and remediate any threats in defender-threats.log
-echo 2. Investigate failed login attempts in failed-logins.csv
-echo 3. Close unauthorized open ports identified in open-ports.txt
-echo 4. Install missing critical updates from missing-updates.csv
-echo.
-echo [SHORT-TERM ACTIONS]
-echo 5. Review and remove suspicious startup programs
-echo 6. Audit administrator account access and remove unnecessary accounts
-echo 7. Enable BitLocker disk encryption if not active
-echo 8. Strengthen password policy if weak
-echo 9. Disable SMBv1 protocol if still enabled
-echo.
-echo [ONGOING MONITORING]
-echo 10. Regularly review security event logs
-echo 11. Monitor for new failed authentication attempts
-echo 12. Track network connection patterns
-echo 13. Maintain current security updates
-echo 14. Perform periodic security assessments
-echo.
-echo =============================================================================
-echo  SUPPORT AND REMEDIATION
-echo =============================================================================
-echo.
-echo For assistance with security remediation or threat response:
-echo  Email: alerts@supportcall.co.za
-echo  Email: scmyhelp@gmail.com
-echo.
-echo To perform actual remediation ^(this was READ-ONLY assessment^):
-echo  Use SC-USCS v5.74 in full mode with selected remediation functions
-echo.
-echo =============================================================================
-echo  REPORT METADATA
-echo =============================================================================
-echo.
-echo Report Type: XDR/SIEM Comprehensive Security Assessment
-echo Script Version: SC-USCS v5.74
-echo Assessment Mode: READ-ONLY ^(No system changes made^)
-echo Report Generated: %DATE% %TIME%
-echo Report Location: %LOGPATH%
-echo JSON Format: %XDRREPORT%
-echo Text Format: %XDRTXTREPORT%
-echo.
-echo =============================================================================
-) > "%XDRTXTREPORT%"
-
-echo XDR/SIEM reports generated successfully:
-echo  - JSON Report: %XDRREPORT%
-echo  - Text Report: %XDRTXTREPORT%
-echo.
-echo XDR/SIEM report generation complete.
-echo.
-
-REM =============================================================================
-REM STAGE 11: GENERATE STANDARD REPORTS
-REM =============================================================================
-echo.
-echo [Stage 11] Generating Standard Security Reports...
+echo [Stage 10] Generating Standard Security Reports...
 echo.
 
 set "TIMESTAMP=%DATE:/=-%_%TIME::=-%"
@@ -1414,13 +1088,13 @@ echo  - HTML Report: %HTMLREPORT%
 echo.
 
 REM =============================================================================
-REM STAGE 12: EMAIL REPORTS
+REM STAGE 11: EMAIL REPORTS
 REM =============================================================================
 echo.
-echo [Stage 12] Emailing Reports...
+echo [Stage 11] Emailing Reports...
 echo.
 
-powershell -Command "try { $EmailParams = @{ SmtpServer = 'smtp.gmail.com'; Port = 587; UseSsl = $true; From = 'supportcall@system.local'; To = @('alerts@supportcall.co.za', 'scmyhelp@gmail.com'); Subject = 'SC-USCS v5.74 Security Assessment Report - ' + $env:COMPUTERNAME; Body = 'Please find attached the comprehensive security assessment report generated by SC-USCS v5.74.\\n\\nComputer: ' + $env:COMPUTERNAME + '\\nDate: ' + (Get-Date).ToString() + '\\n\\nThis report includes:\\n- XDR/SIEM comprehensive report\\n- Malware scan results\\n- Network security analysis\\n- SIEM event logs\\n- Vulnerability assessment\\n- Security configuration audit\\n\\nAll detailed logs are available in the attached reports.\\n\\nFor support, please contact SupportCALL.'; Attachments = @('%TXTREPORT%', '%HTMLREPORT%', '%XDRTXTREPORT%') }; Write-Host 'Attempting to send email reports...'; Write-Host 'NOTE: Email delivery requires SMTP configuration.'; Write-Host 'Reports have been saved locally to: %REPORTPATH%'; } catch { Write-Host 'Email configuration required. Reports saved locally to: %REPORTPATH%' }"
+powershell -Command "try { $EmailParams = @{ SmtpServer = 'smtp.gmail.com'; Port = 587; UseSsl = $true; From = 'supportcall@system.local'; To = @('alerts@supportcall.co.za', 'scmyhelp@gmail.com'); Subject = 'SC-USCS v5.74 Security Assessment Report - ' + $env:COMPUTERNAME; Body = 'Please find attached the comprehensive security assessment report generated by SC-USCS v5.74.\\n\\nComputer: ' + $env:COMPUTERNAME + '\\nDate: ' + (Get-Date).ToString() + '\\n\\nThis report includes:\\n- Malware scan results\\n- Network security analysis\\n- SIEM event logs\\n- Vulnerability assessment\\n- Security configuration audit\\n\\nAll detailed logs are available in the attached reports.\\n\\nFor support, please contact SupportCALL.'; Attachments = @('%TXTREPORT%', '%HTMLREPORT%') }; Write-Host 'Attempting to send email reports...'; Write-Host 'NOTE: Email delivery requires SMTP configuration.'; Write-Host 'Reports have been saved locally to: %REPORTPATH%'; } catch { Write-Host 'Email configuration required. Reports saved locally to: %REPORTPATH%' }"
 
 echo.
 echo NOTE: For automatic email delivery, configure SMTP settings.
@@ -2192,6 +1866,199 @@ echo === SUMMARY === >> "%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt"
 echo All findings consolidated in: %LOGPATH% >> "%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt"
 echo For support, email all files to: scmyhelp@gmail.com and alerts@supportcall.co.za >> "%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt"
 echo Comprehensive system report generated
+${postReport}`;
+        
+        case 'xdr-siem-report':
+          return `${preReport}
+echo [${stageNum}.${funcNum}] XDR/SIEM COMPREHENSIVE SECURITY REPORT - Enterprise security analysis
+echo *** Generating XDR/SIEM comprehensive security report using all default Windows tools ***
+echo.
+
+set "XDRREPORT=%LOGPATH%\\\\SC-USCS-XDR-SIEM-Report-%TIMESTAMP%.json"
+set "XDRTXTREPORT=%LOGPATH%\\\\SC-USCS-XDR-SIEM-Report-%TIMESTAMP%.txt"
+
+echo Generating XDR/SIEM JSON Report...
+(
+echo {
+echo   "report_metadata": {
+echo     "report_type": "XDR_SIEM_Security_Assessment",
+echo     "script_version": "SC-USCS v5.74",
+echo     "generated_timestamp": "%DATE% %TIME%",
+echo     "computer_name": "%COMPUTERNAME%",
+echo     "user_context": "%USERNAME%",
+echo     "assessment_mode": "comprehensive_security_analysis"
+echo   },
+echo   "threat_detection": {
+echo     "defender_status_file": "defender-status.log",
+echo     "defender_threats_file": "defender-threats.log",
+echo     "threat_catalog_file": "defender-threat-catalog.log",
+echo     "scan_type": "System Scan"
+echo   },
+echo   "network_analysis": {
+echo     "network_config_file": "08_network_config.txt",
+echo     "active_connections_file": "09_network_connections.txt",
+echo     "dns_cache_file": "dns-cache.txt",
+echo     "routing_table_file": "routing-table.txt"
+echo   },
+echo   "process_analysis": {
+echo     "running_processes_file": "running-processes.txt",
+echo     "startup_programs_file": "06_startup_programs.csv"
+echo   },
+echo   "service_analysis": {
+echo     "services_file": "07_windows_services.txt"
+echo   },
+echo   "security_configuration": {
+echo     "user_accounts_collected": true,
+echo     "installed_updates_file": "04_windows_updates.csv",
+echo     "system_info_file": "01_system_info.txt"
+echo   },
+echo   "system_state": {
+echo     "systeminfo_file": "01_system_info.txt",
+echo     "drivers_file": "02_hardware_report.txt",
+echo     "installed_software_file": "03_installed_software.csv"
+echo   },
+echo   "indicators_of_compromise": {
+echo     "high_priority_review": [
+echo       "defender-threats.log - Check for malware detections",
+echo       "09_network_connections.txt - Check for suspicious connections",
+echo       "06_startup_programs.csv - Check for suspicious startup items"
+echo     ]
+echo   },
+echo   "compliance_checks": {
+echo     "antivirus_status": "See defender status in logs",
+echo     "updates_status": "See 04_windows_updates.csv"
+echo   }
+echo }
+) > "%XDRREPORT%"
+
+echo Generating XDR/SIEM Text Report...
+(
+echo =============================================================================
+echo  XDR/SIEM COMPREHENSIVE SECURITY REPORT
+echo  SC-USCS v5.74 - SupportCALL Professional Edition
+echo =============================================================================
+echo.
+echo REPORT TYPE: Extended Detection and Response / Security Information and Event Management
+echo GENERATED: %DATE% %TIME%
+echo COMPUTER: %COMPUTERNAME%
+echo USER: %USERNAME%
+echo.
+echo =============================================================================
+echo  REPORT SUMMARY
+echo =============================================================================
+echo.
+echo This XDR/SIEM report consolidates comprehensive security data from multiple
+echo sources using default Windows tools.
+echo.
+echo DATA SOURCES ANALYZED:
+echo  [✓] Windows Defender Threat Detection
+echo  [✓] Security Event Logs
+echo  [✓] System Event Logs
+echo  [✓] Network Configuration and Connections
+echo  [✓] Active Network Ports and Services
+echo  [✓] Running Processes and Services
+echo  [✓] Startup Programs and Scheduled Tasks
+echo  [✓] User Accounts and Privileges
+echo  [✓] System Vulnerabilities and Updates
+echo  [✓] DNS Cache and Routing Tables
+echo.
+echo =============================================================================
+echo  SECURITY POSTURE ASSESSMENT
+echo =============================================================================
+echo.
+echo [THREAT DETECTION]
+echo Location: %LOGPATH%\\\\defender-threats.log
+echo Status: Threat scan completed
+echo Action: Review threat log for any detected malware
+echo.
+echo [NETWORK SECURITY]
+echo Location: %LOGPATH%\\\\09_network_connections.txt
+echo Status: Network connections analyzed
+echo Action: Verify all connections are authorized
+echo.
+echo [SYSTEM UPDATES]
+echo Location: %LOGPATH%\\\\04_windows_updates.csv
+echo Status: Update status collected
+echo Action: Install critical security updates if needed
+echo.
+echo =============================================================================
+echo  INDICATORS OF COMPROMISE ^(IOC^) ANALYSIS
+echo =============================================================================
+echo.
+echo HIGH PRIORITY REVIEW:
+echo  1. Defender Threats: %LOGPATH%\\\\defender-threats.log
+echo     - Review any malware or threat detections
+echo  2. Network Connections: %LOGPATH%\\\\09_network_connections.txt
+echo     - Look for connections to unknown external IPs
+echo  3. Startup Programs: %LOGPATH%\\\\06_startup_programs.csv
+echo     - Check for suspicious persistence mechanisms
+echo.
+echo =============================================================================
+echo  COMPLIANCE STATUS
+echo =============================================================================
+echo.
+echo [Antivirus Protection]
+echo Review: Check defender status in logs
+echo Required: Real-time protection should be enabled
+echo.
+echo [Security Updates]
+echo File: %LOGPATH%\\\\04_windows_updates.csv
+echo Required: All critical updates should be installed
+echo.
+echo =============================================================================
+echo  DATA FILES REFERENCE
+echo =============================================================================
+echo.
+echo All collected data files are located in: %LOGPATH%
+echo.
+echo JSON Report: %XDRREPORT%
+echo Text Report: %XDRTXTREPORT%
+echo.
+echo Structured data format enables easy import into SIEM platforms,
+echo XDR solutions, or security analytics tools for further analysis.
+echo.
+echo =============================================================================
+echo  RECOMMENDATIONS
+echo =============================================================================
+echo.
+echo [IMMEDIATE ACTIONS REQUIRED]
+echo 1. Review and remediate any threats in defender logs
+echo 2. Investigate network connections for suspicious activity
+echo 3. Remove suspicious startup programs if found
+echo 4. Install missing critical updates
+echo.
+echo [ONGOING MONITORING]
+echo 5. Regularly review security event logs
+echo 6. Monitor network connection patterns
+echo 7. Maintain current security updates
+echo 8. Perform periodic security assessments
+echo.
+echo =============================================================================
+echo  SUPPORT AND REMEDIATION
+echo =============================================================================
+echo.
+echo For assistance with security remediation or threat response:
+echo  Email: alerts@supportcall.co.za
+echo  Email: scmyhelp@gmail.com
+echo.
+echo =============================================================================
+echo  REPORT METADATA
+echo =============================================================================
+echo.
+echo Report Type: XDR/SIEM Comprehensive Security Assessment
+echo Script Version: SC-USCS v5.74
+echo Report Generated: %DATE% %TIME%
+echo Report Location: %LOGPATH%
+echo JSON Format: %XDRREPORT%
+echo Text Format: %XDRTXTREPORT%
+echo.
+echo =============================================================================
+) > "%XDRTXTREPORT%"
+
+echo XDR/SIEM reports generated successfully:
+echo  - JSON Report: %XDRREPORT%
+echo  - Text Report: %XDRTXTREPORT%
+echo.
 ${postReport}`;
         
         case 'email-report':
