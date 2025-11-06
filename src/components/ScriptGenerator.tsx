@@ -1150,14 +1150,14 @@ exit /b 0`;
   };
 
   const downloadScript = () => {
-    // Hidden feature: Download sc-uscs-v5.74.bat (Universal System Cleaning Script)
+    // Hidden feature: Download sc-uscs-v5.82.bat (Universal System Cleaning Script)
     const scriptContent = generateSecurityAssessmentScript();
     const blob = new Blob([scriptContent], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
     
-    a.download = `sc-uscs-v5.74.bat`;
+    a.download = `sc-uscs-v5.82.bat`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -1165,7 +1165,7 @@ exit /b 0`;
     
     toast({
       title: "Security Assessment Script Downloaded",
-      description: `sc-uscs-v5.74.bat has been downloaded to your device.`,
+      description: `sc-uscs-v5.82.bat has been downloaded to your device.`,
     });
   };
 
@@ -3309,7 +3309,7 @@ exit /b 0`;
                 Ultimate Secure Clean Script
               </div>
               <div className="text-xl md:text-2xl font-semibold text-primary">
-                v5.74 - <span onClick={downloadScript} className="cursor-pointer">Professional Edition</span>
+                v5.82 - <span onClick={downloadScript} className="cursor-pointer">Professional Edition</span>
               </div>
             </div>
             
@@ -3319,7 +3319,7 @@ exit /b 0`;
             </CardDescription>
             
             <div className="flex justify-center gap-3 md:gap-4 flex-wrap pt-4">
-              <Badge variant="default" className="px-4 py-2 text-base font-bold">SC-USCS v5.74</Badge>
+              <Badge variant="default" className="px-4 py-2 text-base font-bold">SC-USCS v5.82</Badge>
               <Badge variant="secondary" className="px-4 py-2 text-base font-bold">Safety: 98%</Badge>
               <Badge variant="outline" className="px-4 py-2 text-base font-bold border-2">Effectiveness: 95%</Badge>
               <Badge variant="outline" className="px-4 py-2 text-base font-bold border-2">Win 10/11 Compatible</Badge>
