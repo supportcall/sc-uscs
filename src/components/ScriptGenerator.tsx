@@ -3434,7 +3434,7 @@ exit /b 0`;
                   <div className="font-bold text-destructive text-base mb-1.5">
                     Failure to complete checklist may result in system damage
                   </div>
-                  <div className="text-sm text-destructive font-medium">
+                  <div className="text-sm text-white font-medium">
                     SupportCALL is NOT responsible for damage caused by improper preparation and/or use of SC-USCS.
                   </div>
                 </AlertDescription>
