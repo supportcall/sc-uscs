@@ -1835,6 +1835,7 @@ echo [${stageNum}.${funcNum}] COMPREHENSIVE SYSTEM REPORT - Complete system anal
 echo *** Generating comprehensive system reports ***
 echo === CONSOLIDATED FINDINGS REPORT === > "%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt"
 echo Script Version: SC-USCS v5.74 >> "%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt"
+echo Vendor: SupportCALL - www.supportcall.com.au >> "%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt"
 echo Execution Date: %DATE% %TIME% >> "%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt"
 echo Functions Executed: ${selectedFunctionData.length} of ${functions.length} >> "%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt"
 echo. >> "%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt"
@@ -1864,7 +1865,8 @@ sfc /verifyonly >> "%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt" 2>nul
 echo. >> "%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt"
 echo === SUMMARY === >> "%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt"
 echo All findings consolidated in: %LOGPATH% >> "%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt"
-echo For support, email all files to: scmyhelp@gmail.com and alerts@supportcall.co.za >> "%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt"
+echo For support: SupportCALL - www.supportcall.com.au >> "%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt"
+echo Email: scmyhelp@gmail.com and alerts@supportcall.co.za >> "%LOGPATH%\\\\00_CONSOLIDATED_FINDINGS.txt"
 echo Comprehensive system report generated
 ${postReport}`;
         
@@ -1876,6 +1878,7 @@ echo.
 
 set "XDRREPORT=%LOGPATH%\\\\SC-USCS-XDR-SIEM-Report-%TIMESTAMP%.json"
 set "XDRTXTREPORT=%LOGPATH%\\\\SC-USCS-XDR-SIEM-Report-%TIMESTAMP%.txt"
+set "XDRHTMLREPORT=%LOGPATH%\\\\SC-USCS-XDR-SIEM-Report-%TIMESTAMP%.html"
 
 echo Generating XDR/SIEM JSON Report...
 (
@@ -1886,7 +1889,8 @@ echo     "script_version": "SC-USCS v5.74",
 echo     "generated_timestamp": "%DATE% %TIME%",
 echo     "computer_name": "%COMPUTERNAME%",
 echo     "user_context": "%USERNAME%",
-echo     "assessment_mode": "comprehensive_security_analysis"
+echo     "assessment_mode": "comprehensive_security_analysis",
+echo     "vendor": "SupportCALL - www.supportcall.com.au"
 echo   },
 echo   "threat_detection": {
 echo     "defender_status_file": "defender-status.log",
@@ -1936,6 +1940,7 @@ echo Generating XDR/SIEM Text Report...
 echo =============================================================================
 echo  XDR/SIEM COMPREHENSIVE SECURITY REPORT
 echo  SC-USCS v5.74 - SupportCALL Professional Edition
+echo  www.supportcall.com.au
 echo =============================================================================
 echo.
 echo REPORT TYPE: Extended Detection and Response / Security Information and Event Management
@@ -2013,6 +2018,7 @@ echo All collected data files are located in: %LOGPATH%
 echo.
 echo JSON Report: %XDRREPORT%
 echo Text Report: %XDRTXTREPORT%
+echo HTML Report: %XDRHTMLREPORT%
 echo.
 echo Structured data format enables easy import into SIEM platforms,
 echo XDR solutions, or security analytics tools for further analysis.
@@ -2038,6 +2044,7 @@ echo  SUPPORT AND REMEDIATION
 echo =============================================================================
 echo.
 echo For assistance with security remediation or threat response:
+echo  SupportCALL: www.supportcall.com.au
 echo  Email: alerts@supportcall.co.za
 echo  Email: scmyhelp@gmail.com
 echo.
@@ -2051,13 +2058,393 @@ echo Report Generated: %DATE% %TIME%
 echo Report Location: %LOGPATH%
 echo JSON Format: %XDRREPORT%
 echo Text Format: %XDRTXTREPORT%
+echo HTML Format: %XDRHTMLREPORT%
+echo Vendor: SupportCALL - www.supportcall.com.au
 echo.
 echo =============================================================================
 ) > "%XDRTXTREPORT%"
 
+echo Generating XDR/SIEM HTML Report...
+powershell -Command "$reportPath = '%XDRHTMLREPORT%'; $html = @'
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=\"UTF-8\">
+    <title>XDR/SIEM Security Assessment Report - SC-USCS v5.74</title>
+    <style>
+        body { 
+            font-family: ''Segoe UI'', Tahoma, Geneva, Verdana, sans-serif; 
+            line-height: 1.6; 
+            color: #333; 
+            background: linear-gradient(135deg, #667eea 0%%, #764ba2 100%%); 
+            margin: 0; 
+            padding: 20px; 
+        }
+        .container { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            background: white; 
+            padding: 40px; 
+            border-radius: 12px; 
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2); 
+        }
+        .header { 
+            background: linear-gradient(135deg, #1e3c72 0%%, #2a5298 100%%); 
+            color: white; 
+            padding: 30px; 
+            border-radius: 8px; 
+            margin: -40px -40px 30px -40px; 
+            text-align: center; 
+        }
+        .header h1 { 
+            margin: 0 0 10px 0; 
+            font-size: 32px; 
+            font-weight: 600; 
+        }
+        .header p { 
+            margin: 5px 0; 
+            font-size: 16px; 
+            opacity: 0.95; 
+        }
+        .vendor-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 8px 20px;
+            border-radius: 20px;
+            margin-top: 10px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .metadata-box { 
+            background: #f8f9fa; 
+            border-left: 5px solid #2a5298; 
+            padding: 20px; 
+            margin: 25px 0; 
+            border-radius: 6px; 
+        }
+        .metadata-box h2 { 
+            margin: 0 0 15px 0; 
+            color: #1e3c72; 
+            font-size: 20px; 
+        }
+        .metadata-grid { 
+            display: grid; 
+            grid-template-columns: 200px 1fr; 
+            gap: 12px; 
+        }
+        .metadata-label { 
+            font-weight: 600; 
+            color: #555; 
+        }
+        .metadata-value { 
+            color: #333; 
+        }
+        .section { 
+            margin: 35px 0; 
+        }
+        .section h2 { 
+            color: #1e3c72; 
+            font-size: 24px; 
+            margin: 0 0 15px 0; 
+            padding-bottom: 10px; 
+            border-bottom: 3px solid #2a5298; 
+        }
+        .section h3 { 
+            color: #2a5298; 
+            font-size: 18px; 
+            margin: 25px 0 10px 0; 
+        }
+        .data-sources { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
+            gap: 15px; 
+            margin: 20px 0; 
+        }
+        .data-source-card { 
+            background: #f8f9fa; 
+            padding: 15px; 
+            border-radius: 6px; 
+            border-left: 4px solid #4CAF50; 
+        }
+        .data-source-card h4 { 
+            margin: 0 0 8px 0; 
+            color: #2a5298; 
+            font-size: 16px; 
+        }
+        .data-source-card p { 
+            margin: 0; 
+            font-size: 14px; 
+            color: #666; 
+        }
+        .security-item { 
+            background: #fff3e0; 
+            border-left: 4px solid #ff9800; 
+            padding: 15px; 
+            margin: 15px 0; 
+            border-radius: 4px; 
+        }
+        .security-item.critical { 
+            background: #ffebee; 
+            border-left-color: #f44336; 
+        }
+        .security-item.safe { 
+            background: #e8f5e9; 
+            border-left-color: #4caf50; 
+        }
+        .ioc-list { 
+            list-style: none; 
+            padding: 0; 
+        }
+        .ioc-list li { 
+            background: #fff3cd; 
+            border: 1px solid #ffc107; 
+            padding: 15px; 
+            margin: 10px 0; 
+            border-radius: 6px; 
+        }
+        .ioc-list strong { 
+            color: #856404; 
+            display: block; 
+            margin-bottom: 5px; 
+        }
+        .recommendations { 
+            background: linear-gradient(135deg, #e3f2fd 0%%, #bbdefb 100%%); 
+            padding: 25px; 
+            border-radius: 8px; 
+            margin: 25px 0; 
+        }
+        .recommendations h3 { 
+            color: #0d47a1; 
+            margin-top: 0; 
+        }
+        .recommendations ul { 
+            margin: 10px 0; 
+        }
+        .recommendations li { 
+            margin: 8px 0; 
+            color: #1565c0; 
+        }
+        .footer { 
+            background: #f8f9fa; 
+            padding: 25px; 
+            text-align: center; 
+            border-radius: 8px; 
+            margin: 40px -40px -40px -40px; 
+            border-top: 3px solid #2a5298; 
+        }
+        .footer p { 
+            margin: 8px 0; 
+            color: #666; 
+        }
+        .footer a { 
+            color: #2a5298; 
+            text-decoration: none; 
+            font-weight: 600; 
+        }
+        .footer a:hover { 
+            text-decoration: underline; 
+        }
+        .badge { 
+            display: inline-block; 
+            padding: 5px 12px; 
+            border-radius: 15px; 
+            font-size: 13px; 
+            font-weight: 600; 
+            margin: 5px 5px 5px 0; 
+        }
+        .badge-primary { 
+            background: #e3f2fd; 
+            color: #1976d2; 
+        }
+        .badge-success { 
+            background: #e8f5e9; 
+            color: #388e3c; 
+        }
+        .badge-warning { 
+            background: #fff3e0; 
+            color: #f57c00; 
+        }
+        code { 
+            background: #f5f5f5; 
+            padding: 3px 8px; 
+            border-radius: 4px; 
+            font-family: ''Courier New'', monospace; 
+            font-size: 14px; 
+        }
+    </style>
+</head>
+<body>
+    <div class=\"container\">
+        <div class=\"header\">
+            <h1>🛡️ XDR/SIEM Security Assessment Report</h1>
+            <p><strong>SC-USCS v5.74</strong> - Professional Security Analysis</p>
+            <div class=\"vendor-badge\">SupportCALL - www.supportcall.com.au</div>
+        </div>
+
+        <div class=\"metadata-box\">
+            <h2>📋 Report Metadata</h2>
+            <div class=\"metadata-grid\">
+                <div class=\"metadata-label\">Report Type:</div>
+                <div class=\"metadata-value\"><strong>XDR/SIEM Comprehensive Security Assessment</strong></div>
+                <div class=\"metadata-label\">Generated:</div>
+                <div class=\"metadata-value\">'+ (Get-Date -Format 'dddd, MMMM dd, yyyy - HH:mm:ss') +'</div>
+                <div class=\"metadata-label\">Computer Name:</div>
+                <div class=\"metadata-value\"><code>%COMPUTERNAME%</code></div>
+                <div class=\"metadata-label\">User Context:</div>
+                <div class=\"metadata-value\"><code>%USERNAME%</code></div>
+                <div class=\"metadata-label\">Script Version:</div>
+                <div class=\"metadata-value\"><span class=\"badge badge-primary\">SC-USCS v5.74</span></div>
+                <div class=\"metadata-label\">Assessment Mode:</div>
+                <div class=\"metadata-value\">Comprehensive Security Analysis</div>
+            </div>
+        </div>
+
+        <div class=\"section\">
+            <h2>📊 Data Sources Analyzed</h2>
+            <div class=\"data-sources\">
+                <div class=\"data-source-card\">
+                    <h4>✓ Threat Detection</h4>
+                    <p>Windows Defender threat analysis, security logs, and malware detection</p>
+                </div>
+                <div class=\"data-source-card\">
+                    <h4>✓ Network Analysis</h4>
+                    <p>Active connections, DNS cache, routing tables, and port monitoring</p>
+                </div>
+                <div class=\"data-source-card\">
+                    <h4>✓ Process & Services</h4>
+                    <p>Running processes, startup programs, and system services audit</p>
+                </div>
+                <div class=\"data-source-card\">
+                    <h4>✓ System Configuration</h4>
+                    <p>User accounts, privileges, installed software, and update status</p>
+                </div>
+                <div class=\"data-source-card\">
+                    <h4>✓ Event Logs</h4>
+                    <p>Security events, system events, and application logs</p>
+                </div>
+                <div class=\"data-source-card\">
+                    <h4>✓ Vulnerability Assessment</h4>
+                    <p>System updates, patch status, and configuration vulnerabilities</p>
+                </div>
+            </div>
+        </div>
+
+        <div class=\"section\">
+            <h2>🔍 Security Posture Assessment</h2>
+            
+            <div class=\"security-item\">
+                <h3>🦠 Threat Detection Status</h3>
+                <p><strong>Location:</strong> <code>%LOGPATH%\\defender-threats.log</code></p>
+                <p><strong>Status:</strong> <span class=\"badge badge-success\">Threat scan completed</span></p>
+                <p><strong>Action Required:</strong> Review threat log for any detected malware or suspicious activity</p>
+            </div>
+
+            <div class=\"security-item\">
+                <h3>🌐 Network Security Analysis</h3>
+                <p><strong>Location:</strong> <code>%LOGPATH%\\09_network_connections.txt</code></p>
+                <p><strong>Status:</strong> <span class=\"badge badge-success\">Network connections analyzed</span></p>
+                <p><strong>Action Required:</strong> Verify all connections are authorized and legitimate</p>
+            </div>
+
+            <div class=\"security-item\">
+                <h3>🔄 System Updates & Patches</h3>
+                <p><strong>Location:</strong> <code>%LOGPATH%\\04_windows_updates.csv</code></p>
+                <p><strong>Status:</strong> <span class=\"badge badge-success\">Update status collected</span></p>
+                <p><strong>Action Required:</strong> Install critical security updates if any are missing</p>
+            </div>
+        </div>
+
+        <div class=\"section\">
+            <h2>⚠️ Indicators of Compromise (IOC) Analysis</h2>
+            <p>The following areas require high-priority security review:</p>
+            <ul class=\"ioc-list\">
+                <li>
+                    <strong>1. Defender Threats</strong>
+                    <code>%LOGPATH%\\defender-threats.log</code><br>
+                    Review any malware or threat detections immediately
+                </li>
+                <li>
+                    <strong>2. Network Connections</strong>
+                    <code>%LOGPATH%\\09_network_connections.txt</code><br>
+                    Look for connections to unknown external IPs or suspicious ports
+                </li>
+                <li>
+                    <strong>3. Startup Programs</strong>
+                    <code>%LOGPATH%\\06_startup_programs.csv</code><br>
+                    Check for suspicious persistence mechanisms or unauthorized programs
+                </li>
+            </ul>
+        </div>
+
+        <div class=\"section\">
+            <h2>✅ Compliance Status</h2>
+            <div class=\"security-item safe\">
+                <h3>Antivirus Protection</h3>
+                <p><strong>Review:</strong> Check Windows Defender status in logs</p>
+                <p><strong>Requirement:</strong> Real-time protection must be enabled</p>
+                <p><strong>Status:</strong> <span class=\"badge badge-success\">Check logs for current status</span></p>
+            </div>
+            <div class=\"security-item safe\">
+                <h3>Security Updates</h3>
+                <p><strong>File:</strong> <code>%LOGPATH%\\04_windows_updates.csv</code></p>
+                <p><strong>Requirement:</strong> All critical security updates must be installed</p>
+                <p><strong>Status:</strong> <span class=\"badge badge-success\">Update history collected</span></p>
+            </div>
+        </div>
+
+        <div class=\"recommendations\">
+            <h3>🎯 Immediate Actions Required</h3>
+            <ul>
+                <li>Review and remediate any threats found in defender logs</li>
+                <li>Investigate network connections for suspicious activity</li>
+                <li>Remove suspicious startup programs if discovered</li>
+                <li>Install any missing critical security updates</li>
+            </ul>
+            <h3>📈 Ongoing Security Monitoring</h3>
+            <ul>
+                <li>Regularly review security event logs (weekly minimum)</li>
+                <li>Monitor network connection patterns for anomalies</li>
+                <li>Maintain current security updates and patches</li>
+                <li>Perform periodic comprehensive security assessments</li>
+                <li>Keep antivirus definitions updated daily</li>
+            </ul>
+        </div>
+
+        <div class=\"section\">
+            <h2>📁 Report Files & Data Location</h2>
+            <p><strong>All collected data files are located in:</strong> <code>%LOGPATH%</code></p>
+            <div style=\"margin: 20px 0; padding: 20px; background: #f8f9fa; border-radius: 6px;\">
+                <p><strong>JSON Report (SIEM Import):</strong> <code>%XDRREPORT%</code></p>
+                <p><strong>Text Report (Human Readable):</strong> <code>%XDRTXTREPORT%</code></p>
+                <p><strong>HTML Report (This Document):</strong> <code>%XDRHTMLREPORT%</code></p>
+            </div>
+            <p>The structured JSON format enables easy import into SIEM platforms, XDR solutions, or security analytics tools for advanced analysis and correlation.</p>
+        </div>
+
+        <div class=\"footer\">
+            <h3 style=\"color: #1e3c72; margin-top: 0;\">📞 Support & Remediation Services</h3>
+            <p>For professional assistance with security remediation, incident response, or threat analysis:</p>
+            <p><strong>SupportCALL:</strong> <a href=\"http://www.supportcall.com.au\" target=\"_blank\">www.supportcall.com.au</a></p>
+            <p><strong>Email Support:</strong></p>
+            <p>
+                <a href=\"mailto:alerts@supportcall.co.za\">alerts@supportcall.co.za</a> | 
+                <a href=\"mailto:scmyhelp@gmail.com\">scmyhelp@gmail.com</a>
+            </p>
+            <hr style=\"border: none; border-top: 1px solid #ddd; margin: 20px 0;\">
+            <p style=\"font-size: 12px; color: #999;\">
+                This report was automatically generated by SC-USCS v5.74<br>
+                Professional Windows Security Assessment & Remediation Tool
+            </p>
+        </div>
+    </div>
+</body>
+</html>
+'@; $html | Out-File -FilePath $reportPath -Encoding UTF8"
+
 echo XDR/SIEM reports generated successfully:
 echo  - JSON Report: %XDRREPORT%
 echo  - Text Report: %XDRTXTREPORT%
+echo  - HTML Report: %XDRHTMLREPORT%
 echo.
 ${postReport}`;
         
@@ -2144,6 +2531,7 @@ powershell -ExecutionPolicy Bypass -Command "$ErrorActionPreference='Continue'; 
         </div>
         <div class='footer'>
             <p><strong>SC-USCS</strong> - Automated Windows System Care</p>
+            <p><strong>SupportCALL:</strong> <a href='http://www.supportcall.com.au' target='_blank' style='color: #2a5298;'>www.supportcall.com.au</a></p>
             <p style='color: #999; font-size: 12px;'>This is an automated report from your system remediation script</p>
         </div>
     </div>
@@ -2273,7 +2661,8 @@ echo === SUMMARY === >> "%LOGPATH%\\%PRE_REPORT_NAME%"
 echo Status: All operations up to this point completed >> "%LOGPATH%\\%PRE_REPORT_NAME%"
 echo Remaining: Defender Full Scan ^& Check Disk operations >> "%LOGPATH%\\%PRE_REPORT_NAME%"
 echo All findings consolidated in: %LOGPATH% >> "%LOGPATH%\\%PRE_REPORT_NAME%"
-echo For support, email all files to: scmyhelp@gmail.com and alerts@supportcall.co.za >> "%LOGPATH%\\%PRE_REPORT_NAME%"
+echo For support: SupportCALL - www.supportcall.com.au >> "%LOGPATH%\\%PRE_REPORT_NAME%"
+echo Email: scmyhelp@gmail.com and alerts@supportcall.co.za >> "%LOGPATH%\\%PRE_REPORT_NAME%"
 echo. >> "%LOGPATH%\\%PRE_REPORT_NAME%"
 
 echo.
@@ -2327,6 +2716,7 @@ powershell -Command "$reportPath = '%LOGPATH%\\%PRE_REPORT_HTML%'; $html = @'
         <h2>📁 Full Report Location</h2>
         <p><code>%LOGPATH%\\%PRE_REPORT_NAME%</code></p>
         <h2>📧 Support Contact</h2>
+        <p><strong>SupportCALL:</strong> <a href=\"http://www.supportcall.com.au\" target=\"_blank\">www.supportcall.com.au</a></p>
         <p>For technical support, send all files from the log directory to:</p>
         <ul>
             <li>scmyhelp@gmail.com</li>
@@ -2415,7 +2805,8 @@ echo === FINAL SUMMARY === >> "%LOGPATH%\\%FINAL_REPORT_NAME%"
 echo Status: ALL OPERATIONS COMPLETED >> "%LOGPATH%\\%FINAL_REPORT_NAME%"
 echo Total Functions Executed: ${selectedFunctionData.length} >> "%LOGPATH%\\%FINAL_REPORT_NAME%"
 echo All findings consolidated in: %LOGPATH% >> "%LOGPATH%\\%FINAL_REPORT_NAME%"
-echo For support, email all files to: scmyhelp@gmail.com and alerts@supportcall.co.za >> "%LOGPATH%\\%FINAL_REPORT_NAME%"
+echo For support: SupportCALL - www.supportcall.com.au >> "%LOGPATH%\\%FINAL_REPORT_NAME%"
+echo Email: scmyhelp@gmail.com and alerts@supportcall.co.za >> "%LOGPATH%\\%FINAL_REPORT_NAME%"
 echo. >> "%LOGPATH%\\%FINAL_REPORT_NAME%"
 
 echo *** Creating final HTML report ***
