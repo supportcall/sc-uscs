@@ -3353,55 +3353,72 @@ exit /b 0`;
         </section>
 
         {/* Professional Pre-Run Checklist - ENHANCED */}
-        <section aria-labelledby="pre-execution-checklist">
-        <Card className="mb-8 border border-border bg-gradient-to-br from-slate-50 to-gray-50 shadow-lg">
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary via-primary/80 to-primary"></div>
+        <section aria-labelledby="pre-execution-checklist" className="mb-8">
+        <Card className="border border-primary/20 bg-card shadow-glow relative overflow-hidden">
+          {/* Cyan accent line at top */}
+          <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-primary to-transparent"></div>
           
-          <CardHeader className="text-center pb-4 pt-8">
+          <CardHeader className="text-center pb-6 pt-8 px-6">
+            <div className="inline-block mb-3">
+              <div className="flex items-center justify-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/30">
+                <div className="h-2 w-2 rounded-full bg-primary animate-pulse"></div>
+                <span className="text-xs font-semibold text-primary uppercase tracking-wider">Required</span>
+              </div>
+            </div>
             <h2 id="pre-execution-checklist" className="text-2xl md:text-3xl font-bold text-foreground mb-2">
-              MANDATORY PRE-EXECUTION CHECKLIST
+              Pre-Execution Checklist
             </h2>
-            <p className="text-base md:text-lg text-muted-foreground font-medium">
-              COMPLETE ALL ITEMS BEFORE RUNNING SCRIPT
+            <p className="text-sm md:text-base text-muted-foreground max-w-2xl mx-auto">
+              Complete all items below before running the script to ensure safe execution
             </p>
           </CardHeader>
           
-          <CardContent className="px-6 pb-6">
+          <CardContent className="px-6 pb-8">
             <div className="grid gap-5 md:grid-cols-2 mb-6">
-              <div className="space-y-3 p-6 bg-card rounded-lg border border-border shadow-sm">
-                 <h3 className="font-bold text-lg text-foreground flex items-center gap-2 pb-3 border-b border-border">
-                   <span className="text-primary">●</span>
-                   CRITICAL SYSTEM PREPARATION
-                 </h3>
-                <ul className="space-y-2.5">
+              {/* Critical System Preparation */}
+              <div className="space-y-4 p-5 rounded-lg bg-secondary/50 border border-primary/10 hover:border-primary/30 transition-colors">
+                 <div className="flex items-center gap-3 pb-3 border-b border-border/50">
+                   <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-primary/10 border border-primary/30">
+                     <span className="text-primary text-lg">⚙</span>
+                   </div>
+                   <h3 className="font-bold text-base text-foreground">
+                     System Preparation
+                   </h3>
+                 </div>
+                <ul className="space-y-2">
                   {[
                     "Full system backup to EXTERNAL drive",
                     "Windows System Restore Point created", 
                     "Administrator account access CONFIRMED",
                     "ALL critical applications CLOSED"
                   ].map((item, index) => (
-                    <li key={index} className="flex items-start gap-3 text-foreground text-sm bg-muted/40 p-3 rounded-md border border-border/50 hover:bg-muted/60 transition-colors">
-                      <span className="text-green-600 text-lg flex-shrink-0 mt-0.5">✓</span>
+                    <li key={index} className="flex items-start gap-3 text-foreground/90 text-sm p-2.5 rounded-md hover:bg-muted/30 transition-colors group">
+                      <span className="text-primary text-base flex-shrink-0 mt-0.5 group-hover:scale-110 transition-transform">✓</span>
                       <span className="leading-relaxed">{item}</span>
                     </li>
                   ))}
                 </ul>
               </div>
               
-              <div className="space-y-3 p-6 bg-card rounded-lg border border-border shadow-sm">
-                 <h3 className="font-bold text-lg text-foreground flex items-center gap-2 pb-3 border-b border-border">
-                   <span className="text-primary">●</span>
-                   ENVIRONMENT REQUIREMENTS
-                 </h3>
-                <ul className="space-y-2.5">
+              {/* Environment Requirements */}
+              <div className="space-y-4 p-5 rounded-lg bg-secondary/50 border border-primary/10 hover:border-primary/30 transition-colors">
+                 <div className="flex items-center gap-3 pb-3 border-b border-border/50">
+                   <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-primary/10 border border-primary/30">
+                     <span className="text-primary text-lg">🌐</span>
+                   </div>
+                   <h3 className="font-bold text-base text-foreground">
+                     Environment Requirements
+                   </h3>
+                 </div>
+                <ul className="space-y-2">
                   {[
                     "Device connected to POWER source",
                     "Stable internet connection ACTIVE", 
                     "Minimum 5GB free disk space",
                     "NO competing security scans running"
                   ].map((item, index) => (
-                    <li key={index} className="flex items-start gap-3 text-foreground text-sm bg-muted/40 p-3 rounded-md border border-border/50 hover:bg-muted/60 transition-colors">
-                      <span className="text-green-600 text-lg flex-shrink-0 mt-0.5">✓</span>
+                    <li key={index} className="flex items-start gap-3 text-foreground/90 text-sm p-2.5 rounded-md hover:bg-muted/30 transition-colors group">
+                      <span className="text-primary text-base flex-shrink-0 mt-0.5 group-hover:scale-110 transition-transform">✓</span>
                       <span className="leading-relaxed">{item}</span>
                     </li>
                   ))}
@@ -3409,16 +3426,19 @@ exit /b 0`;
               </div>
             </div>
             
-            <Alert className="border-destructive/50 bg-destructive/5">
-              <AlertTriangle className="h-5 w-5 text-destructive" />
-              <AlertDescription>
-                <div className="font-bold text-destructive text-base mb-1">
-                  FAILURE TO COMPLETE CHECKLIST MAY RESULT IN SYSTEM DAMAGE
-                </div>
-                <div className="text-sm text-destructive/90">
-                  SupportCALL is NOT responsible for damage caused by improper preparation
-                </div>
-              </AlertDescription>
+            {/* Warning Alert */}
+            <Alert className="border-destructive/40 bg-destructive/10 backdrop-blur-sm">
+              <div className="flex items-start gap-3">
+                <AlertTriangle className="h-5 w-5 text-destructive flex-shrink-0 mt-0.5" />
+                <AlertDescription className="flex-1">
+                  <div className="font-bold text-destructive text-sm mb-1">
+                    Failure to complete checklist may result in system damage
+                  </div>
+                  <div className="text-xs text-destructive/80">
+                    SupportCALL is NOT responsible for damage caused by improper preparation
+                  </div>
+                </AlertDescription>
+              </div>
             </Alert>
           </CardContent>
         </Card>
