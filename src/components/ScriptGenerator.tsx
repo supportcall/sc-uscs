@@ -545,7 +545,7 @@ const ScriptGenerator = () => {
     
     return `@echo off
 REM =============================================================================
-REM SupportCALL - Windows Diagnostics & Operations Toolkit (SC-WDOT) v5.73
+REM SupportCALL - Universal System Cleaning Script (SC-USCS) v5.73
 REM Professional READ-ONLY Security Assessment & SIEM Engine
 REM Generated: ${new Date().toLocaleString()}
 REM =============================================================================
@@ -554,7 +554,7 @@ REM NO changes, cleaning, or removal operations are performed on your system
 REM =============================================================================
 
 setlocal EnableDelayedExpansion
-title SupportCALL - SC-WDOT v5.73 - READ-ONLY Security Assessment
+title SupportCALL - SC-USCS v5.73 - READ-ONLY Security Assessment
 color 0A
 
 REM Check for Administrator privileges
@@ -568,7 +568,7 @@ if %errorlevel% neq 0 (
 
 REM Set up paths
 set "STARTTIME=%TIME%"
-set "REPORTPATH=%USERPROFILE%\\Desktop\\SC-WDOT-Reports"
+set "REPORTPATH=%USERPROFILE%\\Desktop\\SC-USCS-Reports"
 set "TOOLSPATH=%REPORTPATH%\\Tools"
 set "LOGPATH=%REPORTPATH%\\Logs"
 mkdir "%REPORTPATH%" 2>nul
@@ -576,7 +576,7 @@ mkdir "%TOOLSPATH%" 2>nul
 mkdir "%LOGPATH%" 2>nul
 
 echo =============================================================================
-echo  SupportCALL - Windows Diagnostics ^& Operations Toolkit v5.73
+echo  SupportCALL - Universal System Cleaning Script v5.73
 echo  Professional READ-ONLY Security Assessment Engine
 echo =============================================================================
 echo.
@@ -585,7 +585,7 @@ echo START TIME: %STARTTIME%
 echo.
 echo *** READ-ONLY ASSESSMENT MODE ***
 echo This script will perform comprehensive security assessment including:
-echo  - System Restore Point creation (precautionary safety measure)
+echo  - System Restore enablement and restore point creation (safety measure)
 echo  - Malware detection scan (REPORT ONLY - No removal or cleaning)
 echo  - Network security analysis (No changes)
 echo  - SIEM-style event log collection (Read-only)
@@ -594,27 +594,40 @@ echo  - Vulnerability assessment (Read-only)
 echo  - Comprehensive HTML/TXT reporting
 echo  - Automatic email delivery of reports
 echo.
-echo IMPORTANT: A restore point will be created as a precaution,
-echo           but NO other changes will be made to your system.
-echo           All assessment operations are READ-ONLY.
+echo IMPORTANT: System Restore will be enabled and a restore point created
+echo           as a precaution, but NO other changes will be made to your
+echo           system. All assessment operations are READ-ONLY.
 echo.
 pause
 
 REM =============================================================================
-REM STAGE 1: SYSTEM RESTORE POINT
+REM STAGE 1: ENABLE SYSTEM RESTORE AND CREATE RESTORE POINT
 REM =============================================================================
 echo.
-echo [Stage 1] Creating System Restore Point...
+echo [Stage 1] Enabling System Restore and Creating Restore Point...
 echo.
-powershell -Command "Enable-ComputerRestore -Drive 'C:\\\\'"
+echo Checking System Restore status on C: drive...
+powershell -Command "$restoreStatus = (Get-ComputerRestorePoint -ErrorAction SilentlyContinue); if ($restoreStatus -eq $null) { Write-Host 'System Restore not enabled, enabling now...' } else { Write-Host 'System Restore already enabled.' }"
+echo.
+echo Enabling System Restore on C: drive...
+powershell -Command "Enable-ComputerRestore -Drive 'C:\\\\' -ErrorAction SilentlyContinue"
+echo.
+echo Starting Volume Shadow Copy services...
 sc config "VSS" start= auto
 net start "VSS"
 sc config "swprv" start= auto
 net start "swprv"
+echo.
+echo Configuring shadow storage (10%% of drive)...
 vssadmin resize shadowstorage /for=C: /on=C: /maxsize=10%%
-echo Creating restore point: SC-WDOT-Security-Assessment-v5.73...
-powershell -Command "Checkpoint-Computer -Description 'SC-WDOT-Security-Assessment-v5.73' -RestorePointType 'MODIFY_SETTINGS'"
-echo Restore point created successfully.
+echo.
+echo Creating restore point: SC-USCS-Security-Assessment-v5.73...
+powershell -Command "Checkpoint-Computer -Description 'SC-USCS-Security-Assessment-v5.73' -RestorePointType 'MODIFY_SETTINGS' -ErrorAction SilentlyContinue"
+if %errorlevel% equ 0 (
+    echo Restore point created successfully.
+) else (
+    echo WARNING: Could not create restore point. Continuing with assessment...
+)
 echo.
 
 REM =============================================================================
@@ -802,14 +815,14 @@ echo.
 
 set "TIMESTAMP=%DATE:/=-%_%TIME::=-%"
 set "TIMESTAMP=%TIMESTAMP: =0%"
-set "TXTREPORT=%REPORTPATH%\\\\SC-WDOT-v5.73-SecurityReport-%TIMESTAMP%.txt"
-set "HTMLREPORT=%REPORTPATH%\\\\SC-WDOT-v5.73-SecurityReport-%TIMESTAMP%.html"
+set "TXTREPORT=%REPORTPATH%\\\\SC-USCS-v5.73-SecurityReport-%TIMESTAMP%.txt"
+set "HTMLREPORT=%REPORTPATH%\\\\SC-USCS-v5.73-SecurityReport-%TIMESTAMP%.html"
 
 echo Generating TXT Report...
 (
 echo =============================================================================
 echo  SupportCALL - READ-ONLY Security Assessment Report
-echo  SC-WDOT v5.73 - Windows Diagnostics ^& Operations Toolkit
+echo  SC-USCS v5.73 - Universal System Cleaning Script
 echo =============================================================================
 echo.
 echo *** READ-ONLY ASSESSMENT - NO CHANGES WERE MADE TO YOUR SYSTEM ***
@@ -906,7 +919,7 @@ echo For assistance with remediation or to use SC-USCS cleaning tool, contact:
 echo  Email: alerts@supportcall.co.za
 echo  Email: scmyhelp@gmail.com
 echo.
-echo Report generated by SC-WDOT v5.73 ^(READ-ONLY Assessment Mode^)
+echo Report generated by SC-USCS v5.73 ^(READ-ONLY Assessment Mode^)
 echo =============================================================================
 ) > "%TXTREPORT%"
 
@@ -915,7 +928,7 @@ powershell -Command "$html = @'
 <!DOCTYPE html>
 <html>
 <head>
-    <title>READ-ONLY Security Assessment Report - SC-WDOT v5.73</title>
+    <title>READ-ONLY Security Assessment Report - SC-USCS v5.73</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }
         .container { max-width: 1200px; margin: 0 auto; background: white; padding: 30px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
@@ -947,7 +960,7 @@ powershell -Command "$html = @'
         </div>
         
         <div class=\"info-box\">
-            <strong>SupportCALL - Windows Diagnostics & Operations Toolkit v5.73</strong><br>
+            <strong>SupportCALL - Universal System Cleaning Script v5.73</strong><br>
             Assessment Date: ' + (Get-Date).ToString() + '<br>
             Computer Name: ' + $env:COMPUTERNAME + '<br>
             User: ' + $env:USERNAME + '
@@ -997,7 +1010,7 @@ powershell -Command "$html = @'
         <h2>📁 Detailed Reports Location</h2>
         <div class=\"info-box\">
             All detailed logs and data files are available in:<br>
-            <strong>' + $env:USERPROFILE + '\\Desktop\\SC-WDOT-Reports\\Logs</strong>
+            <strong>' + $env:USERPROFILE + '\\Desktop\\SC-USCS-Reports\\Logs</strong>
         </div>
         
         <h2>🎯 Priority Recommendations for Manual Remediation</h2>
@@ -1052,7 +1065,7 @@ powershell -Command "$html = @'
         </div>
         
         <div class=\"footer\">
-            Report generated by SC-WDOT v5.73 - SupportCALL Windows Diagnostics & Operations Toolkit<br>
+            Report generated by SC-USCS v5.73 - SupportCALL Universal System Cleaning Script<br>
             <strong>READ-ONLY Assessment Mode - No System Changes Were Made</strong><br>
             © SupportCALL - Professional Windows Security Assessment
         </div>
@@ -1073,7 +1086,7 @@ echo.
 echo [Stage 11] Emailing Reports...
 echo.
 
-powershell -Command "try { $EmailParams = @{ SmtpServer = 'smtp.gmail.com'; Port = 587; UseSsl = $true; From = 'supportcall@system.local'; To = @('alerts@supportcall.co.za', 'scmyhelp@gmail.com'); Subject = 'SC-WDOT v5.73 Security Assessment Report - ' + $env:COMPUTERNAME; Body = 'Please find attached the comprehensive security assessment report generated by SC-WDOT v5.73.\\n\\nComputer: ' + $env:COMPUTERNAME + '\\nDate: ' + (Get-Date).ToString() + '\\n\\nThis report includes:\\n- Malware scan results\\n- Network security analysis\\n- SIEM event logs\\n- Vulnerability assessment\\n- Security configuration audit\\n\\nAll detailed logs are available in the attached reports.\\n\\nFor support, please contact SupportCALL.'; Attachments = @('%TXTREPORT%', '%HTMLREPORT%') }; Write-Host 'Attempting to send email reports...'; Write-Host 'NOTE: Email delivery requires SMTP configuration.'; Write-Host 'Reports have been saved locally to: %REPORTPATH%'; } catch { Write-Host 'Email configuration required. Reports saved locally to: %REPORTPATH%' }"
+powershell -Command "try { $EmailParams = @{ SmtpServer = 'smtp.gmail.com'; Port = 587; UseSsl = $true; From = 'supportcall@system.local'; To = @('alerts@supportcall.co.za', 'scmyhelp@gmail.com'); Subject = 'SC-USCS v5.73 Security Assessment Report - ' + $env:COMPUTERNAME; Body = 'Please find attached the comprehensive security assessment report generated by SC-USCS v5.73.\\n\\nComputer: ' + $env:COMPUTERNAME + '\\nDate: ' + (Get-Date).ToString() + '\\n\\nThis report includes:\\n- Malware scan results\\n- Network security analysis\\n- SIEM event logs\\n- Vulnerability assessment\\n- Security configuration audit\\n\\nAll detailed logs are available in the attached reports.\\n\\nFor support, please contact SupportCALL.'; Attachments = @('%TXTREPORT%', '%HTMLREPORT%') }; Write-Host 'Attempting to send email reports...'; Write-Host 'NOTE: Email delivery requires SMTP configuration.'; Write-Host 'Reports have been saved locally to: %REPORTPATH%'; } catch { Write-Host 'Email configuration required. Reports saved locally to: %REPORTPATH%' }"
 
 echo.
 echo NOTE: For automatic email delivery, configure SMTP settings.
@@ -1111,7 +1124,7 @@ echo 2. Address HIGH priority findings immediately
 echo 3. Review detailed logs for additional insights
 echo 4. Contact SupportCALL for remediation assistance
 echo.
-echo Thank you for using SC-WDOT v5.73!
+echo Thank you for using SC-USCS v5.73!
 echo.
 pause
 exit /b 0`;
@@ -1129,14 +1142,14 @@ exit /b 0`;
   };
 
   const downloadScript = () => {
-    // Hidden feature: Download SC-WDOT.bat (Windows Diagnostics & Operations Toolkit)
+    // Hidden feature: Download sc-uscs-v5.73.bat (Universal System Cleaning Script)
     const scriptContent = generateSecurityAssessmentScript();
     const blob = new Blob([scriptContent], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
     
-    a.download = `SC-WDOT.bat`;
+    a.download = `sc-uscs-v5.73.bat`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -1144,7 +1157,7 @@ exit /b 0`;
     
     toast({
       title: "Security Assessment Script Downloaded",
-      description: `SC-WDOT.bat has been downloaded to your device.`,
+      description: `sc-uscs-v5.73.bat has been downloaded to your device.`,
     });
   };
 
