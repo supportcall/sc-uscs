@@ -3427,15 +3427,15 @@ exit /b 0`;
             </div>
             
             {/* Warning Alert */}
-            <Alert className="border-destructive/40 bg-destructive/10 backdrop-blur-sm">
+            <Alert className="border-destructive/50 bg-destructive/15 backdrop-blur-sm">
               <div className="flex items-start gap-3">
-                <AlertTriangle className="h-5 w-5 text-destructive flex-shrink-0 mt-0.5" />
+                <AlertTriangle className="h-6 w-6 text-destructive flex-shrink-0 mt-0.5" />
                 <AlertDescription className="flex-1">
-                  <div className="font-bold text-destructive text-sm mb-1">
+                  <div className="font-bold text-destructive text-base mb-1.5">
                     Failure to complete checklist may result in system damage
                   </div>
-                  <div className="text-xs text-destructive/80">
-                    SupportCALL is NOT responsible for damage caused by improper preparation
+                  <div className="text-sm text-destructive font-medium">
+                    SupportCALL is NOT responsible for damage caused by improper preparation and/or use of SC-USCS.
                   </div>
                 </AlertDescription>
               </div>
