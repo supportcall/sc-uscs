@@ -806,7 +806,8 @@ echo.
 systeminfo > "%LOGPATH%\\\\systeminfo.txt" 2>&1
 driverquery > "%LOGPATH%\\\\drivers.txt" 2>&1
 tasklist /v > "%LOGPATH%\\\\running-processes.txt" 2>&1
-wmic product get name,version > "%LOGPATH%\\\\installed-software.txt" 2>&1
+echo Collecting installed software (using fast registry method)...
+powershell -Command "Get-ItemProperty HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\* | Select-Object DisplayName, DisplayVersion, Publisher, InstallDate | Export-Csv '%LOGPATH%\\\\installed-software.csv' -NoTypeInformation -ErrorAction SilentlyContinue" 2>nul
 
 powershell -Command "Get-Service -ErrorAction SilentlyContinue | Export-Csv '%LOGPATH%\\\\services.csv' -NoTypeInformation -ErrorAction SilentlyContinue" 2>nul
 powershell -Command "Get-Process -ErrorAction SilentlyContinue | Export-Csv '%LOGPATH%\\\\processes.csv' -NoTypeInformation -ErrorAction SilentlyContinue" 2>nul
