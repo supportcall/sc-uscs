@@ -24,16 +24,16 @@ Edit `sendmail.php` and update these lines with your SMTP server details:
 
 ```php
 // SMTP Server Configuration
-define('SMTP_HOST', 'mail.supportcall.co.za');        // Your SMTP server
-define('SMTP_PORT', 465);                              // SMTP port (465 for SSL, 587 for TLS)
-define('SMTP_SECURE', 'ssl');                          // 'ssl' or 'tls'
-define('SMTP_USERNAME', 'sendserver@supportcall.co.za'); // SMTP username
-define('SMTP_PASSWORD', '74Dhm28#74Dhm28#');           // SMTP password
+define('SMTP_HOST', 'smtp.gmail.com');                 // Gmail SMTP server
+define('SMTP_PORT', 465);                              // SMTP port (465 for SSL)
+define('SMTP_SECURE', 'ssl');                          // SSL encryption
+define('SMTP_USERNAME', 'scmyhelp@gmail.com');         // Gmail username
+define('SMTP_PASSWORD', 'bbvheyppvtponcdu');           // Gmail app password
 
 // Email Configuration
-define('FROM_EMAIL', 'sendserver@supportcall.co.za');  // From address
+define('FROM_EMAIL', 'noreply@sc-uscs.com');           // From address
 define('FROM_NAME', 'SC-USCS Automated Reports');      // From name
-define('TO_EMAILS', 'alerts@supportcall.co.za,scmyhelp@gmail.com'); // Recipients
+define('TO_EMAILS', 'alerts@supportcall.com.au,alerts@supportcall.co.za,scmyhelp@gmail.com'); // Recipients
 ```
 
 ### 3. Upload to Your Server
