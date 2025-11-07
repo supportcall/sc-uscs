@@ -3310,7 +3310,7 @@ exit /b 0`;
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/5 to-secondary/10 dark:from-background dark:to-muted/20">
+    <div className="min-h-screen bg-gradient-to-br from-primary/5 to-secondary/10 dark:from-background dark:to-muted/20 pt-16">
       <div className="container mx-auto px-4 py-6 max-w-7xl">
         <header role="banner">
         {/* Header */}
