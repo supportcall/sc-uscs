@@ -3424,10 +3424,10 @@ exit /b 0`;
                      Environment Requirements
                    </h3>
                  </div>
-                <ul className="space-y-2">
+                 <ul className="space-y-2">
                   {[
                     "Device connected to POWER source",
-                    "Stable internet connection ACTIVE", 
+                    "Active internet connection (required for downloading free tools and sending email reports)", 
                     "Minimum 5GB free disk space",
                     "NO competing security scans running"
                   ].map((item, index) => (
