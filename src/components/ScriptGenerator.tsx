@@ -2884,7 +2884,7 @@ echo.
     
     return `@echo off
 REM =============================================================================
-REM SupportCALL - Ultimate Secure Clean Script (SC-USCS) v5.83
+REM SupportCALL - Ultimate Secure Clean Script (SC-USCS) v5.84
 REM Professional Windows Remediation Engine (SC-UWIRE)
 REM Generated: ${new Date().toLocaleString()}
 REM Functions Selected: ${selectedFunctionData.length} of ${functions.length}
@@ -2892,7 +2892,7 @@ REM Functions Selected: ${selectedFunctionData.length} of ${functions.length}
 REM =============================================================================
 
 setlocal EnableDelayedExpansion
-title SupportCALL - SC-USCS v5.83 - Professional Edition
+title SupportCALL - SC-USCS v5.84 - Professional Edition
 
 REM Check for Administrator privileges
 net session >nul 2>&1
@@ -2913,7 +2913,7 @@ mkdir "%LOGPATH%" 2>nul
 mkdir "%TOOLSPATH%" 2>nul
 
 echo =============================================================================
-echo  SupportCALL - Ultimate Secure Clean Script v5.83
+echo  SupportCALL - Ultimate Secure Clean Script v5.84
 echo  Professional Windows Remediation Engine
 echo =============================================================================
 echo.
@@ -3181,12 +3181,12 @@ echo.
 echo === INITIALIZING REPORTING SYSTEM ===
 echo Creating execution timeline tracking...
 echo === EXECUTION TIMELINE === > "%LOGPATH%\\\\execution-timeline.log"
-echo Script: SC-USCS v5.83 >> "%LOGPATH%\\\\execution-timeline.log"
+echo Script: SC-USCS v5.84 >> "%LOGPATH%\\\\execution-timeline.log"
 echo Start Time: %STARTTIME% >> "%LOGPATH%\\\\execution-timeline.log"
 echo Selected Functions: ${selectedFunctionData.length} >> "%LOGPATH%\\\\execution-timeline.log"
 echo. >> "%LOGPATH%\\\\execution-timeline.log"
 echo === PROGRESS SUMMARY === > "%LOGPATH%\\\\progress-summary.txt"
-echo SC-USCS v5.83 - Execution Progress Tracker >> "%LOGPATH%\\\\progress-summary.txt"
+echo SC-USCS v5.84 - Execution Progress Tracker >> "%LOGPATH%\\\\progress-summary.txt"
 echo Start Time: %STARTTIME% >> "%LOGPATH%\\\\progress-summary.txt"
 echo Total Functions: ${selectedFunctionData.length} >> "%LOGPATH%\\\\progress-summary.txt"
 echo. >> "%LOGPATH%\\\\progress-summary.txt"
@@ -3225,8 +3225,8 @@ net start "swprv"
 vssadmin resize shadowstorage /for=C: /on=C: /maxsize=10%%
 
 REM Create mandatory restore point with error checking
-echo Creating System Restore Point: SC-USCS-Pre-Run-v5.83...
-powershell -Command "$result = Checkpoint-Computer -Description 'SC-USCS-Pre-Run-v5.83' -RestorePointType 'MODIFY_SETTINGS' -Verbose; if ($result -eq $null) { Write-Host 'SUCCESS: System Restore Point Created' -ForegroundColor Green } else { Write-Host 'WARNING: Restore Point Creation Status Unknown' -ForegroundColor Yellow }"
+echo Creating System Restore Point: SC-USCS-Pre-Run-v5.84...
+powershell -Command "$result = Checkpoint-Computer -Description 'SC-USCS-Pre-Run-v5.84' -RestorePointType 'MODIFY_SETTINGS' -Verbose; if ($result -eq $null) { Write-Host 'SUCCESS: System Restore Point Created' -ForegroundColor Green } else { Write-Host 'WARNING: Restore Point Creation Status Unknown' -ForegroundColor Yellow }"
 
 REM Verify restore point was created
 echo Verifying restore point creation...
@@ -3270,10 +3270,10 @@ echo ✓ Progress Summary: %LOGPATH%\\\\progress-summary.txt
 echo ✓ Consolidated Findings: %LOGPATH%\\\\CONSOLIDATED_FINDINGS.txt
 echo ✓ Individual Function Logs: %LOGPATH%\\\\*.log
 ${selectedFunctionData.some(f => f.id === 'system-report' || f.id === 'email-report') ? `
-echo ✓ Pre-Final Report: %LOGPATH%\\\\SC-USCS-v5.83-PreFinalScans-*.txt
-echo ✓ Pre-Final HTML Report: %LOGPATH%\\\\SC-USCS-v5.83-PreFinalScans-*.html
-echo ✓ Final Complete Report: %LOGPATH%\\\\SC-USCS-v5.83-FinalComplete-*.txt
-echo ✓ Final Complete HTML Report: %LOGPATH%\\\\SC-USCS-v5.83-FinalComplete-*.html
+echo ✓ Pre-Final Report: %LOGPATH%\\\\SC-USCS-v5.84-PreFinalScans-*.txt
+echo ✓ Pre-Final HTML Report: %LOGPATH%\\\\SC-USCS-v5.84-PreFinalScans-*.html
+echo ✓ Final Complete Report: %LOGPATH%\\\\SC-USCS-v5.84-FinalComplete-*.txt
+echo ✓ Final Complete HTML Report: %LOGPATH%\\\\SC-USCS-v5.84-FinalComplete-*.html
 ` : ''}
 echo.
 echo ALL OPERATIONS LOGGED TO: %LOGPATH%
@@ -3323,7 +3323,7 @@ exit /b 0`;
                 Ultimate Secure Clean Script
               </div>
               <div className="text-xl md:text-2xl font-semibold text-primary">
-                v5.83 - <span onClick={downloadScript} className="cursor-pointer">Professional Edition</span>
+                v5.84 - <span onClick={downloadScript} className="cursor-pointer">Professional Edition</span>
               </div>
             </div>
             
@@ -3333,7 +3333,7 @@ exit /b 0`;
             </CardDescription>
             
             <div className="flex justify-center gap-3 md:gap-4 flex-wrap pt-4">
-              <Badge variant="default" className="px-4 py-2 text-base font-bold">SC-USCS v5.83</Badge>
+              <Badge variant="default" className="px-4 py-2 text-base font-bold">SC-USCS v5.84</Badge>
               <Badge variant="secondary" className="px-4 py-2 text-base font-bold">Safety: 98%</Badge>
               <Badge variant="outline" className="px-4 py-2 text-base font-bold border-2">Effectiveness: 95%</Badge>
               <Badge variant="outline" className="px-4 py-2 text-base font-bold border-2">Win 10/11 Compatible</Badge>
