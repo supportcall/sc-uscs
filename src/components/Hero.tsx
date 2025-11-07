@@ -4,7 +4,7 @@ import { Download, Shield, Zap, Terminal, AlertTriangle } from "lucide-react";
 
 const Hero = () => {
   return (
-    <section className="relative min-h-screen flex items-center justify-center bg-gradient-hero overflow-hidden pt-16" role="banner">
+    <section className="relative min-h-screen flex items-center justify-center bg-gradient-hero overflow-hidden" role="banner">
       {/* Animated background elements */}
       <div className="absolute inset-0" aria-hidden="true">
         <div className="absolute top-20 left-10 w-72 h-72 bg-primary/5 rounded-full blur-3xl animate-pulse"></div>
@@ -63,9 +63,12 @@ const Hero = () => {
             size="lg" 
             className="border-primary/30 hover:border-primary hover:shadow-elegant transition-all duration-300"
             onClick={() => {
-              const element = document.querySelector('[id*="architecture"], #architecture');
+              const element = document.getElementById('sc-uwire');
               if (element) {
-                element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                const architectureSection = element.querySelector('[id*="architecture"], section');
+                if (architectureSection) {
+                  architectureSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
               }
             }}
           >
