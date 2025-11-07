@@ -1,6 +1,14 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import { useEffect } from "react";
 
 const NotFound = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+    // Track 404 in production via analytics if needed
+    // Removed console.error for production
+  }, [location.pathname]);
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-background">
       <div className="text-center px-6">

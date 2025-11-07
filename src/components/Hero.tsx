@@ -63,7 +63,7 @@ const Hero = () => {
             size="lg" 
             className="border-primary/30 hover:border-primary hover:shadow-elegant transition-all duration-300"
             onClick={() => {
-              const element = document.getElementById('architecture');
+              const element = document.querySelector('[id*="architecture"], #architecture');
               if (element) {
                 element.scrollIntoView({ behavior: 'smooth', block: 'start' });
               }
