@@ -806,16 +806,11 @@ echo.
 systeminfo > "%LOGPATH%\\\\systeminfo.txt" 2>&1
 driverquery > "%LOGPATH%\\\\drivers.txt" 2>&1
 tasklist /v > "%LOGPATH%\\\\running-processes.txt" 2>&1
+echo Collecting installed software (using fast registry method)...
+powershell -Command "Get-ItemProperty HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\* | Select-Object DisplayName, DisplayVersion, Publisher, InstallDate | Export-Csv '%LOGPATH%\\\\installed-software.csv' -NoTypeInformation -ErrorAction SilentlyContinue" 2>nul
 
-echo Collecting installed software (limited query with 30-second timeout)...
-REM Use timeout-limited PowerShell with simple query
-start /B "" cmd /c "powershell -Command \"$ProgressPreference='SilentlyContinue'; Get-ItemProperty HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\* -ErrorAction SilentlyContinue | Where-Object {$_.DisplayName} | Select-Object -First 500 DisplayName, DisplayVersion, Publisher, InstallDate | Export-Csv '%LOGPATH%\\\\installed-software.csv' -NoTypeInformation\" 2>nul"
-REM Wait maximum 30 seconds for the software collection
-timeout /t 30 /nobreak >nul 2>&1
-
-echo Collecting services and processes...
-powershell -Command "$ProgressPreference='SilentlyContinue'; Get-Service -ErrorAction SilentlyContinue | Export-Csv '%LOGPATH%\\\\services.csv' -NoTypeInformation -ErrorAction SilentlyContinue" 2>nul
-powershell -Command "$ProgressPreference='SilentlyContinue'; Get-Process -ErrorAction SilentlyContinue | Export-Csv '%LOGPATH%\\\\processes.csv' -NoTypeInformation -ErrorAction SilentlyContinue" 2>nul
+powershell -Command "Get-Service -ErrorAction SilentlyContinue | Export-Csv '%LOGPATH%\\\\services.csv' -NoTypeInformation -ErrorAction SilentlyContinue" 2>nul
+powershell -Command "Get-Process -ErrorAction SilentlyContinue | Export-Csv '%LOGPATH%\\\\processes.csv' -NoTypeInformation -ErrorAction SilentlyContinue" 2>nul
 
 echo System information collection complete (read-only).
 echo.
