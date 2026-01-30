@@ -1,5 +1,6 @@
 import { Terminal, FileCode } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import scUscsBox from "@/assets/sc-uscs-box.png";
 
 const Navigation = () => {
   const scrollToSection = (id: string) => {
@@ -18,7 +19,7 @@ const Navigation = () => {
             className="flex items-center gap-2 hover:opacity-80 transition-opacity"
             aria-label="Scroll to top"
           >
-            <Terminal className="w-6 h-6 text-primary" aria-hidden="true" />
+            <img src={scUscsBox} alt="SC-USCS Logo" className="w-10 h-10 object-contain" />
             <span className="font-bold text-lg">SupportCALL</span>
           </button>
           
