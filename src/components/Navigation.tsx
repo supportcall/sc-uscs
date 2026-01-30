@@ -20,7 +20,10 @@ const Navigation = () => {
             aria-label="Scroll to top"
           >
             <img src={scUscsBox} alt="SC-USCS Logo" className="w-10 h-10 object-contain" />
-            <span className="font-bold text-lg">SupportCALL</span>
+            <div className="flex flex-col items-start">
+              <span className="font-bold text-lg leading-tight">SC-USCS</span>
+              <span className="text-xs text-muted-foreground hidden sm:block">SupportCALL Ultimate Secure Clean Script</span>
+            </div>
           </button>
           
           <div className="flex items-center gap-4">
