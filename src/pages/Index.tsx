@@ -1,5 +1,6 @@
 import { Helmet } from "react-helmet";
 import ScriptGenerator from "@/components/ScriptGenerator";
+import Footer from "@/components/Footer";
 
 const Index = () => {
   return (
@@ -17,6 +18,7 @@ const Index = () => {
           <ScriptGenerator />
         </div>
       </main>
+      <Footer />
     </>
   );
 };
