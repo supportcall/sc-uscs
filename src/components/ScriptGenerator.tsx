@@ -3673,15 +3673,38 @@ exit /b 0`;
 
               {/* Action Buttons */}
               <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4">
-                <Button onClick={generateScript} size="lg" variant="default">
+                <Button 
+                  onClick={generateScript} 
+                  size="lg" 
+                  variant="default"
+                  data-tracking="generate-script-click"
+                  data-tracking-category="conversion"
+                  data-tracking-label="generate-custom-script"
+                >
                   <FileText className="w-5 h-5 mr-2" />
                   Generate Custom Script
                 </Button>
-                <Button onClick={downloadScript} size="lg" variant="outline" className="flex-1 sm:flex-none border-primary text-primary hover:bg-primary hover:text-primary-foreground">
+                <Button 
+                  onClick={downloadScript} 
+                  size="lg" 
+                  variant="outline" 
+                  className="flex-1 sm:flex-none border-primary text-primary hover:bg-primary hover:text-primary-foreground"
+                  data-tracking="download-script-click"
+                  data-tracking-category="conversion"
+                  data-tracking-label="download-sc-uscs-bat"
+                >
                   <Download className="w-5 h-5 mr-2" />
                   Download sc-uscs.bat
                 </Button>
-                <Button onClick={() => setShowScript(!showScript)} size="lg" variant="secondary" className="flex-1 sm:flex-none">
+                <Button 
+                  onClick={() => setShowScript(!showScript)} 
+                  size="lg" 
+                  variant="secondary" 
+                  className="flex-1 sm:flex-none"
+                  data-tracking="toggle-script-view"
+                  data-tracking-category="engagement"
+                  data-tracking-label={showScript ? 'hide-script' : 'show-script'}
+                >
                   <Copy className="w-5 h-5 mr-2" />
                   {showScript ? 'Hide' : 'Show'} Script Code
                 </Button>
@@ -3695,7 +3718,14 @@ exit /b 0`;
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-xs text-muted-foreground">Script ready for deployment on Windows 10/11 systems</span>
-                    <Button onClick={copyScript} size="sm" variant="outline">
+                    <Button 
+                      onClick={copyScript} 
+                      size="sm" 
+                      variant="outline"
+                      data-tracking="copy-script-click"
+                      data-tracking-category="engagement"
+                      data-tracking-label="copy-to-clipboard"
+                    >
                       <Copy className="w-4 h-4 mr-2" />
                       Copy to Clipboard
                     </Button>

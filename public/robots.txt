@@ -1,3 +1,6 @@
+# SC-USCS Robots.txt
+# https://sc-uscs.lovable.app/
+
 User-agent: Googlebot
 Allow: /
 
@@ -13,4 +16,10 @@ Allow: /
 User-agent: *
 Allow: /
 
-Sitemap: https://supportcall-uwire.lovable.app/sitemap.xml
+# Disallow admin/private areas
+Disallow: /api/
+Disallow: /private/
+Disallow: /admin/
+
+# Sitemap location
+Sitemap: https://sc-uscs.lovable.app/sitemap.xml
