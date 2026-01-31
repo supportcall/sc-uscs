@@ -1,4 +1,5 @@
 import { ExternalLink } from "lucide-react";
+import { Link } from "react-router-dom";
 import scUscsBox from "@/assets/sc-uscs-box.png";
 
 const Footer = () => {
@@ -21,7 +22,7 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="border-t border-border bg-card/50 py-12">
+    <footer className="border-t border-border bg-card/50 py-12" id="footer" data-clarity-region="footer">
       <div className="container mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Brand */}
@@ -29,11 +30,16 @@ const Footer = () => {
             <a 
               href="/" 
               className="flex items-center gap-3 mb-4 hover:opacity-80 transition-opacity"
+              data-tracking="footer-logo-click"
+              data-tracking-category="navigation"
             >
               <img 
                 src={scUscsBox} 
                 alt="SC-USCS Logo" 
-                className="h-10 w-10 object-contain" 
+                className="h-10 w-10 object-contain"
+                width="40"
+                height="40"
+                loading="lazy"
               />
               <span className="font-semibold text-foreground">SC-USCS</span>
             </a>
@@ -54,6 +60,9 @@ const Footer = () => {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-sm text-muted-foreground hover:text-primary transition-colors inline-flex items-center gap-1"
+                    data-tracking="external-link-click"
+                    data-tracking-category="footer"
+                    data-tracking-label={link.name}
                   >
                     {link.name}
                     <ExternalLink className="w-3 h-3" aria-hidden="true" />
@@ -63,7 +72,7 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Resources */}
+          {/* Resources & Legal */}
           <div>
             <h4 className="font-semibold text-foreground mb-4">Resources</h4>
             <ul className="flex flex-col gap-2">
@@ -74,12 +83,41 @@ const Footer = () => {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-sm text-muted-foreground hover:text-primary transition-colors inline-flex items-center gap-1"
+                    data-tracking="external-link-click"
+                    data-tracking-category="footer"
+                    data-tracking-label={link.name}
                   >
                     {link.name}
                     <ExternalLink className="w-3 h-3" aria-hidden="true" />
                   </a>
                 </li>
               ))}
+            </ul>
+            
+            <h4 className="font-semibold text-foreground mb-4 mt-6">Legal</h4>
+            <ul className="flex flex-col gap-2">
+              <li>
+                <Link
+                  to="/privacy"
+                  className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                  data-tracking="legal-link-click"
+                  data-tracking-category="footer"
+                  data-tracking-label="privacy-policy"
+                >
+                  Privacy Policy
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/terms"
+                  className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                  data-tracking="legal-link-click"
+                  data-tracking-category="footer"
+                  data-tracking-label="terms-of-service"
+                >
+                  Terms of Service
+                </Link>
+              </li>
             </ul>
           </div>
         </div>
